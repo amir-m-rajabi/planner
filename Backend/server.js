@@ -44,9 +44,10 @@ async function hasSessionOverlap(userId, startedAt, endedAt, excludeSessionId) {
     return result.rows.length > 0;
 }
 
-// =========================
+
+// ===================================
 // Timed Activities API
-// =========================
+// ===================================
 
 // Create a new timed activity
 app.post('/api/timed-activities',async(req,res)=>{
@@ -77,12 +78,6 @@ app.get('/api/timed-activities/:userId', async(req,res)=>{
 app.patch('/api/timed-activities/:id',async(req,res)=>{
     const {id} = req.params
     const {title , color} = req.body
-
-    // if(!title){
-    //     return res.status(400).json({
-    //         message: 'title is required'
-    //     })
-    // }
 
     const result = await pool.query(`UPDATE timed_activities
                                         SET title = COALESCE ($1 , title),
@@ -119,10 +114,9 @@ app.delete('/api/timed-activities/:id',async(req,res)=>{
     })
 })
 
-// =========================
+// ===================================
 // Activity Sessions API
-// =========================
-
+// ===================================
 // Create a new Session
 app.post('/api/activity-sessions',async(req,res)=>{
     const {activity_id} = req.body
@@ -315,7 +309,6 @@ app.patch('/api/activity-sessions/:id', async (req, res) => {
     res.json(result.rows[0]);
 });
 
-
 // Stop an active session and calaulate its duration
 app.patch('/api/activity-sessions/:id/stop',async(req,res)=>{
 
@@ -367,7 +360,189 @@ app.delete('/api/activity-sessions/:id',async(req,res)=>{
 })
 
 
+// ===================================
+// UnTimed Activities API
+// ===================================
 
+// Create a new Untimed Activity
+app.post('/api/untimed-activities',async(req,res)=>{
+
+    const{user_id,title,target_count} = req.body
+
+    if(!user_id || !title || !target_count){
+        return res.status(400).json({
+            message: 'user_id,title and target_count are required'
+        })
+    }
+
+    if(target_count < 1){
+        return res.status(400).json({
+            message: 'target_count must be at least 1'
+        })
+    }
+
+    const result = await pool.query(`INSERT INTO untimed_activities(user_id,title,target_count)
+                                        VALUES($1,$2,$3)
+                                            RETURNING *`,[user_id,title,target_count])
+
+        res.status(201).json(result.rows[0])                                          
+})
+
+// Get all Untimed Activities
+app.get('/api/untimed-activities/:userId',async(req,res)=>{
+    const {userId} = req.params
+    const result = await pool.query(`SELECT * FROM untimed_activities 
+                                        WHERE user_id = $1 
+                                            ORDER BY id ASC`,[userId])
+                                     
+    res.json(result.rows)  
+})
+
+// Update a Untimed Activity
+app.patch('/api/untimed-activities/:id',async(req,res)=>{
+    const {id} = req.params
+    const {title , target_count,is_active} = req.body
+
+    const activityResult = await pool.query(`SELECT * FROM untimed_activities
+                                                WHERE id = $1`,[id])
+    
+    if(activityResult.rows.length === 0){
+        return res.status(404).json({
+            message: 'Activity not found'
+        })
+    }    
+    
+    const activity = activityResult.rows[0]
+    const newTitle = title ?? activity.title
+    const newTargetCount = target_count ?? activity.target_count
+    const newIsActive = is_active ?? activity.is_active
+
+    if(newTitle.trim() === ''){
+        return res.status(400).json({
+            message: 'Title cannot be empty'
+        })
+    }
+    if(newTargetCount < 1){
+        return res.status(400).json({
+            message: 'target_count must be at least 1'
+        })
+    }
+
+    const result = await pool.query(`UPDATE untimed_activities
+                                        SET title = $1 , target_count = $2 , is_active = $3
+                                            WHERE id = $4
+                                                RETURNING *`,[newTitle,newTargetCount,newIsActive,id])
+                               
+    res.json(result.rows[0])
+})
+
+// Delete a Untimed Activity
+app.delete('/api/untimed-activities/:id',async(req,res)=>{
+    const {id} = req.params
+
+    const result = await pool.query(`DELETE FROM untimed_activities
+                                        WHERE id = $1
+                                            RETURNING *`,[id])
+
+    if(result.rows.length === 0){
+        return res.status(404).json({
+            message:'Activity not found'
+        })
+    }                                  
+    
+    res.json({
+        message: 'Activity deleted successfully',
+        activity: result.rows[0]
+    })
+})
+
+
+// ===================================
+// UnTimed Activity Records API
+// ===================================
+
+// Create a new Untimed Activity Record
+app.post('/api/untimed-activity-records',async(req,res)=>{
+    const {activity_id,record_date} = req.body
+
+    const recordResult = await pool.query(`SELECT * FROM untimed_activity_records
+                                            WHERE activity_id = $1 AND record_date = $2`,[activity_id,record_date])
+
+    if(recordResult.rows.length > 0){
+        return res.status(400).json({
+            message: 'Record already exists for this activity and date'
+        })
+    }
+
+    const result = await pool.query(`INSERT INTO untimed_activity_records(activity_id,record_date,completed_count)
+                                        VALUES($1,$2,1)
+                                            RETURNING *`,[activity_id,record_date])
+
+    res.status(201).json(result.rows[0])
+})
+
+// Get all Untimed Activity Records
+app.get('/api/untimed-activity-records/:activityId',async(req,res)=>{
+    const {activityId} = req.params
+    const result = await pool.query(`SELECT * FROM untimed_activity_records
+                                        WHERE activity_id = $1 
+                                            ORDER BY id ASC`,[activityId])
+                                     
+    res.json(result.rows)  
+})
+
+// Update an Untimed Activity Record
+app.patch('/api/untimed-activity-records/:id',async(req,res)=>{
+
+    const {id} = req.params
+    const {completed_count} = req.body
+
+    const recordResult = await pool.query(`SELECT untimed_activity_records.* , untimed_activities.target_count
+                                            FROM untimed_activity_records
+                                                JOIN untimed_activities ON untimed_activity_records.activity_id = untimed_activities.id
+                                                    WHERE untimed_activity_records.id = $1`,[id])
+
+    if(recordResult.rows.length === 0){
+        return res.status(404).json({
+            message: 'Record not found'
+        })
+    }
+
+    const record = recordResult.rows[0]
+
+    if(completed_count < 0 || completed_count > record.target_count){
+        res.status(400).json({
+            message: 'completed_count must be between 0 and target_count'
+        })
+    }
+
+    const result = await pool.query(`UPDATE untimed_activity_records
+                                        SET completed_count = $1
+                                            WHERE id = $2
+                                                RETURNING *`,[completed_count,id])
+
+    res.json(result.rows[0])                                                                                            
+})
+
+// Delete an Untimed Activity Record
+app.delete('/api/untimed-activity-records/:id',async(req,res)=>{
+    const {id} = req.params
+
+    const result = await pool.query(`DELETE FROM untimed_activity_records
+                                        WHERE id = $1
+                                            RETURNING *`,[id])
+
+    if(result.rows.length === 0){
+        return res.status(404).json({
+            message:'Activity Record not found'
+        })
+    }                                  
+    
+    res.json({
+        message: 'Activity Record deleted successfully',
+        activity: result.rows[0]
+    })
+})
 
 
 
