@@ -2,6 +2,7 @@ const express = require('express')
 
 // connenction wiht DataBase
 const pool = require('./db')
+const e = require('express')
 
 
 const app = express()
@@ -625,6 +626,97 @@ app.delete('/api/daily-notes/:id',async(req,res)=>{
 })
 
 
+// ===================================
+// Users APIs
+// ===================================
+
+// Creat a User
+app.post('/api/users',async(req,res)=>{
+
+    const {username,email,password_hash} = req.body
+
+    const userResult = await pool.query(`SELECT * FROM users
+                                            WHERE username = $1 OR email = $2`,[username,email])
+
+    if(userResult.rows.length > 0) {
+        return res.status(400).json({
+            message: 'Username or email already exists'
+        })
+    }                                        
+
+    const result = await pool.query(`INSERT INTO users(username,email,password_hash)
+                                        VALUES($1,$2,$3)
+                                            RETURNING *`,[username,email,password_hash])
+
+    res.status(201).json(result.rows[0])                                        
+})
+
+// Get a User
+app.get('/api/users/:id',async(req,res)=>{
+    const {id} = req.params
+        const result = await pool.query(`SELECT * FROM users
+                                            WHERE id = $1`,[id])
+    
+    if(result.rows.length === 0){
+        return res.status(404).json({
+            message: 'User not found'
+        })
+    }                                        
+                                     
+    res.json(result.rows) 
+})
+
+// Update a User
+app.patch('/api/users/:id',async(req,res)=>{
+    const {id} = req.params
+    const {username,email} = req.body
+     
+    const userResult = await pool.query(`SELECT * FROM users
+                                            WHERE id = $1`,[id])
+    
+    if(userResult.rows.length === 0){
+        return res.status(404).json({
+            message: 'User not found'
+        })
+    }     
+    
+    if(!username && !email){
+        return res.status(400).json({
+            message: ' Username or email is required'
+        })
+    }
+    
+    const currentUser = userResult.rows[0]
+    const newUsername = username ?? currentUser.username
+    const newEmail = email ?? currentUser.email
+
+    const result = await pool.query(`UPDATE users
+                                        SET username = $1 , email = $2
+                                            WHERE id = $3
+                                                RETURNING *`,[newUsername,newEmail,id])
+                                     
+    res.json(result.rows[0]) 
+})
+
+// Delete a User
+app.delete('/api/users/:id',async(req,res)=>{
+    const {id} = req.params
+
+    const result = await pool.query(`DELETE FROM users
+                                        WHERE id = $1
+                                            RETURNING *`,[id])
+
+    if(result.rows.length === 0){
+        return res.status(404).json({
+            message:'User not found'
+        })
+    }                                  
+    
+    res.json({
+        message: 'User deleted successfully',
+        activity: result.rows[0]
+    })
+})
 
 app.listen(3000,()=>{
     console.log('Server is running on port 3000');
