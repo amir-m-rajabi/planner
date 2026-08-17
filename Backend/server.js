@@ -46,7 +46,7 @@ async function hasSessionOverlap(userId, startedAt, endedAt, excludeSessionId) {
 
 
 // ===================================
-// Timed Activities API
+// Timed Activities APIs
 // ===================================
 
 // Create a new timed activity
@@ -115,8 +115,9 @@ app.delete('/api/timed-activities/:id',async(req,res)=>{
 })
 
 // ===================================
-// Activity Sessions API
+// Activity Sessions APIs
 // ===================================
+
 // Create a new Session
 app.post('/api/activity-sessions',async(req,res)=>{
     const {activity_id} = req.body
@@ -361,7 +362,7 @@ app.delete('/api/activity-sessions/:id',async(req,res)=>{
 
 
 // ===================================
-// UnTimed Activities API
+// UnTimed Activities APIs
 // ===================================
 
 // Create a new Untimed Activity
@@ -458,7 +459,7 @@ app.delete('/api/untimed-activities/:id',async(req,res)=>{
 
 
 // ===================================
-// UnTimed Activity Records API
+// UnTimed Activity Records APIs
 // ===================================
 
 // Create a new Untimed Activity Record
@@ -540,6 +541,85 @@ app.delete('/api/untimed-activity-records/:id',async(req,res)=>{
     
     res.json({
         message: 'Activity Record deleted successfully',
+        activity: result.rows[0]
+    })
+})
+
+
+// ===================================
+// Daily Notes APIs
+// ===================================
+
+// Create a new Untimed Activity Record
+app.post('/api/daily-notes',async(req,res)=>{
+
+    const {user_id,note_date,content} = req.body
+
+    const noteResult = await pool.query(`SELECT * FROM daily_notes
+                                            WHERE user_id = $1 AND note_date = $2`,[user_id,note_date])
+
+    if(noteResult.rows.length > 0){
+        return res.status(400).json({
+            message: 'Note already exists for this date'
+        })
+    }                                        
+
+    const result = await pool.query(`INSERT INTO daily_notes(user_id,note_date,content)
+                                        VALUES($1,$2,$3)
+                                            RETURNING *`,[user_id,note_date,content])
+
+    res.status(201).json(result.rows[0])                                        
+})
+
+// Get all Daily Notes
+app.get('/api/daily-notes/:userId',async(req,res)=>{
+    const {userId} = req.params
+    const result = await pool.query(`SELECT * FROM daily_notes
+                                        WHERE user_id = $1 
+                                            ORDER BY id ASC`,[userId])
+                                     
+    res.json(result.rows)  
+})
+
+// Update a Daily Note
+app.patch('/api/daily-notes/:id',async(req,res)=>{
+
+    const {id} = req.params
+    const {content} = req.body
+
+    const noteResult = await pool.query(`SELECT * FROM daily_notes
+                                            WHERE id = $1`,[id])
+
+    if(noteResult.rows.length === 0){
+        return res.status(404).json({
+            message: 'Note not found'
+        })
+    }                               
+    
+    const result = await pool.query(`UPDATE daily_notes
+                                        SET content = $1
+                                            WHERE id = $2
+                                                RETURNING *`,[content,id])
+
+    res.json(result.rows[0])                                            
+})
+
+// Delete a Daily Note
+app.delete('/api/daily-notes/:id',async(req,res)=>{
+    const {id} = req.params
+
+    const result = await pool.query(`DELETE FROM daily_notes
+                                        WHERE id = $1
+                                            RETURNING *`,[id])
+
+    if(result.rows.length === 0){
+        return res.status(404).json({
+            message:'Note not found'
+        })
+    }                                  
+    
+    res.json({
+        message: 'NOte Record deleted successfully',
         activity: result.rows[0]
     })
 })
