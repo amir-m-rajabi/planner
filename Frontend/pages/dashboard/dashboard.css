@@ -1,0 +1,100 @@
+.dashboard {
+    width: 100%;
+}
+
+.dashboard__container {
+    width: 100%;
+    max-width: 1600px;
+
+    height: 100%;
+
+    margin-inline: auto;
+
+    padding:16px 32px 16px;
+}
+
+.dashboard__layout {
+    display: grid;
+
+    grid-template-columns:
+        2fr
+        1fr
+        0.7fr;
+
+    gap: 20px;
+
+    height: calc(100vh - var(--header-height) - 32px);
+}
+
+/* right */
+.dashboard__activities {
+    min-width: 0;
+    min-height: 0;
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+
+    grid-template-areas:
+        "untimed timed"
+        "notes sessions";
+
+    gap: 20px;
+}
+
+/* center */
+.dashboard__center {
+    display: grid;
+    min-width: 0;
+
+    grid-template-rows:
+        1fr
+        1fr;
+
+    gap: 20px;
+}
+
+/* left */
+.dashboard__calendar {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-sm);
+
+    color: var(--color-text-secondary);
+}
+
+.dashboard__clock,
+.dashboard__statistics,
+.dashboard__timed-activities,
+.dashboard__untimed-activities,
+.dashboard__sessions,
+.dashboard__notes {
+    min-width: 0;
+    min-height: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-sm);
+
+    color: var(--color-text-secondary);
+}
+
