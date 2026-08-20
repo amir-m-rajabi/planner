@@ -1,0 +1,424 @@
+/* ========================================
+   Clock
+======================================== */
+
+.clock {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 16px;
+
+    background-color: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-sm);
+
+    overflow: hidden;
+
+    color: var(--color-text);
+}
+
+
+/* ========================================
+   Clock Body
+======================================== */
+
+.clock__body {
+    position: relative;
+
+    width: min(100%, 300px);
+    height: min(100%, 300px);
+
+    aspect-ratio: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* ========================================
+   Session Ring
+======================================== */
+
+.clock__session-ring {
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+
+    border-radius: 50%;
+
+    /*
+        فعلاً نمونه‌ی ظاهری.
+        بعداً JavaScript این قسمت را
+        بر اساس زمان واقعی می‌سازد.
+    */
+
+    background:
+        conic-gradient(
+            from -90deg,
+
+            #e7eceb 0deg 120deg,
+
+            #7fb86a 120deg 150deg,
+
+            #e7eceb 150deg 180deg,
+
+            #4f9ea5 180deg 225deg,
+
+            #e7eceb 225deg 270deg,
+
+            #e8c95f 270deg 300deg,
+
+            #e7eceb 300deg 360deg
+        );
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 1;
+}
+
+
+/*
+    فضای داخلی حلقه
+*/
+
+.clock__session-ring::after {
+    content: "";
+
+    position: absolute;
+
+    width: 93%;
+    height: 93%;
+
+    border-radius: 50%;
+
+    background-color: var(--color-surface);
+}
+
+
+/* ========================================
+   Clock Face
+======================================== */
+
+.clock__face {
+    position: relative;
+
+    width: 82%;
+    height: 82%;
+
+    aspect-ratio: 1;
+
+    border-radius: 50%;
+
+    background-color: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+
+    box-shadow:
+        0 5px 18px rgba(24, 52, 61, 0.08),
+        inset 0 0 0 5px rgba(221, 231, 228, 0.25);
+
+    z-index: 2;
+}
+
+
+/* ========================================
+   Hour Numbers
+======================================== */
+
+.clock__number {
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    width: 26px;
+    height: 26px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: -13px;
+
+    font-size: 10px;
+    font-weight: 500;
+
+    color: var(--color-text-secondary);
+
+    transform-origin: center;
+}
+
+
+/* ========================================
+   24 Hour Positions
+======================================== */
+
+.clock__number--00 {
+    transform: rotate(0deg)
+               translateY(-96px)
+               rotate(0deg);
+}
+
+.clock__number--01 {
+    transform: rotate(15deg)
+               translateY(-96px)
+               rotate(-15deg);
+}
+
+.clock__number--02 {
+    transform: rotate(30deg)
+               translateY(-96px)
+               rotate(-30deg);
+}
+
+.clock__number--03 {
+    transform: rotate(45deg)
+               translateY(-96px)
+               rotate(-45deg);
+}
+
+.clock__number--04 {
+    transform: rotate(60deg)
+               translateY(-96px)
+               rotate(-60deg);
+}
+
+.clock__number--05 {
+    transform: rotate(75deg)
+               translateY(-96px)
+               rotate(-75deg);
+}
+
+.clock__number--06 {
+    transform: rotate(90deg)
+               translateY(-96px)
+               rotate(-90deg);
+}
+
+.clock__number--07 {
+    transform: rotate(105deg)
+               translateY(-96px)
+               rotate(-105deg);
+}
+
+.clock__number--08 {
+    transform: rotate(120deg)
+               translateY(-96px)
+               rotate(-120deg);
+}
+
+.clock__number--09 {
+    transform: rotate(135deg)
+               translateY(-96px)
+               rotate(-135deg);
+}
+
+.clock__number--10 {
+    transform: rotate(150deg)
+               translateY(-96px)
+               rotate(-150deg);
+}
+
+.clock__number--11 {
+    transform: rotate(165deg)
+               translateY(-96px)
+               rotate(-165deg);
+}
+
+.clock__number--12 {
+    transform: rotate(180deg)
+               translateY(-96px)
+               rotate(-180deg);
+}
+
+.clock__number--13 {
+    transform: rotate(195deg)
+               translateY(-96px)
+               rotate(-195deg);
+}
+
+.clock__number--14 {
+    transform: rotate(210deg)
+               translateY(-96px)
+               rotate(-210deg);
+}
+
+.clock__number--15 {
+    transform: rotate(225deg)
+               translateY(-96px)
+               rotate(-225deg);
+}
+
+.clock__number--16 {
+    transform: rotate(240deg)
+               translateY(-96px)
+               rotate(-240deg);
+}
+
+.clock__number--17 {
+    transform: rotate(255deg)
+               translateY(-96px)
+               rotate(-255deg);
+}
+
+.clock__number--18 {
+    transform: rotate(270deg)
+               translateY(-96px)
+               rotate(-270deg);
+}
+
+.clock__number--19 {
+    transform: rotate(285deg)
+               translateY(-96px)
+               rotate(-285deg);
+}
+
+.clock__number--20 {
+    transform: rotate(300deg)
+               translateY(-96px)
+               rotate(-300deg);
+}
+
+.clock__number--21 {
+    transform: rotate(315deg)
+               translateY(-96px)
+               rotate(-315deg);
+}
+
+.clock__number--22 {
+    transform: rotate(330deg)
+               translateY(-96px)
+               rotate(-330deg);
+}
+
+.clock__number--23 {
+    transform: rotate(345deg)
+               translateY(-96px)
+               rotate(-345deg);
+}
+
+
+/* ========================================
+   Digital Clock
+======================================== */
+
+.clock__digital {
+    position: absolute;
+
+    top: 63%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    direction: ltr;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    letter-spacing: 1px;
+
+    color: var(--color-primary);
+
+    white-space: nowrap;
+
+    z-index: 4;
+}
+
+
+/* ========================================
+   Clock Hands
+======================================== */
+
+.clock__hand {
+    position: absolute;
+
+    left: 50%;
+    bottom: 50%;
+
+    transform-origin: bottom center;
+
+    border-radius: 999px;
+
+    z-index: 5;
+}
+
+
+/* Hour Hand */
+
+.clock__hand--hour {
+    width: 4px;
+    height: 25%;
+
+    background-color: var(--color-text);
+
+    transform:
+        translateX(-50%)
+        rotate(35deg);
+}
+
+
+/* Minute Hand */
+
+.clock__hand--minute {
+    width: 3px;
+    height: 34%;
+
+    background-color: var(--color-primary);
+
+    transform:
+        translateX(-50%)
+        rotate(150deg);
+}
+
+
+/* Second Hand */
+
+.clock__hand--second {
+    width: 1px;
+    height: 39%;
+
+    background-color: var(--color-accent);
+
+    transform:
+        translateX(-50%)
+        rotate(250deg);
+}
+
+
+/* ========================================
+   Center
+======================================== */
+
+.clock__center {
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    width: 11px;
+    height: 11px;
+
+    border-radius: 50%;
+
+    background-color: var(--color-primary);
+
+    border: 2px solid var(--color-surface);
+
+    box-shadow:
+        0 2px 6px rgba(24, 52, 61, 0.2);
+
+    transform: translate(-50%, -50%);
+
+    z-index: 10;
+}
