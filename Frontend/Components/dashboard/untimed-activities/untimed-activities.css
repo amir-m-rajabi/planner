@@ -1,0 +1,416 @@
+/* ========================================
+   Untimed Activities
+======================================== */
+
+.untimed-activities {
+    width: 100%;
+    height: 100%;
+
+    min-width: 0;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 20px;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+
+/* ========================================
+   Header
+======================================== */
+
+.untimed-activities__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    flex-shrink: 0;
+
+    margin-bottom: 16px;
+}
+
+.untimed-activities__title {
+    margin: 0;
+
+    color: var(--color-text);
+
+    font-size: 17px;
+    font-weight: 600;
+}
+
+
+/* ========================================
+   Add Button
+======================================== */
+
+.untimed-activities__add {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    color: #ffffff;
+    background-color: var(--color-primary);
+
+    font-family: inherit;
+    font-size: 22px;
+
+    cursor: pointer;
+
+    transition:
+        background-color 180ms ease,
+        transform 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.untimed-activities__add:hover {
+    background-color: var(--color-primary-light);
+
+    transform: scale(1.06);
+
+    box-shadow:
+        0 4px 10px rgba(33, 110, 137, 0.20);
+}
+
+.untimed-activities__add:active {
+    transform: scale(0.96);
+}
+
+
+/* ========================================
+   Content
+======================================== */
+
+.untimed-activities__content {
+    min-width: 0;
+    min-height: 0;
+
+    flex: 1;
+
+    overflow: hidden;
+}
+
+
+/* ========================================
+   Activities List
+======================================== */
+
+.untimed-activities__list {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+
+    padding: 2px 2px 10px;
+
+    overflow-y: none;
+    overflow-x: hidden;
+
+    scrollbar-width: none;
+    scrollbar-color:
+        var(--color-border)
+        transparent;
+}
+
+
+/* Chrome / Edge / Safari */
+
+.untimed-activities__list::-webkit-scrollbar {
+    /* width: 5px; */
+    display: none;
+}
+
+.untimed-activities__list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.untimed-activities__list::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+
+    border-radius: 10px;
+}
+
+.untimed-activities__list::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-primary-light);
+}
+
+
+/* ========================================
+   Activity
+======================================== */
+
+.untimed-activity {
+    min-width: 0;
+    min-height: 68px;
+
+    display: flex;
+    align-items: center;
+
+    position: relative;
+
+    padding: 10px 12px;
+
+    background-color: #fbfcfb;
+
+    border: 1px solid var(--color-border);
+
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    flex-shrink: 0;
+
+    transition:
+        background-color 180ms ease,
+        border-color 180ms ease,
+        box-shadow 180ms ease,
+        transform 180ms ease;
+}
+
+.untimed-activity:hover {
+    background-color: #ffffff;
+
+    border-color: rgba(79, 158, 165, 0.35);
+
+    box-shadow:
+        0 4px 12px rgba(24, 52, 61, 0.07);
+
+    transform: translateY(-1px);
+}
+
+
+/* ========================================
+   Activity Information
+======================================== */
+
+.untimed-activity__info {
+    min-width: 90px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+
+    padding-inline-end: 12px;
+}
+
+.untimed-activity__title {
+    margin: 0;
+
+    color: var(--color-text);
+
+    font-size: 14px;
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+
+/* ========================================
+   Checkbox Container
+======================================== */
+
+.untimed-activity__checks {
+    min-width: 0;
+
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    padding: 5px 2px 8px;
+
+    scrollbar-width: thin;
+    scrollbar-color:
+        var(--color-border)
+        transparent;
+
+    direction: rtl;
+}
+
+
+/* ========================================
+   Horizontal Scrollbar
+======================================== */
+
+.untimed-activity__checks::-webkit-scrollbar {
+    height: 4px;
+}
+
+.untimed-activity__checks::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.untimed-activity__checks::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+
+    border-radius: 10px;
+}
+
+.untimed-activity__checks::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-primary-light);
+}
+
+
+/* ========================================
+   Checkbox
+======================================== */
+
+.untimed-activity__check {
+    width: 22px;
+    height: 22px;
+
+    flex: 0 0 22px;
+
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1.5px solid #b9c9c7;
+    border-radius: 7px;
+
+    background-color: #ffffff;
+
+    cursor: pointer;
+
+    transition:
+        background-color 180ms ease,
+        border-color 180ms ease,
+        transform 180ms ease,
+        box-shadow 180ms ease;
+}
+
+
+/* Hover */
+
+.untimed-activity__check:hover {
+    border-color: var(--color-primary);
+
+    background-color: #f3f8f7;
+
+    transform: translateY(-1px);
+}
+
+
+/* ========================================
+   Check Icon
+======================================== */
+
+.untimed-activity__check::after {
+    content: "";
+
+    width: 6px;
+    height: 11px;
+
+    position: absolute;
+
+    top: 3px;
+
+    border-right: 2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+
+    transform:
+        rotate(45deg)
+        scale(0);
+
+    opacity: 0;
+
+    transition:
+        transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1),
+        opacity 120ms ease;
+}
+
+
+/* ========================================
+   Completed Checkbox
+======================================== */
+
+.untimed-activity__check--completed {
+    border-color: var(--color-primary);
+
+    background-color: var(--color-primary);
+
+    box-shadow:
+        0 3px 8px rgba(33, 110, 137, 0.18);
+
+    animation: checkbox-pop 220ms ease;
+}
+
+.untimed-activity__check--completed::after {
+    transform:
+        rotate(45deg)
+        scale(1);
+
+    opacity: 1;
+}
+
+
+/* ========================================
+   Completed Hover
+======================================== */
+
+.untimed-activity__check--completed:hover {
+    background-color: var(--color-primary-light);
+
+    border-color: var(--color-primary-light);
+
+    transform: scale(1.06);
+}
+
+
+/* ========================================
+   Checkbox Animation
+======================================== */
+
+@keyframes checkbox-pop {
+
+    0% {
+        transform: scale(0.75);
+    }
+
+    60% {
+        transform: scale(1.12);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+
+}
+
+
+/* ========================================
+   Scroll Hint
+======================================== */
+
+.untimed-activity__checks::after {
+    content: "";
+
+    width: 12px;
+
+    flex: 0 0 12px;
+}

@@ -1,0 +1,346 @@
+/* ========================================
+   Recent Activities
+======================================== */
+
+.recent-activities {
+    width: 100%;
+    height: 100%;
+
+    min-width: 0;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 20px;
+
+    overflow: hidden;
+}
+
+
+/* ========================================
+   Header
+======================================== */
+
+.recent-activities__header {
+    display: flex;
+    align-items: center;
+
+    flex-shrink: 0;
+
+    margin-bottom: 16px;
+}
+
+.recent-activities__title {
+    margin: 0;
+
+    color: var(--color-text);
+
+    font-size: 17px;
+    font-weight: 600;
+}
+
+
+/* ========================================
+   Content
+======================================== */
+
+.recent-activities__content {
+    min-width: 0;
+    min-height: 0;
+
+    flex: 1;
+
+    overflow: hidden;
+}
+
+
+/* ========================================
+   List
+======================================== */
+
+.recent-activities__list {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+
+    padding: 2px 2px 10px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    /* Hide scrollbar */
+
+    scrollbar-width: none;
+}
+
+.recent-activities__list::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* ========================================
+   Activity Card
+======================================== */
+
+.recent-activity {
+    width: 100%;
+    min-height: 66px;
+
+    display: flex;
+    align-items: center;
+
+    position: relative;
+
+    flex-shrink: 0;
+
+    padding: 11px 12px 11px 14px;
+
+    background-color: color-mix(
+        in srgb,
+        var(--activity-color) 13%,
+        white
+    );
+
+    border: 1px solid color-mix(
+        in srgb,
+        var(--activity-color) 30%,
+        var(--color-border)
+    );
+
+    border-radius: 11px;
+
+    overflow: hidden;
+
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        background-color 180ms ease;
+}
+
+.recent-activity:hover {
+    transform: translateY(-1px);
+
+    background-color: color-mix(
+        in srgb,
+        var(--activity-color) 17%,
+        white
+    );
+
+    box-shadow:
+        0 5px 14px rgba(24, 52, 61, 0.08);
+}
+
+
+/* ========================================
+   Activity Color Indicator
+======================================== */
+
+.recent-activity::before {
+    content: "";
+
+    width: 6px;
+    height: calc(100% - 14px);
+
+    position: absolute;
+
+    right: 0;
+    top: 7px;
+
+    background-color: var(--activity-color);
+
+    border-radius: 5px 0 0 5px;
+}
+
+
+/* ========================================
+   Main Information
+======================================== */
+
+.recent-activity__main {
+    min-width: 0;
+
+    flex: 1;
+
+    display: grid;
+
+    grid-template-columns: minmax(80px, 1fr) auto;
+
+    grid-template-rows: auto auto;
+
+    column-gap: 12px;
+    row-gap: 5px;
+
+    align-items: center;
+
+    padding-inline: 4px 8px;
+}
+
+
+/* ========================================
+   Activity Title
+======================================== */
+
+.recent-activity__title {
+    min-width: 0;
+
+    margin: 0;
+
+    overflow: hidden;
+
+    color: var(--color-text);
+
+    font-size: 14px;
+    font-weight: 600;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+/* ========================================
+   Time
+======================================== */
+
+.recent-activity__time {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 5px;
+
+    color: var(--color-text-secondary);
+
+    font-size: 11px;
+    font-weight: 500;
+
+    white-space: nowrap;
+}
+
+.recent-activity__separator {
+    color: var(--activity-color);
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* ========================================
+   Duration
+======================================== */
+
+.recent-activity__duration {
+    grid-column: 1 / -1;
+
+    color: var(--color-text-secondary);
+
+    font-size: 11px;
+    font-weight: 400;
+}
+
+
+/* ========================================
+   Note Button
+======================================== */
+
+.recent-activity__note {
+    width: 34px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid color-mix(
+        in srgb,
+        var(--activity-color) 35%,
+        var(--color-border)
+    );
+
+    border-radius: 9px;
+
+    color: var(--activity-color);
+
+    background-color: rgba(255, 255, 255, 0.72);
+
+    font-family: inherit;
+    font-size: 19px;
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition:
+        color 180ms ease,
+        background-color 180ms ease,
+        border-color 180ms ease,
+        transform 180ms ease,
+        box-shadow 180ms ease;
+}
+
+
+/* ========================================
+   Note Button Hover
+======================================== */
+
+.recent-activity__note:hover {
+    color: #ffffff;
+
+    background-color: var(--activity-color);
+
+    border-color: var(--activity-color);
+
+    transform: scale(1.06);
+
+    box-shadow:
+        0 4px 9px color-mix(
+            in srgb,
+            var(--activity-color) 25%,
+            transparent
+        );
+}
+
+
+/* ========================================
+   Note Button Active
+======================================== */
+
+.recent-activity__note:active {
+    transform: scale(0.94);
+}
+
+
+/* ========================================
+   Has Note
+======================================== */
+
+.recent-activity__note--has-note {
+    color: #ffffff;
+
+    background-color: var(--activity-color);
+
+    border-color: var(--activity-color);
+
+    font-size: 15px;
+}
+
+.recent-activity__note--has-note:hover {
+    background-color: color-mix(
+        in srgb,
+        var(--activity-color) 82%,
+        black
+    );
+
+    border-color: color-mix(
+        in srgb,
+        var(--activity-color) 82%,
+        black
+    );
+}

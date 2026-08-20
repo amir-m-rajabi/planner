@@ -3,13 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href="/Frontend/assets/images/Logo.png" type="image/x-icon">
+    <link
+      rel="shortcut icon"
+      href="/Frontend/assets/images/Logo.png"
+      type="image/x-icon"
+    />
     <link rel="stylesheet" href="/Frontend/css/main.css" />
     <link rel="stylesheet" href="/Frontend/Components/header/header.css" />
     <link rel="stylesheet" href="/Frontend/pages/dashboard/dashboard.css" />
     <link
       rel="stylesheet"
       href="/Frontend/Components/dashboard/timed-activities/timed-activities.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/Frontend/Components/dashboard/untimed-activities/untimed-activities.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/Frontend/Components/dashboard/sessions/sessions.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/Frontend/Components/dashboard/daily-note/daily-note.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/Frontend/Components/dashboard/statistics/statistics.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/Frontend/Components/dashboard/calendar/calendar.css"
     />
     <title>Preview</title>
   </head>
@@ -203,7 +227,1218 @@
                 </div>
               </section>
             </section>
+
+            <section class="dashboard__untimed-activities">
+              <section class="untimed-activities">
+                <!-- Header -->
+
+                <header class="untimed-activities__header">
+                  <h2 class="untimed-activities__title">
+                    فعالیت‌های بدون زمان
+                  </h2>
+
+                  <button
+                    type="button"
+                    class="untimed-activities__add"
+                    aria-label="افزودن فعالیت بدون زمان"
+                  >
+                    +
+                  </button>
+                </header>
+
+                <!-- Activities -->
+
+                <div class="untimed-activities__content">
+                  <div class="untimed-activities__list">
+                    <!-- Activity: آب خوردن -->
+
+                    <article
+                      class="untimed-activity"
+                      data-activity-id="1"
+                      data-target-count="8"
+                      data-completed-count="5"
+                    >
+                      <div class="untimed-activity__info">
+                        <h3 class="untimed-activity__title">آب خوردن</h3>
+                      </div>
+
+                      <div
+                        class="untimed-activity__checks"
+                        role="group"
+                        aria-label="تعداد دفعات آب خوردن"
+                      >
+                        <button
+                          type="button"
+                          class="untimed-activity__check untimed-activity__check--completed"
+                          aria-label="دفعات انجام شده آب خوردن"
+                        ></button>
+
+                        <button
+                          type="button"
+                          class="untimed-activity__check untimed-activity__check--completed"
+                          aria-label="دفعات انجام شده آب خوردن"
+                        ></button>
+
+                        <button
+                          type="button"
+                          class="untimed-activity__check untimed-activity__check--completed"
+                          aria-label="دفعات انجام شده آب خوردن"
+                        ></button>
+
+                        <button
+                          type="button"
+                          class="untimed-activity__check untimed-activity__check--completed"
+                          aria-label="دفعات انجام شده آب خوردن"
+                        ></button>
+
+                        <button
+                          type="button"
+                          class="untimed-activity__check untimed-activity__check--completed"
+                          aria-label="دفعات انجام شده آب خوردن"
+                        ></button>
+
+                        <button
+                          type="button"
+                          class="untimed-activity__check"
+                          aria-label="دفعات باقی‌مانده آب خوردن"
+                        ></button>
+
+                        <button
+                          type="button"
+                          class="untimed-activity__check"
+                          aria-label="دفعات باقی‌مانده آب خوردن"
+                        ></button>
+
+                        <button
+                          type="button"
+                          class="untimed-activity__check"
+                          aria-label="دفعات باقی‌مانده آب خوردن"
+                        ></button>
+                      </div>
+                    </article>
+
+                    <!-- Activity: نماز -->
+
+                    <article
+                      class="untimed-activity"
+                      data-activity-id="2"
+                      data-target-count="5"
+                      data-completed-count="3"
+                    >
+                      <div class="untimed-activity__info">
+                        <h3 class="untimed-activity__title">نماز</h3>
+                      </div>
+
+                      <div
+                        class="untimed-activity__checks"
+                        role="group"
+                        aria-label="تعداد دفعات نماز"
+                      >
+                        <button
+                          type="button"
+                          class="untimed-activity__check untimed-activity__check--completed"
+                          aria-label="دفعات انجام شده نماز"
+                        ></button>
+
+                        <button
+                          type="button"
+                          class="untimed-activity__check untimed-activity__check--completed"
+                          aria-label="دفعات انجام شده نماز"
+                        ></button>
+
+                        <button
+                          type="button"
+                          class="untimed-activity__check untimed-activity__check--completed"
+                          aria-label="دفعات انجام شده نماز"
+                        ></button>
+
+                        <button
+                          type="button"
+                          class="untimed-activity__check"
+                          aria-label="دفعات باقی‌مانده نماز"
+                        ></button>
+
+                        <button
+                          type="button"
+                          class="untimed-activity__check"
+                          aria-label="دفعات باقی‌مانده نماز"
+                        ></button>
+                      </div>
+                    </article>
+
+                    <!-- Activity: مسواک -->
+
+                    <article
+                      class="untimed-activity"
+                      data-activity-id="3"
+                      data-target-count="1"
+                      data-completed-count="1"
+                    >
+                      <div class="untimed-activity__info">
+                        <h3 class="untimed-activity__title">مسواک</h3>
+                      </div>
+
+                      <div
+                        class="untimed-activity__checks"
+                        role="group"
+                        aria-label="تعداد دفعات مسواک"
+                      >
+                        <button
+                          type="button"
+                          class="untimed-activity__check untimed-activity__check--completed"
+                          aria-label="دفعات انجام شده مسواک"
+                        ></button>
+                      </div>
+                    </article>
+
+                    <!-- Activity: استراحت کوتاه -->
+
+                    <article
+                      class="untimed-activity"
+                      data-activity-id="4"
+                      data-target-count="3"
+                      data-completed-count="1"
+                    >
+                      <div class="untimed-activity__info">
+                        <h3 class="untimed-activity__title">استراحت کوتاه</h3>
+                      </div>
+
+                      <div
+                        class="untimed-activity__checks"
+                        role="group"
+                        aria-label="تعداد دفعات استراحت کوتاه"
+                      >
+                        <button
+                          type="button"
+                          class="untimed-activity__check untimed-activity__check--completed"
+                          aria-label="دفعات انجام شده استراحت کوتاه"
+                        ></button>
+
+                        <button
+                          type="button"
+                          class="untimed-activity__check"
+                          aria-label="دفعات باقی‌مانده استراحت کوتاه"
+                        ></button>
+
+                        <button
+                          type="button"
+                          class="untimed-activity__check"
+                          aria-label="دفعات باقی‌مانده استراحت کوتاه"
+                        ></button>
+                      </div>
+                    </article>
+                  </div>
+                </div>
+              </section>
+            </section>
+
+            <section class="dashboard__sessions">
+              <section class="recent-activities">
+                <!-- Header -->
+
+                <header class="recent-activities__header">
+                  <h2 class="recent-activities__title">فعالیت‌های اخیر</h2>
+                </header>
+
+                <!-- Sessions -->
+
+                <div class="recent-activities__content">
+                  <div class="recent-activities__list">
+                    <!-- Activity Session -->
+
+                    <article
+                      class="recent-activity"
+                      data-activity-id="1"
+                      data-session-id="101"
+                      style="--activity-color: #4f9ea5"
+                    >
+                      <div class="recent-activity__main">
+                        <h3 class="recent-activity__title">برنامه‌نویسی</h3>
+
+                        <div class="recent-activity__time">
+                          <span class="recent-activity__start"> 10:30 </span>
+
+                          <span class="recent-activity__separator"> ← </span>
+
+                          <span class="recent-activity__end"> 12:15 </span>
+                        </div>
+
+                        <span class="recent-activity__duration">
+                          1 ساعت و 45 دقیقه
+                        </span>
+                      </div>
+
+                      <button
+                        type="button"
+                        class="recent-activity__note"
+                        aria-label="افزودن یادداشت"
+                        title="افزودن یادداشت"
+                      >
+                        +
+                      </button>
+                    </article>
+
+                    <!-- Activity Session With Note -->
+
+                    <article
+                      class="recent-activity"
+                      data-activity-id="2"
+                      data-session-id="102"
+                      style="--activity-color: #e0a458"
+                    >
+                      <div class="recent-activity__main">
+                        <h3 class="recent-activity__title">مطالعه</h3>
+
+                        <div class="recent-activity__time">
+                          <span class="recent-activity__start"> 14:00 </span>
+
+                          <span class="recent-activity__separator"> ← </span>
+
+                          <span class="recent-activity__end"> 15:20 </span>
+                        </div>
+
+                        <span class="recent-activity__duration">
+                          1 ساعت و 20 دقیقه
+                        </span>
+                      </div>
+
+                      <button
+                        type="button"
+                        class="recent-activity__note recent-activity__note--has-note"
+                        aria-label="مشاهده یادداشت"
+                        title="مشاهده یادداشت"
+                      >
+                        📖
+                      </button>
+                    </article>
+
+                    <!-- Activity Session -->
+
+                    <article
+                      class="recent-activity"
+                      data-activity-id="3"
+                      data-session-id="103"
+                      style="--activity-color: #d96b6b"
+                    >
+                      <div class="recent-activity__main">
+                        <h3 class="recent-activity__title">زبان انگلیسی</h3>
+
+                        <div class="recent-activity__time">
+                          <span class="recent-activity__start"> 17:10 </span>
+
+                          <span class="recent-activity__separator"> ← </span>
+
+                          <span class="recent-activity__end"> 18:00 </span>
+                        </div>
+
+                        <span class="recent-activity__duration">
+                          50 دقیقه
+                        </span>
+                      </div>
+
+                      <button
+                        type="button"
+                        class="recent-activity__note"
+                        aria-label="افزودن یادداشت"
+                        title="افزودن یادداشت"
+                      >
+                        +
+                      </button>
+                    </article>
+                  </div>
+                </div>
+              </section>
+            </section>
+
+            <section class="dashboard__notes">
+              <section class="daily-notes">
+                <!-- Header -->
+
+                <header class="daily-notes__header">
+                  <h2 class="daily-notes__title">دفترچه امروز</h2>
+                </header>
+
+                <!-- Notebook -->
+
+                <div class="daily-notes__content">
+                  <button
+                    type="button"
+                    class="daily-notebook"
+                    data-note-exists="false"
+                    aria-label="باز کردن دفترچه یادداشت امروز"
+                  >
+                    <!-- Notebook Cover -->
+
+                    <div class="daily-notebook__cover">
+                      <div class="daily-notebook__spine"></div>
+
+                      <div class="daily-notebook__label">
+                        <span class="daily-notebook__icon"> 📖 </span>
+
+                        <span class="daily-notebook__name">
+                          یادداشت روزانه
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- Notebook Status -->
+
+                    <div class="daily-notebook__status">
+                      <span class="daily-notebook__message">
+                        هنوز یادداشتی ننوشته‌اید
+                      </span>
+                    </div>
+                  </button>
+
+                  <!-- Note Action -->
+
+                  <button
+                    type="button"
+                    class="daily-notes__action"
+                    data-note-exists="false"
+                    aria-label="افزودن یادداشت امروز"
+                    title="افزودن یادداشت"
+                  >
+                    +
+                  </button>
+                </div>
+              </section>
+            </section>
           </div>
+
+          <div class="dashboard__center">
+            <section class="dashboard__clock">ساعت</section>
+
+            <section class="dashboard__statistics">
+              <section class="statistics">
+                <!-- Header -->
+
+                <header class="statistics__header">
+                  <h2 class="statistics__title">آمار</h2>
+
+                  <a href="#" class="statistics__more"> گزارشات </a>
+                </header>
+
+                <!-- Period Selector -->
+
+                <div class="statistics__periods">
+                  <button
+                    type="button"
+                    class="statistics__period statistics__period--active"
+                    data-period="today"
+                  >
+                    امروز
+                  </button>
+
+                  <button
+                    type="button"
+                    class="statistics__period"
+                    data-period="week"
+                  >
+                    هفته گذشته
+                  </button>
+
+                  <button
+                    type="button"
+                    class="statistics__period"
+                    data-period="month"
+                  >
+                    ماه گذشته
+                  </button>
+                </div>
+
+                <!-- Statistics Content -->
+
+                <div class="statistics__content">
+                  <!-- Donut Chart -->
+
+                  <div class="statistics__chart">
+                    <div class="statistics__donut">
+                      <!--
+                    بعداً این قسمت توسط JavaScript
+                    و Chart.js ساخته می‌شود.
+                -->
+
+                      <div class="statistics__donut-center">
+                        <span class="statistics__donut-label"> زمان مفید </span>
+
+                        <strong class="statistics__donut-time" id="usefulTime">
+                          04:35
+                        </strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Activity Details -->
+
+                  <div class="statistics__details">
+                    <div class="statistics__details-header">
+                      <span> فعالیت‌ها </span>
+
+                      <span> سهم از زمان </span>
+                    </div>
+
+                    <div class="statistics__activities">
+                      <!-- Activity -->
+
+                      <div
+                        class="statistics__activity"
+                        data-activity-color="#4F9EA5"
+                        style="--activity-color: #4f9ea5"
+                      >
+                        <div class="statistics__activity-name">
+                          <span class="statistics__activity-color"></span>
+
+                          <span> برنامه‌نویسی </span>
+                        </div>
+
+                        <div class="statistics__activity-data">
+                          <span class="statistics__activity-duration">
+                            02:10
+                          </span>
+
+                          <span class="statistics__activity-percent">
+                            47%
+                          </span>
+                        </div>
+                      </div>
+
+                      <!-- Activity -->
+
+                      <div
+                        class="statistics__activity"
+                        data-activity-color="#7FB86A"
+                        style="--activity-color: #7fb86a"
+                      >
+                        <div class="statistics__activity-name">
+                          <span class="statistics__activity-color"></span>
+
+                          <span> مطالعه </span>
+                        </div>
+
+                        <div class="statistics__activity-data">
+                          <span class="statistics__activity-duration">
+                            01:25
+                          </span>
+
+                          <span class="statistics__activity-percent">
+                            31%
+                          </span>
+                        </div>
+                      </div>
+
+                      <!-- Activity -->
+
+                      <div
+                        class="statistics__activity"
+                        data-activity-color="#E6A23C"
+                        style="--activity-color: #e6a23c"
+                      >
+                        <div class="statistics__activity-name">
+                          <span class="statistics__activity-color"></span>
+
+                          <span> زبان </span>
+                        </div>
+
+                        <div class="statistics__activity-data">
+                          <span class="statistics__activity-duration">
+                            01:00
+                          </span>
+
+                          <span class="statistics__activity-percent">
+                            22%
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </section>
+          </div>
+
+          <!-- Calendar -->
+          <section class="dashboard__calendar">
+            <section class="calendar">
+              <!-- ========================================
+         Calendar Header
+    ========================================= -->
+
+              <header class="calendar__header">
+                <!-- Previous Month -->
+
+                <button
+                  type="button"
+                  class="calendar__navigation calendar__navigation--previous"
+                  aria-label="ماه قبل"
+                >
+                  ‹
+                </button>
+
+                <!-- Gregorian -->
+
+                <div class="calendar__gregorian">
+                  <span class="calendar__gregorian-month"> August </span>
+
+                  <span class="calendar__gregorian-year"> 2026 </span>
+                </div>
+
+                <!-- Persian Date -->
+
+                <div class="calendar__persian-date">
+                  <strong class="calendar__year"> ۱۴۰۵ </strong>
+
+                  <span class="calendar__month"> شهریور </span>
+                </div>
+
+                <!-- Islamic -->
+
+                <div class="calendar__islamic">
+                  <span class="calendar__islamic-month"> صفر </span>
+
+                  <span class="calendar__islamic-year"> 1448 </span>
+                </div>
+
+                <!-- Next Month -->
+
+                <button
+                  type="button"
+                  class="calendar__navigation calendar__navigation--next"
+                  aria-label="ماه بعد"
+                >
+                  ›
+                </button>
+              </header>
+
+              <!-- ================================
+             Calendar Days
+        ================================= -->
+
+              <div class="calendar__days-wrapper">
+                <div class="calendar__days">
+                  <!-- ۱ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> یکشنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۸ </span>
+
+                        <span class="calendar__day-week-en"> Sun </span>
+
+                        <span class="calendar__day-gregorian"> 23 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">02:14</div>
+
+                    <div class="calendar__day-number">۱</div>
+                  </article>
+
+                  <!-- ۲ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> دوشنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۹ </span>
+
+                        <span class="calendar__day-week-en"> Mon </span>
+
+                        <span class="calendar__day-gregorian"> 24 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">03:42</div>
+
+                    <div class="calendar__day-number">۲</div>
+                  </article>
+
+                  <!-- ۳ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> سه‌شنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۱۰ </span>
+
+                        <span class="calendar__day-week-en"> Tue </span>
+
+                        <span class="calendar__day-gregorian"> 25 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">01:56</div>
+
+                    <div class="calendar__day-number">۳</div>
+                  </article>
+
+                  <!-- ۴ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> چهارشنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۱۱ </span>
+
+                        <span class="calendar__day-week-en"> Wed </span>
+
+                        <span class="calendar__day-gregorian"> 26 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">04:18</div>
+
+                    <div class="calendar__day-number">۴</div>
+                  </article>
+
+                  <!-- ۵ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> پنجشنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۱۲ </span>
+
+                        <span class="calendar__day-week-en"> Thu </span>
+
+                        <span class="calendar__day-gregorian"> 27 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">03:05</div>
+
+                    <div class="calendar__day-number">۵</div>
+                  </article>
+
+                  <!-- ۶ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> جمعه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۱۳ </span>
+
+                        <span class="calendar__day-week-en"> Fri </span>
+
+                        <span class="calendar__day-gregorian"> 28 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">00:48</div>
+
+                    <div class="calendar__day-number">۶</div>
+                  </article>
+
+                  <!-- ۷ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> شنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۱۴ </span>
+
+                        <span class="calendar__day-week-en"> Sat </span>
+
+                        <span class="calendar__day-gregorian"> 29 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">02:37</div>
+
+                    <div class="calendar__day-number">۷</div>
+                  </article>
+
+                  <!-- ۸ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> یکشنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۱۵ </span>
+
+                        <span class="calendar__day-week-en"> Sun </span>
+
+                        <span class="calendar__day-gregorian"> 30 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">03:26</div>
+
+                    <div class="calendar__day-number">۸</div>
+                  </article>
+
+                  <!-- ۹ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> دوشنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۱۶ </span>
+
+                        <span class="calendar__day-week-en"> Mon </span>
+
+                        <span class="calendar__day-gregorian"> 31 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">04:12</div>
+
+                    <div class="calendar__day-number">۹</div>
+                  </article>
+
+                  <!-- ۱۰ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> سه‌شنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۱۷ </span>
+
+                        <span class="calendar__day-week-en"> Tue </span>
+
+                        <span class="calendar__day-gregorian"> 1 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">03:38</div>
+
+                    <div class="calendar__day-number">۱۰</div>
+                  </article>
+
+                  <!-- ۱۱ شهریور -->
+
+                  <article class="calendar__day calendar__day--today">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> چهارشنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۱۸ </span>
+
+                        <span class="calendar__day-week-en"> Wed </span>
+
+                        <span class="calendar__day-gregorian"> 2 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">05:38</div>
+
+                    <div class="calendar__day-number">۱۱</div>
+                  </article>
+
+                  <!-- ۱۲ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> پنجشنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۱۹ </span>
+
+                        <span class="calendar__day-week-en"> Thu </span>
+
+                        <span class="calendar__day-gregorian"> 3 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">02:45</div>
+
+                    <div class="calendar__day-number">۱۲</div>
+                  </article>
+
+                  <!-- ۱۳ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> جمعه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۲۰ </span>
+
+                        <span class="calendar__day-week-en"> Fri </span>
+
+                        <span class="calendar__day-gregorian"> 4 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">01:32</div>
+
+                    <div class="calendar__day-number">۱۳</div>
+                  </article>
+
+                  <!-- ۱۴ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> شنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۲۱ </span>
+
+                        <span class="calendar__day-week-en"> Sat </span>
+
+                        <span class="calendar__day-gregorian"> 5 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">03:17</div>
+
+                    <div class="calendar__day-number">۱۴</div>
+                  </article>
+
+                  <!-- ۱۵ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> یکشنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۲۲ </span>
+
+                        <span class="calendar__day-week-en"> Sun </span>
+
+                        <span class="calendar__day-gregorian"> 6 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">04:26</div>
+
+                    <div class="calendar__day-number">۱۵</div>
+                  </article>
+
+                  <!-- ۱۶ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> دوشنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۲۳ </span>
+
+                        <span class="calendar__day-week-en"> Mon </span>
+
+                        <span class="calendar__day-gregorian"> 7 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">02:58</div>
+
+                    <div class="calendar__day-number">۱۶</div>
+                  </article>
+
+                  <!-- ۱۷ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> سه‌شنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۲۴ </span>
+
+                        <span class="calendar__day-week-en"> Tue </span>
+
+                        <span class="calendar__day-gregorian"> 8 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">03:41</div>
+
+                    <div class="calendar__day-number">۱۷</div>
+                  </article>
+
+                  <!-- ۱۸ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> چهارشنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۲۵ </span>
+
+                        <span class="calendar__day-week-en"> Wed </span>
+
+                        <span class="calendar__day-gregorian"> 9 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">01:46</div>
+
+                    <div class="calendar__day-number">۱۸</div>
+                  </article>
+
+                  <!-- ۱۹ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> پنجشنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۲۶ </span>
+
+                        <span class="calendar__day-week-en"> Thu </span>
+
+                        <span class="calendar__day-gregorian"> 10 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">03:12</div>
+
+                    <div class="calendar__day-number">۱۹</div>
+                  </article>
+
+                  <!-- ۲۰ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> جمعه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۲۷ </span>
+
+                        <span class="calendar__day-week-en"> Fri </span>
+
+                        <span class="calendar__day-gregorian"> 11 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">00:56</div>
+
+                    <div class="calendar__day-number">۲۰</div>
+                  </article>
+
+                  <!-- ۲۱ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> شنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۲۸ </span>
+
+                        <span class="calendar__day-week-en"> Sat </span>
+
+                        <span class="calendar__day-gregorian"> 12 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">02:33</div>
+
+                    <div class="calendar__day-number">۲۱</div>
+                  </article>
+
+                  <!-- ۲۲ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> یکشنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۲۹ </span>
+
+                        <span class="calendar__day-week-en"> Sun </span>
+
+                        <span class="calendar__day-gregorian"> 13 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">03:27</div>
+
+                    <div class="calendar__day-number">۲۲</div>
+                  </article>
+
+                  <!-- ۲۳ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> دوشنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۳۰ </span>
+
+                        <span class="calendar__day-week-en"> Mon </span>
+
+                        <span class="calendar__day-gregorian"> 14 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">04:01</div>
+
+                    <div class="calendar__day-number">۲۳</div>
+                  </article>
+
+                  <!-- ۲۴ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> سه‌شنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۱ </span>
+
+                        <span class="calendar__day-week-en"> Tue </span>
+
+                        <span class="calendar__day-gregorian"> 15 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">02:19</div>
+
+                    <div class="calendar__day-number">۲۴</div>
+                  </article>
+
+                  <!-- ۲۵ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> چهارشنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۲ </span>
+
+                        <span class="calendar__day-week-en"> Wed </span>
+
+                        <span class="calendar__day-gregorian"> 16 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">03:53</div>
+
+                    <div class="calendar__day-number">۲۵</div>
+                  </article>
+
+                  <!-- ۲۶ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> پنجشنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۳ </span>
+
+                        <span class="calendar__day-week-en"> Thu </span>
+
+                        <span class="calendar__day-gregorian"> 17 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">01:28</div>
+
+                    <div class="calendar__day-number">۲۶</div>
+                  </article>
+
+                  <!-- ۲۷ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> جمعه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۴ </span>
+
+                        <span class="calendar__day-week-en"> Fri </span>
+
+                        <span class="calendar__day-gregorian"> 18 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">00:42</div>
+
+                    <div class="calendar__day-number">۲۷</div>
+                  </article>
+
+                  <!-- ۲۸ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> شنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۵ </span>
+
+                        <span class="calendar__day-week-en"> Sat </span>
+
+                        <span class="calendar__day-gregorian"> 19 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">02:51</div>
+
+                    <div class="calendar__day-number">۲۸</div>
+                  </article>
+
+                  <!-- ۲۹ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> یکشنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۶ </span>
+
+                        <span class="calendar__day-week-en"> Sun </span>
+
+                        <span class="calendar__day-gregorian"> 20 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">03:36</div>
+
+                    <div class="calendar__day-number">۲۹</div>
+                  </article>
+
+                  <!-- ۳۰ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> دوشنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۷ </span>
+
+                        <span class="calendar__day-week-en"> Mon </span>
+
+                        <span class="calendar__day-gregorian"> 21 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">02:08</div>
+
+                    <div class="calendar__day-number">۳۰</div>
+                  </article>
+
+                  <!-- ۳۱ شهریور -->
+
+                  <article class="calendar__day">
+                    <div class="calendar__day-info">
+                      <span class="calendar__day-week"> سه‌شنبه </span>
+
+                      <div class="calendar__day-subinfo">
+                        <span class="calendar__day-islamic"> ۸ </span>
+
+                        <span class="calendar__day-week-en"> Tue </span>
+
+                        <span class="calendar__day-gregorian"> 22 </span>
+                      </div>
+                    </div>
+
+                    <div class="calendar__day-useful-time">03:14</div>
+
+                    <div class="calendar__day-number">۳۱</div>
+                  </article>
+                </div>
+              </div>
+            </section>
+          </section>
         </section>
       </div>
     </main>
