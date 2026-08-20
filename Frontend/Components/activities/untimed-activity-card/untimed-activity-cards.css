@@ -1,0 +1,474 @@
+/* ========================================
+   Untimed Activity Card
+======================================== */
+
+.untimed-activity-card {
+    position: relative;
+
+    width: 100%;
+    min-height: 120px;
+
+    display: flex;
+    align-items: stretch;
+
+    padding: 14px 15px 14px 16px;
+
+    background-color: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-sm);
+
+    overflow: hidden;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* ========================================
+   Hover
+======================================== */
+
+.untimed-activity-card:hover {
+    border-color: rgba(79, 158, 165, 0.25);
+
+    box-shadow: var(--shadow-md);
+
+    transform: translateY(-1px);
+}
+
+
+/* ========================================
+   Activity Color
+======================================== */
+
+.untimed-activity-card__color {
+    position: absolute;
+
+    top: 0;
+    right: 0;
+
+    width: 4px;
+    height: 100%;
+
+    background-color: #4f9ea5;
+
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+
+
+/* ========================================
+   Content
+======================================== */
+
+.untimed-activity-card__content {
+    min-width: 0;
+
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+
+    padding-right: 9px;
+}
+
+
+/* ========================================
+   Header
+======================================== */
+
+.untimed-activity-card__header {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+}
+
+
+.untimed-activity-card__title-wrapper {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+}
+
+
+/* ========================================
+   Title
+======================================== */
+
+.untimed-activity-card__title {
+    min-width: 0;
+
+    margin: 0;
+
+    overflow: hidden;
+
+    color: var(--color-text);
+
+    font-size: 13px;
+    font-weight: 650;
+
+    line-height: 1.5;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* ========================================
+   Type
+======================================== */
+
+.untimed-activity-card__type {
+    flex-shrink: 0;
+
+    padding: 2px 6px;
+
+    border-radius: 999px;
+
+    background-color: rgba(79, 158, 165, 0.08);
+
+    color: var(--color-primary);
+
+    font-size: 9px;
+    font-weight: 500;
+}
+
+
+/* ========================================
+   Information
+======================================== */
+
+.untimed-activity-card__info {
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    color: var(--color-text-secondary);
+
+    font-size: 10px;
+}
+
+
+/* ========================================
+   Checkboxes Container
+======================================== */
+
+.untimed-activity-card__checks {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    direction: rtl;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    padding: 2px 1px 5px;
+}
+
+
+/* Hide Scrollbar */
+
+.untimed-activity-card__checks {
+    scrollbar-width: none;
+}
+
+.untimed-activity-card__checks::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* ========================================
+   Checkbox
+======================================== */
+
+.untimed-activity-card__check {
+    flex: 0 0 auto;
+
+    position: relative;
+
+    display: flex;
+
+    cursor: pointer;
+}
+
+
+.untimed-activity-card__check input {
+    position: absolute;
+
+    width: 1px;
+    height: 1px;
+
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+
+/* ========================================
+   Checkbox Visual
+======================================== */
+
+.untimed-activity-card__checkbox {
+    width: 24px;
+    height: 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--color-border);
+    border-radius: 7px;
+
+    background-color: var(--color-background);
+
+    color: transparent;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+/* ========================================
+   Checkmark
+======================================== */
+
+.untimed-activity-card__checkmark {
+    font-size: 13px;
+    font-weight: 700;
+
+    transform: scale(0);
+
+    transition:
+        transform 0.2s ease;
+}
+
+
+/* ========================================
+   Checked
+======================================== */
+
+.untimed-activity-card__check input:checked
++ .untimed-activity-card__checkbox {
+
+    background-color: var(--color-primary);
+
+    border-color: var(--color-primary);
+
+    color: var(--color-surface);
+
+    box-shadow: 0 4px 10px rgba(79, 158, 165, 0.18);
+}
+
+
+.untimed-activity-card__check input:checked
++ .untimed-activity-card__checkbox
+.untimed-activity-card__checkmark {
+
+    transform: scale(1);
+}
+
+
+/* ========================================
+   Checkbox Hover
+======================================== */
+
+.untimed-activity-card__check:hover
+.untimed-activity-card__checkbox {
+
+    border-color: var(--color-primary);
+
+    transform: translateY(-1px);
+}
+
+
+/* ========================================
+   Actions
+======================================== */
+
+.untimed-activity-card__actions {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 5px;
+
+    margin-right: 12px;
+}
+
+
+/* ========================================
+   Action Buttons
+======================================== */
+
+.untimed-activity-card__action-button {
+    width: 29px;
+    height: 29px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+
+    background-color: transparent;
+
+    color: var(--color-text-secondary);
+
+    font-family: inherit;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.untimed-activity-card__action-icon {
+    font-size: 14px;
+
+    line-height: 1;
+}
+
+
+/* ========================================
+   Edit
+======================================== */
+
+.untimed-activity-card__edit:hover {
+    background-color: rgba(186, 206, 87, 0.432);
+
+    border-color: rgba(198, 230, 79, 0.522);
+
+    color: var(--color-primary);
+
+    transform: translateY(-1px);
+}
+
+
+/* ========================================
+   Archive
+======================================== */
+
+.untimed-activity-card__archive:hover {
+    background-color: rgba(161, 51, 51, 0.256);
+
+    border-color: rgba(176, 47, 47, 0.519);
+
+    color: var(--color-text);
+
+    transform: translateY(-1px);
+}
+
+
+/* ========================================
+   Focus
+======================================== */
+
+.untimed-activity-card__action-button:focus-visible,
+.untimed-activity-card__check input:focus-visible
++ .untimed-activity-card__checkbox {
+
+    outline: 2px solid var(--color-primary);
+
+    outline-offset: 2px;
+}
+
+
+/* ========================================
+   Archived State
+======================================== */
+
+.untimed-activity-card--archived {
+    opacity: 0.82;
+}
+
+
+.untimed-activity-card--archived
+.untimed-activity-card__color {
+    opacity: 0.55;
+}
+
+
+.untimed-activity-card--archived:hover {
+    opacity: 1;
+}
+
+
+/* ========================================
+   Restore
+======================================== */
+
+.untimed-activity-card__restore:hover {
+    background-color: rgba(79, 158, 165, 0.08);
+
+    border-color: rgba(79, 158, 165, 0.25);
+
+    color: var(--color-primary);
+
+    transform: translateY(-1px);
+}
+
+
+/* ========================================
+   Delete
+======================================== */
+
+.untimed-activity-card__delete:hover {
+    background-color: rgba(210, 70, 70, 0.08);
+
+    border-color: rgba(210, 70, 70, 0.25);
+
+    color: #c94b4b;
+
+    transform: translateY(-1px);
+}
+
+/* ========================================
+   Responsive
+======================================== */
+
+@media (max-width: 500px) {
+
+    .untimed-activity-card {
+        padding: 13px;
+    }
+
+    .untimed-activity-card__type {
+        display: none;
+    }
+
+    .untimed-activity-card__actions {
+        margin-right: 8px;
+    }
+
+    .untimed-activity-card__action-button {
+        width: 27px;
+        height: 27px;
+    }
+
+}

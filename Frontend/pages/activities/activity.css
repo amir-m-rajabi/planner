@@ -1,0 +1,332 @@
+/* ========================================
+   Activities Page
+======================================== */
+
+.activities-page {
+    width: 100%;
+}
+
+
+.activities-page__container {
+    width: min(100% - 64px, 1400px);
+
+    margin-inline: auto;
+
+    padding-block: 32px;
+}
+
+
+/* ========================================
+   Page Header
+======================================== */
+
+.activities-page__header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 24px;
+
+    margin-bottom: 28px;
+}
+
+
+.activities-page__heading {
+    min-width: 0;
+}
+
+
+.activities-page__title {
+    margin: 0;
+
+    color: var(--color-text);
+
+    font-size: 25px;
+    font-weight: 700;
+}
+
+
+.activities-page__description {
+    margin: 7px 0 0;
+
+    color: var(--color-text-secondary);
+
+    font-size: 12px;
+}
+
+
+.activities-page__filter {
+    flex-shrink: 0;
+}
+
+
+/* ========================================
+   Columns
+======================================== */
+
+.activities-page__columns {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 20px;
+
+    direction: rtl;
+}
+
+
+/* ========================================
+   Activity Column
+======================================== */
+
+.activity-column {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    background-color: var(--color-background);
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-sm);
+
+    overflow: hidden;
+}
+
+
+/* ========================================
+   Column Header
+======================================== */
+
+.activity-column__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    padding: 18px 20px;
+
+    background-color: var(--color-surface);
+
+    border-bottom: 1px solid var(--color-border);
+}
+
+
+.activity-column__heading {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+}
+
+
+.activity-column__title {
+    margin: 0;
+
+    color: var(--color-text);
+
+    font-size: 14px;
+    font-weight: 650;
+}
+
+
+.activity-column__count {
+    min-width: 21px;
+    height: 21px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding-inline: 5px;
+
+    border-radius: 999px;
+
+    background-color: rgba(79, 158, 165, 0.08);
+
+    color: var(--color-primary);
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+
+/* ========================================
+   Add Button
+======================================== */
+
+.activity-column__add {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 8px 11px;
+
+    border: 1px solid rgba(79, 158, 165, 0.2);
+    border-radius: 9px;
+
+    background-color: rgba(79, 158, 165, 0.06);
+
+    color: var(--color-primary);
+
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.activity-column__add-icon {
+    font-size: 16px;
+
+    line-height: 1;
+}
+
+
+.activity-column__add:hover {
+    background-color: var(--color-primary);
+
+    border-color: var(--color-primary);
+
+    color: var(--color-surface);
+
+    transform: translateY(-1px);
+}
+
+
+/* ========================================
+   Activity List
+======================================== */
+
+.activity-column__list {
+    min-height: 420px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 12px;
+
+    padding: 16px;
+
+    overflow-y: auto;
+}
+
+
+/* Hide Scrollbar */
+
+.activity-column__list {
+    scrollbar-width: none;
+}
+
+.activity-column__list::-webkit-scrollbar {
+    display: none;
+}
+
+/* ========================================
+   Archived State
+======================================== */
+
+.activity-card--archived {
+    opacity: 0.82;
+}
+
+
+.activity-card--archived .activity-card__color {
+    opacity: 0.55;
+}
+
+
+.activity-card--archived:hover {
+    opacity: 1;
+}
+
+
+/* ========================================
+   Restore
+======================================== */
+
+.activity-card__restore:hover {
+    background-color: rgba(79, 158, 165, 0.08);
+
+    border-color: rgba(79, 158, 165, 0.25);
+
+    color: var(--color-primary);
+
+    transform: translateY(-1px);
+}
+
+
+/* ========================================
+   Delete
+======================================== */
+
+.activity-card__delete:hover {
+    background-color: rgba(210, 70, 70, 0.08);
+
+    border-color: rgba(210, 70, 70, 0.25);
+
+    color: #c94b4b;
+
+    transform: translateY(-1px);
+}
+
+
+/* ========================================
+   Responsive
+======================================== */
+
+@media (max-width: 850px) {
+
+    .activities-page__header {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .activities-page__columns {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .activities-page__container {
+        width: min(100% - 32px, 1400px);
+
+        padding-block: 20px;
+    }
+
+
+    .activities-page__title {
+        font-size: 21px;
+    }
+
+
+    .activity-column__header {
+        padding: 15px;
+    }
+
+
+    .activity-column__list {
+        padding: 12px;
+    }
+
+}

@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/Frontend/css/main.css" />
+    <title>Activities</title>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header__container">
+        <!-- Logo -->
+        <a href="#" class="logo">
+          <img
+            src="/Frontend/assets/images/Logo.png"
+            alt="Planner"
+            class="logo__image"
+          />
+        </a>
+
+        <!-- Navigation -->
+        <nav class="navigation" aria-label="منوی اصلی">
+          <ul class="navigation__list">
+            <li class="navigation__item">
+              <a href="#" class="navigation__link"> داشبورد </a>
+            </li>
+
+            <li class="navigation__item">
+              <a href="#" class="navigation__link navigation__link--active">
+                فعالیت‌ها
+              </a>
+            </li>
+
+            <li class="navigation__item">
+              <a href="#" class="navigation__link"> گزارشات </a>
+            </li>
+
+            <li class="navigation__item">
+              <a href="#" class="navigation__link"> تقویم </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Profile -->
+        <a href="#" class="profile">
+          <img
+            src="/Frontend/assets/images/Profile.jpg"
+            alt="پروفایل کاربر"
+            class="profile__image"
+          />
+        </a>
+      </div>
+
+      <!-- <div class="auth-actions">
+        <a href="#" class="auth-actions__login"> ورود </a>
+
+        <a href="#" class="auth-actions__register"> ثبت‌نام </a>
+      </div> -->
+    </header>
+
+    <main class="activities-page">
+      <div class="activities-page__container">
+        <!-- Page Header -->
+        <header class="activities-page__header">
+          <div class="activities-page__heading">
+            <h1 class="activities-page__title">فعالیت‌ها</h1>
+
+            <p class="activities-page__description">
+              فعالیت‌های روزانه خود را مدیریت و پیگیری کنید.
+            </p>
+          </div>
+
+          <!-- Status Filter -->
+          <div class="activities-page__filter">
+            <!--
+                    activity-status-filter.html
+                    اینجا قرار می‌گیرد
+                -->
+            <div
+              class="activity-status-filter"
+              role="tablist"
+              aria-label="وضعیت فعالیت‌ها"
+            >
+              <button
+                class="activity-status-filter__item activity-status-filter__item--active"
+                type="button"
+                role="tab"
+                aria-selected="true"
+                data-status="active"
+              >
+                <span class="activity-status-filter__indicator"></span>
+
+                <span class="activity-status-filter__label">
+                  فعالیت‌های فعال
+                </span>
+
+                <span class="activity-status-filter__count"> 6 </span>
+              </button>
+
+              <button
+                class="activity-status-filter__item"
+                type="button"
+                role="tab"
+                aria-selected="false"
+                data-status="archived"
+              >
+                <span class="activity-status-filter__indicator"></span>
+
+                <span class="activity-status-filter__label"> آرشیو شده </span>
+
+                <span class="activity-status-filter__count"> 3 </span>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- Activities Columns -->
+        <section class="activities-page__columns">
+          <!-- Timed Activities -->
+          <section class="activity-column activity-column--timed">
+            <header class="activity-column__header">
+              <div class="activity-column__heading">
+                <h2 class="activity-column__title">فعالیت‌های زمان‌دار</h2>
+
+                <span class="activity-column__count"> 3 </span>
+              </div>
+
+              <button
+                class="activity-column__add"
+                type="button"
+                data-action="create-timed"
+              >
+                <span class="activity-column__add-icon" aria-hidden="true">
+                  +
+                </span>
+
+                <span> فعالیت جدید </span>
+              </button>
+            </header>
+
+            <div class="activity-column__list">
+              <!-- Timed Activity Cards -->
+            </div>
+          </section>
+
+          <!-- Untimed Activities -->
+          <section class="activity-column activity-column--untimed">
+            <header class="activity-column__header">
+              <div class="activity-column__heading">
+                <h2 class="activity-column__title">فعالیت‌های بدون زمان</h2>
+
+                <span class="activity-column__count"> 3 </span>
+              </div>
+
+              <button
+                class="activity-column__add"
+                type="button"
+                data-action="create-untimed"
+              >
+                <span class="activity-column__add-icon" aria-hidden="true">
+                  +
+                </span>
+
+                <span> فعالیت جدید </span>
+              </button>
+            </header>
+
+            <div class="activity-column__list">
+              <!-- Untimed Activity Cards -->
+            </div>
+          </section>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

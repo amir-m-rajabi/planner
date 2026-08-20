@@ -1,0 +1,125 @@
+<!-- ========================================
+     Activity Form
+======================================== -->
+
+<section
+  class="activity-form"
+  data-activity-type="timed"
+  aria-labelledby="activity-form-title"
+>
+  <div class="activity-form__container">
+    <!-- Header -->
+    <header class="activity-form__header">
+      <div class="activity-form__heading">
+        <span class="activity-form__eyebrow"> فعالیت‌ها </span>
+
+        <h2 class="activity-form__title" id="activity-form-title">
+          ایجاد فعالیت زمان‌دار
+        </h2>
+
+        <p class="activity-form__description">
+          فعالیت خود را ایجاد کنید تا بتوانید زمان انجام آن را ثبت و پیگیری
+          کنید.
+        </p>
+      </div>
+
+      <button
+        class="activity-form__close"
+        type="button"
+        aria-label="بستن"
+        data-action="close-form"
+      >
+        ×
+      </button>
+    </header>
+
+    <!-- Form -->
+    <form class="activity-form__form" id="activity-form">
+      <!-- Basic Information -->
+      <fieldset class="activity-form__section">
+        <legend class="activity-form__section-title">اطلاعات فعالیت</legend>
+
+        <!-- Title -->
+        <div class="activity-form__field">
+          <label class="activity-form__label" for="activity-title">
+            عنوان فعالیت
+          </label>
+
+          <input
+            class="activity-form__input"
+            id="activity-title"
+            name="title"
+            type="text"
+            placeholder="مثلاً مطالعه ریاضی"
+            maxlength="100"
+            required
+          />
+        </div>
+
+        <!-- Timed: Color -->
+        <div
+          class="activity-form__field activity-form__field--timed"
+          data-field="timed-color"
+        >
+          <label class="activity-form__label" for="activity-color">
+            رنگ فعالیت
+          </label>
+
+          <div class="activity-form__color-picker">
+            <input
+              class="activity-form__color-input"
+              id="activity-color"
+              name="color"
+              type="color"
+              value="#4f9ea5"
+            />
+
+            <span class="activity-form__color-preview"> رنگ فعالیت </span>
+          </div>
+        </div>
+
+        <!-- Untimed: Target -->
+        <div
+          class="activity-form__field activity-form__field--untimed"
+          data-field="untimed-target"
+          hidden
+        >
+          <label class="activity-form__label" for="activity-target">
+            هدف فعالیت
+          </label>
+
+          <div class="activity-form__target">
+            <input
+              class="activity-form__input"
+              id="activity-target"
+              name="target"
+              type="number"
+              min="1"
+              max="100"
+              placeholder="مثلاً ۵"
+            />
+
+            <span class="activity-form__target-unit"> بار </span>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Actions -->
+      <footer class="activity-form__actions">
+        <button
+          class="activity-form__cancel"
+          type="button"
+          data-action="cancel"
+        >
+          انصراف
+        </button>
+
+        <button class="activity-form__submit" type="submit">
+          <span class="activity-form__submit-icon" aria-hidden="true"> + </span>
+
+          <span> ایجاد فعالیت </span>
+        </button>
+      </footer>
+    </form>
+  </div>
+</section>
