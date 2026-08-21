@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/Frontend/css/main.css" />
+    <link rel="stylesheet" href="/Frontend/pages/login_register/auth.css" />
+    <title>Login | Register</title>
+  </head>
+  <body>
+    <main class="auth-page">
+      <!-- Brand Side -->
+      <section class="auth-brand">
+        <div class="auth-brand__content">
+          <div class="auth-brand__logo">Planner</div>
+
+          <h1 class="auth-brand__title">زمانت را بهتر مدیریت کن.</h1>
+
+          <p class="auth-brand__description">
+            فعالیت‌ها، زمان و برنامه روزانه‌ات را در یک فضای ساده و منظم مدیریت
+            کن.
+          </p>
+
+          <!-- Decorative Clock -->
+          <div class="auth-brand__clock">
+            <div class="auth-clock__numbers">
+              <span>00</span>
+              <span>06</span>
+              <span>12</span>
+              <span>18</span>
+            </div>
+
+            <div class="auth-clock__center"></div>
+
+            <div class="auth-clock__hand auth-clock__hand--hour"></div>
+            <div class="auth-clock__hand auth-clock__hand--minute"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Auth Form Side -->
+      <section class="auth-panel">
+        <div class="auth-card">
+          <!-- Header -->
+          <div class="auth-card__header">
+            <h2 class="auth-card__title">خوش آمدی 👋</h2>
+
+            <p class="auth-card__subtitle">وارد حساب Planner خودت شو.</p>
+          </div>
+
+          <!-- Mode Switch -->
+          <div class="auth-switch">
+            <button
+              type="button"
+              class="auth-switch__button auth-switch__button--active"
+              data-auth-mode="login"
+            >
+              ورود
+            </button>
+
+            <button
+              type="button"
+              class="auth-switch__button"
+              data-auth-mode="register"
+            >
+              ثبت‌نام
+            </button>
+          </div>
+
+          <!-- =========================
+           Login Form
+      ========================== -->
+
+          <form class="auth-form auth-form--login" id="login-form">
+            <div class="auth-field">
+              <label for="login-email"> ایمیل </label>
+
+              <input
+                type="email"
+                id="login-email"
+                name="email"
+                placeholder="example@email.com"
+                autocomplete="email"
+                required
+              />
+            </div>
+
+            <div class="auth-field">
+              <div class="auth-field__label-row">
+                <label for="login-password"> رمز عبور </label>
+
+                <button type="button" class="auth-field__forgot">
+                  فراموشی رمز؟
+                </button>
+              </div>
+
+              <input
+                type="password"
+                id="login-password"
+                name="password"
+                placeholder="رمز عبور خود را وارد کنید"
+                autocomplete="current-password"
+                required
+              />
+            </div>
+
+            <button type="submit" class="auth-submit">ورود به Planner</button>
+          </form>
+
+          <!-- =========================
+           Register Form
+      ========================== -->
+          <!-- 
+      <form
+        class="auth-form auth-form--register"
+        id="register-form"
+        hidden
+      >
+
+        <div class="auth-form__row">
+
+          <div class="auth-field">
+
+            <label for="register-first-name">
+              نام
+            </label>
+
+            <input
+              type="text"
+              id="register-first-name"
+              name="firstName"
+              placeholder="نام"
+              autocomplete="given-name"
+              required
+            >
+
+          </div>
+
+
+          <div class="auth-field">
+
+            <label for="register-last-name">
+              نام خانوادگی
+            </label>
+
+            <input
+              type="text"
+              id="register-last-name"
+              name="lastName"
+              placeholder="نام خانوادگی"
+              autocomplete="family-name"
+              required
+            >
+
+          </div>
+
+        </div>
+
+
+        <div class="auth-field">
+
+          <label for="register-email">
+            ایمیل
+          </label>
+
+          <input
+            type="email"
+            id="register-email"
+            name="email"
+            placeholder="example@email.com"
+            autocomplete="email"
+            required
+          >
+
+        </div>
+
+
+        <div class="auth-form__row">
+
+          <div class="auth-field">
+
+            <label for="register-province">
+              استان
+            </label>
+
+            <select
+              id="register-province"
+              name="province"
+              required
+            >
+              <option value="">
+                انتخاب استان
+              </option>
+
+              <option value="alborz">البرز</option>
+              <option value="ardabil">اردبیل</option>
+              <option value="azarbaijan-east">
+                آذربایجان شرقی
+              </option>
+              <option value="azarbaijan-west">
+                آذربایجان غربی
+              </option>
+              <option value="bushehr">بوشهر</option>
+              <option value="tehran">تهران</option>
+              <option value="chaharmahal">
+                چهارمحال و بختیاری
+              </option>
+              <option value="south-khorasan">
+                خراسان جنوبی
+              </option>
+              <option value="razavi-khorasan">
+                خراسان رضوی
+              </option>
+              <option value="north-khorasan">
+                خراسان شمالی
+              </option>
+              <option value="khuzestan">خوزستان</option>
+              <option value="zanjan">زنجان</option>
+              <option value="semnan">سمنان</option>
+              <option value="sistan-baluchestan">
+                سیستان و بلوچستان
+              </option>
+              <option value="fars">فارس</option>
+              <option value="qazvin">قزوین</option>
+              <option value="qom">قم</option>
+              <option value="kurdistan">کردستان</option>
+              <option value="kerman">کرمان</option>
+              <option value="kermanshah">کرمانشاه</option>
+              <option value="golestan">گلستان</option>
+              <option value="gilan">گیلان</option>
+              <option value="lorestan">لرستان</option>
+              <option value="mazandaran">مازندران</option>
+              <option value="markazi">مرکزی</option>
+              <option value="hormozgan">هرمزگان</option>
+              <option value="hamedan">همدان</option>
+              <option value="yazd">یزد</option>
+            </select>
+
+          </div>
+
+
+          <div class="auth-field">
+
+            <label for="register-city">
+              شهر
+            </label>
+
+            <select
+              id="register-city"
+              name="city"
+              required
+              disabled
+            >
+              <option value="">
+                ابتدا استان را انتخاب کنید
+              </option>
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <div class="auth-field">
+
+          <label for="register-password">
+            رمز عبور
+          </label>
+
+          <input
+            type="password"
+            id="register-password"
+            name="password"
+            placeholder="حداقل ۸ کاراکتر"
+            autocomplete="new-password"
+            required
+          >
+
+        </div>
+
+
+        <div class="auth-field">
+
+          <label for="register-password-confirm">
+            تکرار رمز عبور
+          </label>
+
+          <input
+            type="password"
+            id="register-password-confirm"
+            name="passwordConfirm"
+            placeholder="رمز عبور را دوباره وارد کنید"
+            autocomplete="new-password"
+            required
+          >
+
+        </div>
+
+
+        <label class="auth-checkbox">
+
+          <input
+            type="checkbox"
+            name="terms"
+            required
+          >
+
+          <span>
+            قوانین و شرایط استفاده را می‌پذیرم.
+          </span>
+
+        </label>
+
+
+        <button
+          type="submit"
+          class="auth-submit"
+        >
+          ساخت حساب
+        </button>
+
+      </form> -->
+
+          <!-- Footer -->
+          <p class="auth-card__footer">
+            با استفاده از Planner، مدیریت زمانت را ساده‌تر کن.
+          </p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
