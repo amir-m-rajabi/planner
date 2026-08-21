@@ -12,9 +12,16 @@
     display: flex;
     flex-direction: column;
 
-    padding: 20px;
-
     overflow: hidden;
+
+    box-sizing: border-box;
+
+    background-color: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-sm);
 }
 
 
@@ -23,21 +30,90 @@
 ======================================== */
 
 .recent-activities__header {
+    width: 100%;
+
+    flex: 0 0 auto;
+
+    box-sizing: border-box;
+
     display: flex;
     align-items: center;
+    justify-content: space-between;
 
-    flex-shrink: 0;
+    gap: 12px;
 
-    margin-bottom: 16px;
+    padding: 14px 16px;
+
+    border-bottom: 1px solid var(--color-border);
 }
+
+
+.recent-activities__heading {
+    min-width: 0;
+}
+
+
+.recent-activities__eyebrow {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: var(--color-primary);
+
+    font-size: 9px;
+    font-weight: 600;
+}
+
 
 .recent-activities__title {
     margin: 0;
 
     color: var(--color-text);
 
-    font-size: 17px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+/* ========================================
+   View All
+======================================== */
+
+.recent-activities__view-all {
+    flex-shrink: 0;
+
+    display: inline-flex;
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 6px 9px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+
+    background-color: transparent;
+
+    color: var(--color-text-secondary);
+
+    font-family: inherit;
+    font-size: 9px;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.recent-activities__view-all:hover {
+    color: var(--color-primary);
+
+    border-color: rgba(79, 158, 165, 0.25);
+
+    background-color: rgba(79, 158, 165, 0.05);
 }
 
 
@@ -46,37 +122,39 @@
 ======================================== */
 
 .recent-activities__content {
+    width: 100%;
+
+    flex: 1 1 auto;
+
     min-width: 0;
     min-height: 0;
-
-    flex: 1;
 
     overflow: hidden;
 }
 
 
-/* ========================================
-   List
-======================================== */
-
 .recent-activities__list {
     width: 100%;
     height: 100%;
 
+    min-width: 0;
+    min-height: 0;
+
+    box-sizing: border-box;
+
     display: flex;
     flex-direction: column;
 
-    gap: 10px;
+    gap: 8px;
 
-    padding: 2px 2px 10px;
+    padding: 10px 12px;
 
     overflow-y: auto;
     overflow-x: hidden;
 
-    /* Hide scrollbar */
-
     scrollbar-width: none;
 }
+
 
 .recent-activities__list::-webkit-scrollbar {
     display: none;
@@ -84,81 +162,71 @@
 
 
 /* ========================================
-   Activity Card
+   Session Card
 ======================================== */
 
 .recent-activity {
-    width: 100%;
-    min-height: 66px;
-
-    display: flex;
-    align-items: center;
-
     position: relative;
 
-    flex-shrink: 0;
+    width: 100%;
 
-    padding: 11px 12px 11px 14px;
+    min-width: 0;
 
-    background-color: color-mix(
-        in srgb,
-        var(--activity-color) 13%,
-        white
-    );
+    flex: 0 0 auto;
 
-    border: 1px solid color-mix(
-        in srgb,
-        var(--activity-color) 30%,
-        var(--color-border)
-    );
+    box-sizing: border-box;
 
-    border-radius: 11px;
+    display: flex;
+    align-items: stretch;
+
+    gap: 10px;
+
+    padding: 11px 10px 11px 8px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+
+    background-color: var(--color-background);
 
     overflow: hidden;
 
     transition:
-        transform 180ms ease,
-        box-shadow 180ms ease,
-        background-color 180ms ease;
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
 }
+
 
 .recent-activity:hover {
-    transform: translateY(-1px);
-
-    background-color: color-mix(
+    border-color: color-mix(
         in srgb,
-        var(--activity-color) 17%,
-        white
+        var(--activity-color) 35%,
+        var(--color-border)
     );
 
-    box-shadow:
-        0 5px 14px rgba(24, 52, 61, 0.08);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+
+    transform: translateY(-1px);
 }
 
 
-/* ========================================
-   Activity Color Indicator
-======================================== */
+/* Activity Color */
 
-.recent-activity::before {
-    content: "";
+.recent-activity__color {
+    width: 4px;
 
-    width: 6px;
-    height: calc(100% - 14px);
+    flex-shrink: 0;
 
-    position: absolute;
+    align-self: stretch;
 
-    right: 0;
-    top: 7px;
+    border-radius: 4px;
 
     background-color: var(--activity-color);
-
-    border-radius: 5px 0 0 5px;
 }
 
 
 /* ========================================
-   Main Information
+   Main
 ======================================== */
 
 .recent-activity__main {
@@ -166,88 +234,399 @@
 
     flex: 1;
 
-    display: grid;
-
-    grid-template-columns: minmax(80px, 1fr) auto;
-
-    grid-template-rows: auto auto;
-
-    column-gap: 12px;
-    row-gap: 5px;
-
+    display: flex;
     align-items: center;
 
-    padding-inline: 4px 8px;
+    gap: 12px;
 }
 
 
-/* ========================================
-   Activity Title
-======================================== */
-
-.recent-activity__title {
+.recent-activity__info {
     min-width: 0;
 
-    margin: 0;
+    flex: 1;
+}
+
+
+.recent-activity__title {
+    margin: 0 0 5px;
 
     overflow: hidden;
 
     color: var(--color-text);
 
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 650;
 
     white-space: nowrap;
     text-overflow: ellipsis;
 }
 
 
-/* ========================================
-   Time
-======================================== */
-
 .recent-activity__time {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
 
     gap: 5px;
 
     color: var(--color-text-secondary);
 
-    font-size: 11px;
-    font-weight: 500;
-
-    white-space: nowrap;
+    font-size: 9px;
 }
+
 
 .recent-activity__separator {
-    color: var(--activity-color);
+    opacity: 0.55;
 
-    font-size: 12px;
-    font-weight: 700;
+    font-size: 8px;
 }
 
 
-/* ========================================
-   Duration
-======================================== */
-
 .recent-activity__duration {
-    grid-column: 1 / -1;
+    flex-shrink: 0;
 
     color: var(--color-text-secondary);
 
-    font-size: 11px;
-    font-weight: 400;
+    font-size: 9px;
 }
 
 
 /* ========================================
-   Note Button
+   Session Actions
+======================================== */
+
+.recent-activity__actions {
+    display: flex;
+    align-items: center;
+
+    gap: 4px;
+}
+
+
+.recent-activity__action {
+    width: 27px;
+    height: 27px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid var(--color-border);
+    border-radius: 7px;
+
+    background-color: transparent;
+
+    color: var(--color-text-secondary);
+
+    font-family: inherit;
+    font-size: 11px;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.recent-activity__edit:hover {
+    color: var(--color-primary);
+
+    border-color: rgba(79, 158, 165, 0.25);
+
+    background-color: rgba(79, 158, 165, 0.06);
+
+    transform: translateY(-1px);
+}
+
+
+.recent-activity__delete:hover {
+    color: #c94b4b;
+
+    border-color: rgba(210, 70, 70, 0.2);
+
+    background-color: rgba(210, 70, 70, 0.06);
+
+    transform: translateY(-1px);
+}
+
+
+/* ========================================
+   Note
 ======================================== */
 
 .recent-activity__note {
+    width: 31px;
+    height: 31px;
+
+    flex-shrink: 0;
+
+    align-self: center;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+
+    background-color: var(--color-surface);
+
+    color: var(--color-text-secondary);
+
+    font-family: inherit;
+    font-size: 14px;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.recent-activity__note:hover {
+    color: var(--activity-color);
+
+    border-color: color-mix(
+        in srgb,
+        var(--activity-color) 30%,
+        var(--color-border)
+    );
+
+    background-color: color-mix(
+        in srgb,
+        var(--activity-color) 7%,
+        var(--color-surface)
+    );
+
+    transform: translateY(-1px);
+}
+
+
+.recent-activity__note--has-note {
+    color: var(--activity-color);
+
+    border-color: color-mix(
+        in srgb,
+        var(--activity-color) 25%,
+        var(--color-border)
+    );
+
+    background-color: color-mix(
+        in srgb,
+        var(--activity-color) 6%,
+        var(--color-surface)
+    );
+}
+
+
+/* ========================================
+   Add Session
+======================================== */
+
+.recent-activities__add {
+    width: calc(100% - 24px);
+    height: 36px;
+
+    flex: 0 0 36px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    margin: 0 12px 12px;
+
+    border: 1px dashed var(--color-border);
+    border-radius: 9px;
+
+    background-color: transparent;
+
+    color: var(--color-text-secondary);
+
+    font-family: inherit;
+    font-size: 10px;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.recent-activities__add:hover {
+    color: var(--color-primary);
+
+    border-color: rgba(79, 158, 165, 0.4);
+
+    background-color: rgba(79, 158, 165, 0.04);
+}
+
+
+.recent-activities__add-icon {
+    font-size: 16px;
+
+    line-height: 1;
+}
+
+
+
+/* =========================================
+   Sessions Modal
+========================================= */
+
+.sessions-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    box-sizing: border-box;
+
+    direction: rtl;
+}
+
+
+/* =========================================
+   Overlay
+========================================= */
+
+.sessions-modal__overlay {
+    position: absolute;
+    inset: 0;
+
+    background: rgba(20, 24, 28, 0.45);
+
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+
+/* =========================================
+   Modal Box
+========================================= */
+
+.sessions-modal__box {
+    position: relative;
+    z-index: 1;
+
+    width: min(650px, 100%);
+    max-height: calc(100vh - 40px);
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    box-sizing: border-box;
+
+    background: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+
+    box-shadow:
+        0 24px 70px rgba(0, 0, 0, 0.16);
+
+    animation: sessions-modal-show 0.22s ease-out;
+}
+
+
+@keyframes sessions-modal-show {
+
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* =========================================
+   Header
+========================================= */
+
+.sessions-modal__header {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 20px 22px 16px;
+
+    border-bottom: 1px solid var(--color-border);
+}
+
+
+.sessions-modal__header-info {
+    min-width: 0;
+}
+
+
+.sessions-modal__label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--color-primary);
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+
+.sessions-modal__title {
+    margin: 0 0 5px;
+
+    color: var(--color-text);
+
+    font-size: 19px;
+    font-weight: 750;
+}
+
+
+.sessions-modal__date {
+    display: block;
+
+    color: var(--color-text-secondary);
+
+    font-size: 10px;
+}
+
+
+/* =========================================
+   Close Button
+========================================= */
+
+.sessions-modal__close {
     width: 34px;
     height: 34px;
 
@@ -259,88 +638,1368 @@
 
     padding: 0;
 
-    border: 1px solid color-mix(
-        in srgb,
-        var(--activity-color) 35%,
-        var(--color-border)
-    );
-
+    border: 1px solid var(--color-border);
     border-radius: 9px;
 
-    color: var(--activity-color);
+    background: transparent;
 
-    background-color: rgba(255, 255, 255, 0.72);
+    color: var(--color-text-secondary);
 
     font-family: inherit;
-    font-size: 19px;
-    font-weight: 500;
+    font-size: 21px;
+    font-weight: 300;
 
     cursor: pointer;
 
     transition:
-        color 180ms ease,
-        background-color 180ms ease,
-        border-color 180ms ease,
-        transform 180ms ease,
-        box-shadow 180ms ease;
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
 }
 
 
-/* ========================================
-   Note Button Hover
-======================================== */
+.sessions-modal__close:hover {
+    color: var(--color-text);
 
-.recent-activity__note:hover {
-    color: #ffffff;
+    background: var(--color-background);
 
-    background-color: var(--activity-color);
+    transform: rotate(90deg);
+}
 
-    border-color: var(--activity-color);
 
-    transform: scale(1.06);
+/* =========================================
+   Summary
+========================================= */
+
+.sessions-modal__summary {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 18px;
+
+    padding: 13px 22px;
+
+    background: var(--color-background);
+
+    border-bottom: 1px solid var(--color-border);
+}
+
+
+.sessions-modal__summary-item {
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+
+.sessions-modal__summary-item span {
+    color: var(--color-text-secondary);
+
+    font-size: 9px;
+}
+
+
+.sessions-modal__summary-item strong {
+    color: var(--color-text);
+
+    font-size: 15px;
+    font-weight: 750;
+
+    direction: ltr;
+}
+
+
+.sessions-modal__summary-divider {
+    width: 1px;
+    height: 28px;
+
+    background: var(--color-border);
+}
+
+
+/* =========================================
+   Add Session
+========================================= */
+
+.sessions-modal__add {
+    margin-right: auto;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 8px 13px;
+
+    border: 1px solid rgba(79, 158, 165, 0.25);
+    border-radius: 9px;
+
+    background: rgba(79, 158, 165, 0.07);
+
+    color: var(--color-primary);
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.sessions-modal__add:hover {
+    background: rgba(79, 158, 165, 0.12);
+
+    border-color: rgba(79, 158, 165, 0.4);
+
+    transform: translateY(-1px);
+}
+
+
+.sessions-modal__add-icon {
+    font-size: 16px;
+    line-height: 1;
+}
+
+
+/* =========================================
+   Content
+========================================= */
+
+.sessions-modal__content {
+    min-width: 0;
+    min-height: 0;
+
+    flex: 1 1 auto;
+
+    overflow: hidden;
+}
+
+
+.sessions-modal__list {
+    max-height: 420px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+
+    padding: 14px 18px;
+
+    box-sizing: border-box;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    scrollbar-width: none;
+}
+
+
+.sessions-modal__list::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* =========================================
+   Session Item
+========================================= */
+
+.session-item {
+    position: relative;
+
+    min-width: 0;
+
+    flex: 0 0 auto;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 11px 10px 11px 8px;
+
+    box-sizing: border-box;
+
+    overflow: hidden;
+
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+
+    background: var(--color-surface);
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.session-item:hover {
+    border-color: color-mix(
+        in srgb,
+        var(--session-color) 35%,
+        var(--color-border)
+    );
 
     box-shadow:
-        0 4px 9px color-mix(
-            in srgb,
-            var(--activity-color) 25%,
-            transparent
-        );
+        0 5px 18px rgba(0, 0, 0, 0.04);
+
+    transform: translateY(-1px);
 }
 
 
-/* ========================================
-   Note Button Active
-======================================== */
+/* =========================================
+   Activity Color
+========================================= */
 
-.recent-activity__note:active {
-    transform: scale(0.94);
+.session-item__color {
+    width: 4px;
+    height: 38px;
+
+    flex-shrink: 0;
+
+    border-radius: 4px;
+
+    background: var(--session-color);
 }
 
 
-/* ========================================
-   Has Note
-======================================== */
+/* =========================================
+   Session Information
+========================================= */
 
-.recent-activity__note--has-note {
-    color: #ffffff;
+.session-item__info {
+    min-width: 0;
 
-    background-color: var(--activity-color);
+    flex: 1;
+}
 
-    border-color: var(--activity-color);
+
+.session-item__title {
+    margin: 0 0 5px;
+
+    overflow: hidden;
+
+    color: var(--color-text);
+
+    font-size: 12px;
+    font-weight: 700;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+.session-item__time {
+    display: block;
+
+    color: var(--color-text-secondary);
+
+    font-size: 9px;
+
+    direction: ltr;
+}
+
+
+/* =========================================
+   Duration
+========================================= */
+
+.session-item__duration {
+    flex-shrink: 0;
+
+    min-width: 42px;
+
+    color: var(--color-text-secondary);
+
+    font-size: 10px;
+    font-weight: 650;
+
+    text-align: center;
+
+    direction: ltr;
+}
+
+
+/* =========================================
+   Edit / Delete
+========================================= */
+
+.session-item__actions {
+    display: flex;
+    align-items: center;
+
+    gap: 4px;
+}
+
+
+.session-item__button {
+    width: 28px;
+    height: 28px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid var(--color-border);
+    border-radius: 7px;
+
+    background: transparent;
+
+    color: var(--color-text-secondary);
+
+    font-family: inherit;
+    font-size: 11px;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.session-item__button--edit:hover {
+    color: var(--color-primary);
+
+    border-color: rgba(79, 158, 165, 0.3);
+
+    background: rgba(79, 158, 165, 0.06);
+
+    transform: translateY(-1px);
+}
+
+
+.session-item__button--delete:hover {
+    color: #c94b4b;
+
+    border-color: rgba(201, 75, 75, 0.25);
+
+    background: rgba(201, 75, 75, 0.06);
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================
+   Note
+========================================= */
+
+.session-item__note {
+    width: 32px;
+    height: 32px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+
+    background: var(--color-background);
+
+    color: var(--color-text-secondary);
+
+    font-family: inherit;
+    font-size: 14px;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.session-item__note:hover {
+    color: var(--session-color);
+
+    border-color: color-mix(
+        in srgb,
+        var(--session-color) 30%,
+        var(--color-border)
+    );
+
+    background: color-mix(
+        in srgb,
+        var(--session-color) 7%,
+        var(--color-background)
+    );
+
+    transform: translateY(-1px);
+}
+
+
+.session-item__note--active {
+    color: var(--session-color);
+
+    border-color: color-mix(
+        in srgb,
+        var(--session-color) 30%,
+        var(--color-border)
+    );
+
+    background: color-mix(
+        in srgb,
+        var(--session-color) 7%,
+        var(--color-background)
+    );
+}
+
+
+/* =========================================
+   Footer
+========================================= */
+
+.sessions-modal__footer {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 11px 18px;
+
+    border-top: 1px solid var(--color-border);
+
+    background: var(--color-surface);
+}
+
+
+.sessions-modal__footer-text {
+    color: var(--color-text-secondary);
+
+    font-size: 9px;
+}
+
+
+.sessions-modal__footer-close {
+    padding: 7px 14px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: var(--color-text-secondary);
+
+    font-family: inherit;
+    font-size: 9px;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+
+
+.sessions-modal__footer-close:hover {
+    color: var(--color-text);
+
+    background: var(--color-background);
+}
+
+
+/* =========================================
+   Responsive
+========================================= */
+
+@media (max-width: 600px) {
+
+    .sessions-modal {
+        padding: 12px;
+    }
+
+
+    .sessions-modal__box {
+        max-height: calc(100vh - 24px);
+
+        border-radius: 16px;
+    }
+
+
+    .sessions-modal__header {
+        padding: 16px;
+    }
+
+
+    .sessions-modal__summary {
+        gap: 12px;
+
+        padding: 12px 16px;
+    }
+
+
+    .sessions-modal__list {
+        max-height: 380px;
+
+        padding: 12px;
+    }
+
+
+    .session-item__duration {
+        display: none;
+    }
+
+
+    .session-item__actions {
+        gap: 3px;
+    }
+
+
+    .session-item__button {
+        width: 27px;
+        height: 27px;
+    }
+
+
+    .sessions-modal__footer {
+        padding: 10px 14px;
+    }
+
+}
+
+
+@media (max-width: 430px) {
+
+    .sessions-modal__title {
+        font-size: 17px;
+    }
+
+
+    .sessions-modal__summary {
+        gap: 10px;
+    }
+
+
+    .sessions-modal__add {
+        padding: 7px 10px;
+    }
+
+
+    .session-item {
+        gap: 7px;
+
+        padding-right: 8px;
+    }
+
+
+    .session-item__note {
+        width: 29px;
+        height: 29px;
+    }
+
+}
+
+
+/* =========================================
+   Session Form Modal
+========================================= */
+
+.session-form-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    box-sizing: border-box;
+
+    direction: rtl;
+}
+
+
+/* =========================================
+   Overlay
+========================================= */
+
+.session-form-modal__overlay {
+    position: absolute;
+    inset: 0;
+
+    background: rgba(20, 24, 28, 0.45);
+
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+
+/* =========================================
+   Modal
+========================================= */
+
+.session-form-modal__box {
+    position: relative;
+    z-index: 1;
+
+    width: min(450px, 100%);
+
+    overflow: hidden;
+
+    box-sizing: border-box;
+
+    background: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+
+    box-shadow:
+        0 24px 70px rgba(0, 0, 0, 0.16);
+
+    animation: session-form-modal-show 0.22s ease-out;
+}
+
+
+@keyframes session-form-modal-show {
+
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* =========================================
+   Header
+========================================= */
+
+.session-form-modal__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 21px 22px 17px;
+
+    border-bottom: 1px solid var(--color-border);
+}
+
+
+.session-form-modal__header-info {
+    min-width: 0;
+}
+
+
+.session-form-modal__label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--color-primary);
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+
+.session-form-modal__title {
+    margin: 0 0 5px;
+
+    color: var(--color-text);
+
+    font-size: 19px;
+    font-weight: 750;
+}
+
+
+.session-form-modal__description {
+    margin: 0;
+
+    color: var(--color-text-secondary);
+
+    font-size: 10px;
+}
+
+
+/* =========================================
+   Close
+========================================= */
+
+.session-form-modal__close {
+    width: 34px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid var(--color-border);
+    border-radius: 9px;
+
+    background: transparent;
+
+    color: var(--color-text-secondary);
+
+    font-family: inherit;
+    font-size: 21px;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.session-form-modal__close:hover {
+    color: var(--color-text);
+
+    background: var(--color-background);
+
+    transform: rotate(90deg);
+}
+
+
+/* =========================================
+   Form
+========================================= */
+
+.session-form {
+    display: flex;
+    flex-direction: column;
+
+    gap: 18px;
+
+    padding: 22px;
+}
+
+
+/* =========================================
+   Field
+========================================= */
+
+.session-form__field {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+
+    flex: 1;
+}
+
+
+.session-form__label {
+    color: var(--color-text);
+
+    font-size: 10px;
+    font-weight: 650;
+}
+
+
+/* =========================================
+   Select
+========================================= */
+
+.session-form__select-wrapper {
+    position: relative;
+}
+
+
+.session-form__select {
+    width: 100%;
+    height: 43px;
+
+    padding: 0 13px 0 35px;
+
+    box-sizing: border-box;
+
+    appearance: none;
+    -webkit-appearance: none;
+
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+
+    outline: none;
+
+    background: var(--color-background);
+
+    color: var(--color-text);
+
+    font-family: inherit;
+    font-size: 11px;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.session-form__select:focus {
+    border-color: var(--color-primary);
+
+    box-shadow:
+        0 0 0 3px rgba(79, 158, 165, 0.1);
+}
+
+
+.session-form__select-arrow {
+    position: absolute;
+
+    top: 50%;
+    left: 13px;
+
+    transform: translateY(-55%);
+
+    pointer-events: none;
+
+    color: var(--color-text-secondary);
 
     font-size: 15px;
 }
 
-.recent-activity__note--has-note:hover {
-    background-color: color-mix(
-        in srgb,
-        var(--activity-color) 82%,
-        black
-    );
 
-    border-color: color-mix(
-        in srgb,
-        var(--activity-color) 82%,
-        black
-    );
+/* =========================================
+   Time Row
+========================================= */
+
+.session-form__time-row {
+    display: flex;
+    align-items: flex-end;
+
+    gap: 10px;
+}
+
+
+.session-form__time-arrow {
+    flex-shrink: 0;
+
+    margin-bottom: 12px;
+
+    color: var(--color-text-secondary);
+
+    font-size: 14px;
+}
+
+
+/* =========================================
+   Input
+========================================= */
+
+.session-form__input {
+    width: 100%;
+    height: 43px;
+
+    padding: 0 12px;
+
+    box-sizing: border-box;
+
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+
+    outline: none;
+
+    background: var(--color-background);
+
+    color: var(--color-text);
+
+    font-family: inherit;
+    font-size: 12px;
+
+    direction: ltr;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.session-form__input:focus {
+    border-color: var(--color-primary);
+
+    box-shadow:
+        0 0 0 3px rgba(79, 158, 165, 0.1);
+}
+
+
+/* =========================================
+   Duration
+========================================= */
+
+.session-form__duration {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 11px 13px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+
+    background: var(--color-background);
+}
+
+
+.session-form__duration-label {
+    color: var(--color-text-secondary);
+
+    font-size: 10px;
+}
+
+
+.session-form__duration-value {
+    color: var(--color-primary);
+
+    font-size: 14px;
+    font-weight: 750;
+
+    direction: ltr;
+}
+
+
+/* =========================================
+   Actions
+========================================= */
+
+.session-form__actions {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    padding-top: 3px;
+}
+
+
+.session-form__cancel,
+.session-form__submit {
+    height: 40px;
+
+    border-radius: 9px;
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 650;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.session-form__cancel {
+    flex: 0 0 95px;
+
+    border: 1px solid var(--color-border);
+
+    background: transparent;
+
+    color: var(--color-text-secondary);
+}
+
+
+.session-form__cancel:hover {
+    background: var(--color-background);
+
+    color: var(--color-text);
+}
+
+
+.session-form__submit {
+    flex: 1;
+
+    border: 1px solid var(--color-primary);
+
+    background: var(--color-primary);
+
+    color: #ffffff;
+}
+
+
+.session-form__submit:hover {
+    filter: brightness(0.95);
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================
+   Responsive
+========================================= */
+
+@media (max-width: 500px) {
+
+    .session-form-modal {
+        padding: 12px;
+    }
+
+
+    .session-form-modal__box {
+        border-radius: 16px;
+    }
+
+
+    .session-form-modal__header {
+        padding: 17px;
+    }
+
+
+    .session-form {
+        padding: 17px;
+
+        gap: 16px;
+    }
+
+
+    .session-form__time-row {
+        gap: 7px;
+    }
+
+
+    .session-form__cancel {
+        flex-basis: 85px;
+    }
+
+}
+
+
+
+/* =========================================
+   Delete Session Modal
+========================================= */
+
+.delete-session-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    box-sizing: border-box;
+
+    direction: rtl;
+}
+
+
+/* =========================================
+   Overlay
+========================================= */
+
+.delete-session-modal__overlay {
+    position: absolute;
+    inset: 0;
+
+    background: rgba(20, 24, 28, 0.48);
+
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+
+/* =========================================
+   Modal Box
+========================================= */
+
+.delete-session-modal__box {
+    position: relative;
+    z-index: 1;
+
+    width: min(390px, 100%);
+
+    padding: 25px 23px 20px;
+
+    box-sizing: border-box;
+
+    background: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+
+    box-shadow:
+        0 24px 65px rgba(0, 0, 0, 0.17);
+
+    text-align: center;
+
+    animation: delete-session-modal-show 0.2s ease-out;
+}
+
+
+@keyframes delete-session-modal-show {
+
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* =========================================
+   Warning Icon
+========================================= */
+
+.delete-session-modal__icon {
+    width: 44px;
+    height: 44px;
+
+    margin: 0 auto 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: rgba(201, 75, 75, 0.08);
+
+    border: 1px solid rgba(201, 75, 75, 0.16);
+
+    color: #c94b4b;
+
+    font-size: 20px;
+    font-weight: 750;
+}
+
+
+/* =========================================
+   Content
+========================================= */
+
+.delete-session-modal__content {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+}
+
+
+.delete-session-modal__title {
+    margin: 0 0 7px;
+
+    color: var(--color-text);
+
+    font-size: 18px;
+    font-weight: 750;
+}
+
+
+.delete-session-modal__message {
+    margin: 0;
+
+    color: var(--color-text-secondary);
+
+    font-size: 11px;
+}
+
+
+/* =========================================
+   Session Preview
+========================================= */
+
+.delete-session-modal__session {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 17px;
+
+    padding: 11px 12px;
+
+    box-sizing: border-box;
+
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+
+    background: var(--color-background);
+
+    text-align: right;
+}
+
+
+.delete-session-modal__session-color {
+    width: 4px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    border-radius: 4px;
+
+    background: var(--session-color);
+}
+
+
+.delete-session-modal__session-info {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+
+.delete-session-modal__session-info strong {
+    color: var(--color-text);
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+.delete-session-modal__session-info span {
+    color: var(--color-text-secondary);
+
+    font-size: 9px;
+
+    direction: ltr;
+}
+
+
+/* =========================================
+   Warning
+========================================= */
+
+.delete-session-modal__warning {
+    margin: 12px 0 0;
+
+    color: #c94b4b;
+
+    font-size: 9px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================
+   Actions
+========================================= */
+
+.delete-session-modal__actions {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 20px;
+}
+
+
+.delete-session-modal__cancel,
+.delete-session-modal__confirm {
+    height: 39px;
+
+    border-radius: 9px;
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 650;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.delete-session-modal__cancel {
+    flex: 1;
+
+    border: 1px solid var(--color-border);
+
+    background: transparent;
+
+    color: var(--color-text-secondary);
+}
+
+
+.delete-session-modal__cancel:hover {
+    background: var(--color-background);
+
+    color: var(--color-text);
+}
+
+
+.delete-session-modal__confirm {
+    flex: 1;
+
+    border: 1px solid #c94b4b;
+
+    background: #c94b4b;
+
+    color: #ffffff;
+}
+
+
+.delete-session-modal__confirm:hover {
+    background: #b94242;
+
+    border-color: #b94242;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================
+   Responsive
+========================================= */
+
+@media (max-width: 450px) {
+
+    .delete-session-modal {
+        padding: 12px;
+    }
+
+
+    .delete-session-modal__box {
+        padding: 22px 18px 18px;
+
+        border-radius: 16px;
+    }
+
 }

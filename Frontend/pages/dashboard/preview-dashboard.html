@@ -96,7 +96,13 @@
     <main class="dashboard">
       <div class="dashboard__container">
         <section class="dashboard__layout">
-          <!-- Right -->
+           <!--========================================
+                            Right
+            ======================================== -->
+
+                    <!--========================================
+                                       timed-activities
+                      ======================================== -->  
           <div class="dashboard__activities">
             <section class="dashboard__timed-activities">
               <section class="timed-activities">
@@ -232,6 +238,9 @@
               </section>
             </section>
 
+                      <!--========================================
+                                       untimed-activities
+                      ======================================== -->
             <section class="dashboard__untimed-activities">
               <section class="untimed-activities">
                 <!-- Header -->
@@ -436,19 +445,39 @@
               </section>
             </section>
 
-            <section class="dashboard__sessions">
+                      <!--========================================
+                                       Sessions
+                      ======================================== -->
+            <section class="dashboard__sessions">         
               <section class="recent-activities">
                 <!-- Header -->
-
                 <header class="recent-activities__header">
-                  <h2 class="recent-activities__title">فعالیت‌های اخیر</h2>
+                  <div class="recent-activities__heading">
+                    <h2 class="recent-activities__title">سشن‌های امروز</h2>
+                  </div>
+
+                  <button
+                    type="button"
+                    class="recent-activities__view-all"
+                    data-action="open-sessions"
+                  >
+                    <span>مشاهده همه</span>
+
+                    <span
+                      class="recent-activities__view-all-icon"
+                      aria-hidden="true"
+                    >
+                      ↗
+                    </span>
+                  </button>
                 </header>
 
                 <!-- Sessions -->
-
                 <div class="recent-activities__content">
                   <div class="recent-activities__list">
-                    <!-- Activity Session -->
+                    <!-- ========================================
+                 Session 1
+            ======================================== -->
 
                     <article
                       class="recent-activity"
@@ -456,25 +485,62 @@
                       data-session-id="101"
                       style="--activity-color: #4f9ea5"
                     >
+                      <span
+                        class="recent-activity__color"
+                        aria-hidden="true"
+                      ></span>
+
                       <div class="recent-activity__main">
-                        <h3 class="recent-activity__title">برنامه‌نویسی</h3>
+                        <div class="recent-activity__info">
+                          <h3 class="recent-activity__title">برنامه‌نویسی</h3>
 
-                        <div class="recent-activity__time">
-                          <span class="recent-activity__start"> 10:30 </span>
+                          <div class="recent-activity__time">
+                            <span class="recent-activity__start"> 10:30 </span>
 
-                          <span class="recent-activity__separator"> ← </span>
+                            <span
+                              class="recent-activity__separator"
+                              aria-hidden="true"
+                            >
+                              ←
+                            </span>
 
-                          <span class="recent-activity__end"> 12:15 </span>
+                            <span class="recent-activity__end"> 12:15 </span>
+                          </div>
                         </div>
 
                         <span class="recent-activity__duration">
                           1 ساعت و 45 دقیقه
                         </span>
+
+                        <!-- Session Actions -->
+                        <div class="recent-activity__actions">
+                          <button
+                            type="button"
+                            class="recent-activity__action recent-activity__edit"
+                            data-action="edit-session"
+                            aria-label="ویرایش سشن"
+                            title="ویرایش"
+                          >
+                            ✎
+                          </button>
+
+                          <button
+                            type="button"
+                            class="recent-activity__action recent-activity__delete"
+                            data-action="delete-session"
+                            aria-label="حذف سشن"
+                            title="حذف"
+                          >
+                            🗑
+                          </button>
+                        </div>
                       </div>
 
+                      <!-- Note -->
                       <button
                         type="button"
                         class="recent-activity__note"
+                        data-action="session-note"
                         aria-label="افزودن یادداشت"
                         title="افزودن یادداشت"
                       >
@@ -482,7 +548,9 @@
                       </button>
                     </article>
 
-                    <!-- Activity Session With Note -->
+                    <!-- ========================================
+                 Session 2
+            ======================================== -->
 
                     <article
                       class="recent-activity"
@@ -490,25 +558,60 @@
                       data-session-id="102"
                       style="--activity-color: #e0a458"
                     >
+                      <span
+                        class="recent-activity__color"
+                        aria-hidden="true"
+                      ></span>
+
                       <div class="recent-activity__main">
-                        <h3 class="recent-activity__title">مطالعه</h3>
+                        <div class="recent-activity__info">
+                          <h3 class="recent-activity__title">مطالعه</h3>
 
-                        <div class="recent-activity__time">
-                          <span class="recent-activity__start"> 14:00 </span>
+                          <div class="recent-activity__time">
+                            <span class="recent-activity__start"> 14:00 </span>
 
-                          <span class="recent-activity__separator"> ← </span>
+                            <span
+                              class="recent-activity__separator"
+                              aria-hidden="true"
+                            >
+                              ←
+                            </span>
 
-                          <span class="recent-activity__end"> 15:20 </span>
+                            <span class="recent-activity__end"> 15:20 </span>
+                          </div>
                         </div>
 
                         <span class="recent-activity__duration">
                           1 ساعت و 20 دقیقه
                         </span>
+
+                        <div class="recent-activity__actions">
+                          <button
+                            type="button"
+                            class="recent-activity__action recent-activity__edit"
+                            data-action="edit-session"
+                            aria-label="ویرایش سشن"
+                            title="ویرایش"
+                          >
+                            ✎
+                          </button>
+
+                          <button
+                            type="button"
+                            class="recent-activity__action recent-activity__delete"
+                            data-action="delete-session"
+                            aria-label="حذف سشن"
+                            title="حذف"
+                          >
+                            🗑
+                          </button>
+                        </div>
                       </div>
 
                       <button
                         type="button"
                         class="recent-activity__note recent-activity__note--has-note"
+                        data-action="session-note"
                         aria-label="مشاهده یادداشت"
                         title="مشاهده یادداشت"
                       >
@@ -516,7 +619,9 @@
                       </button>
                     </article>
 
-                    <!-- Activity Session -->
+                    <!-- ========================================
+                 Session 3
+            ======================================== -->
 
                     <article
                       class="recent-activity"
@@ -524,25 +629,60 @@
                       data-session-id="103"
                       style="--activity-color: #d96b6b"
                     >
+                      <span
+                        class="recent-activity__color"
+                        aria-hidden="true"
+                      ></span>
+
                       <div class="recent-activity__main">
-                        <h3 class="recent-activity__title">زبان انگلیسی</h3>
+                        <div class="recent-activity__info">
+                          <h3 class="recent-activity__title">زبان انگلیسی</h3>
 
-                        <div class="recent-activity__time">
-                          <span class="recent-activity__start"> 17:10 </span>
+                          <div class="recent-activity__time">
+                            <span class="recent-activity__start"> 17:10 </span>
 
-                          <span class="recent-activity__separator"> ← </span>
+                            <span
+                              class="recent-activity__separator"
+                              aria-hidden="true"
+                            >
+                              ←
+                            </span>
 
-                          <span class="recent-activity__end"> 18:00 </span>
+                            <span class="recent-activity__end"> 18:00 </span>
+                          </div>
                         </div>
 
                         <span class="recent-activity__duration">
                           50 دقیقه
                         </span>
+
+                        <div class="recent-activity__actions">
+                          <button
+                            type="button"
+                            class="recent-activity__action recent-activity__edit"
+                            data-action="edit-session"
+                            aria-label="ویرایش سشن"
+                            title="ویرایش"
+                          >
+                            ✎
+                          </button>
+
+                          <button
+                            type="button"
+                            class="recent-activity__action recent-activity__delete"
+                            data-action="delete-session"
+                            aria-label="حذف سشن"
+                            title="حذف"
+                          >
+                            🗑
+                          </button>
+                        </div>
                       </div>
 
                       <button
                         type="button"
                         class="recent-activity__note"
+                        data-action="session-note"
                         aria-label="افزودن یادداشت"
                         title="افزودن یادداشت"
                       >
@@ -551,9 +691,28 @@
                     </article>
                   </div>
                 </div>
+
+                <!-- ========================================
+         Add Session
+    ======================================== -->
+
+                <button
+                  type="button"
+                  class="recent-activities__add"
+                  data-action="add-session"
+                >
+                  <span class="recent-activities__add-icon" aria-hidden="true">
+                    +
+                  </span>
+
+                  <span> افزودن سشن </span>
+                </button>
               </section>
             </section>
 
+                      <!--========================================
+                                       Daily Notes
+                      ======================================== -->
             <section class="dashboard__notes">
               <section class="daily-notes">
                 <!-- Header -->
@@ -610,7 +769,15 @@
             </section>
           </div>
 
+
+            <!--========================================
+                              Center
+            ======================================== -->
           <div class="dashboard__center">
+
+                      <!--========================================
+                                       clock
+                      ======================================== -->
             <section class="dashboard__clock">
               <section class="clock">
                 <div class="clock__body">
@@ -696,6 +863,9 @@
               </section>
             </section>
 
+                      <!--========================================
+                                       statistics
+                      ======================================== -->
             <section class="dashboard__statistics">
               <section class="statistics">
                 <!-- Header -->
@@ -844,7 +1014,10 @@
             </section>
           </div>
 
-          <!-- Calendar -->
+            <!--========================================
+                              Left
+            ======================================== -->
+                        <!-- Calendar -->
           <section class="dashboard__calendar">
             <section class="calendar">
               <!-- ========================================
