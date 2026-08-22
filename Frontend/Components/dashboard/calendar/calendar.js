@@ -1,0 +1,685 @@
+export function Calendar (){
+    return `    
+    <section class="calendar">
+  <!-- ========================================
+         Calendar Header
+    ========================================= -->
+
+  <header class="calendar__header">
+    <!-- Previous Month -->
+
+    <button
+      type="button"
+      class="calendar__navigation calendar__navigation--previous"
+      aria-label="ماه قبل"
+    >
+      ‹
+    </button>
+
+    <!-- Gregorian -->
+
+    <div class="calendar__gregorian">
+      <span class="calendar__gregorian-month"> August </span>
+      <span class="calendar__gregorian-month"> September </span>
+
+      <span class="calendar__gregorian-year"> 2026 </span>
+    </div>
+
+    <!-- Persian Date -->
+
+    <div class="calendar__persian-date">
+      <strong class="calendar__year"> ۱۴۰۵ </strong>
+
+      <span class="calendar__month"> شهریور </span>
+    </div>
+
+    <!-- Islamic -->
+
+    <div class="calendar__islamic">
+      <span class="calendar__islamic-month"> ربیع الاول </span>
+      <span class="calendar__islamic-month"> ربیع الثانی  </span>
+
+      <span class="calendar__islamic-year"> 1448 </span>
+    </div>
+
+    <!-- Next Month -->
+
+    <button
+      type="button"
+      class="calendar__navigation calendar__navigation--next"
+      aria-label="ماه بعد"
+    >
+      ›
+    </button>
+  </header>
+
+  <!-- ================================
+             Calendar Days
+        ================================= -->
+
+  <div class="calendar__days-wrapper">
+    <div class="calendar__days">
+      <!-- ۱ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> یکشنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۸ </span>
+
+            <span class="calendar__day-week-en"> Sun </span>
+
+            <span class="calendar__day-gregorian"> 23 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">02:14</div>
+
+        <div class="calendar__day-number">۱</div>
+      </article>
+
+      <!-- ۲ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> دوشنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۹ </span>
+
+            <span class="calendar__day-week-en"> Mon </span>
+
+            <span class="calendar__day-gregorian"> 24 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">03:42</div>
+
+        <div class="calendar__day-number">۲</div>
+      </article>
+
+      <!-- ۳ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> سه‌شنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۱۰ </span>
+
+            <span class="calendar__day-week-en"> Tue </span>
+
+            <span class="calendar__day-gregorian"> 25 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">01:56</div>
+
+        <div class="calendar__day-number">۳</div>
+      </article>
+
+      <!-- ۴ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> چهارشنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۱۱ </span>
+
+            <span class="calendar__day-week-en"> Wed </span>
+
+            <span class="calendar__day-gregorian"> 26 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">04:18</div>
+
+        <div class="calendar__day-number">۴</div>
+      </article>
+
+      <!-- ۵ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> پنجشنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۱۲ </span>
+
+            <span class="calendar__day-week-en"> Thu </span>
+
+            <span class="calendar__day-gregorian"> 27 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">03:05</div>
+
+        <div class="calendar__day-number">۵</div>
+      </article>
+
+      <!-- ۶ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> جمعه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۱۳ </span>
+
+            <span class="calendar__day-week-en"> Fri </span>
+
+            <span class="calendar__day-gregorian"> 28 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">00:48</div>
+
+        <div class="calendar__day-number">۶</div>
+      </article>
+
+      <!-- ۷ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> شنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۱۴ </span>
+
+            <span class="calendar__day-week-en"> Sat </span>
+
+            <span class="calendar__day-gregorian"> 29 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">02:37</div>
+
+        <div class="calendar__day-number">۷</div>
+      </article>
+
+      <!-- ۸ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> یکشنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۱۵ </span>
+
+            <span class="calendar__day-week-en"> Sun </span>
+
+            <span class="calendar__day-gregorian"> 30 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">03:26</div>
+
+        <div class="calendar__day-number">۸</div>
+      </article>
+
+      <!-- ۹ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> دوشنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۱۶ </span>
+
+            <span class="calendar__day-week-en"> Mon </span>
+
+            <span class="calendar__day-gregorian"> 31 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">04:12</div>
+
+        <div class="calendar__day-number">۹</div>
+      </article>
+
+      <!-- ۱۰ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> سه‌شنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۱۷ </span>
+
+            <span class="calendar__day-week-en"> Tue </span>
+
+            <span class="calendar__day-gregorian"> 1 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">03:38</div>
+
+        <div class="calendar__day-number">۱۰</div>
+      </article>
+
+      <!-- ۱۱ شهریور -->
+
+      <article class="calendar__day calendar__day--today">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> چهارشنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۱۸ </span>
+
+            <span class="calendar__day-week-en"> Wed </span>
+
+            <span class="calendar__day-gregorian"> 2 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">05:38</div>
+
+        <div class="calendar__day-number">۱۱</div>
+      </article>
+
+      <!-- ۱۲ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> پنجشنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۱۹ </span>
+
+            <span class="calendar__day-week-en"> Thu </span>
+
+            <span class="calendar__day-gregorian"> 3 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">02:45</div>
+
+        <div class="calendar__day-number">۱۲</div>
+      </article>
+
+      <!-- ۱۳ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> جمعه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۲۰ </span>
+
+            <span class="calendar__day-week-en"> Fri </span>
+
+            <span class="calendar__day-gregorian"> 4 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">01:32</div>
+
+        <div class="calendar__day-number">۱۳</div>
+      </article>
+
+      <!-- ۱۴ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> شنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۲۱ </span>
+
+            <span class="calendar__day-week-en"> Sat </span>
+
+            <span class="calendar__day-gregorian"> 5 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">03:17</div>
+
+        <div class="calendar__day-number">۱۴</div>
+      </article>
+
+      <!-- ۱۵ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> یکشنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۲۲ </span>
+
+            <span class="calendar__day-week-en"> Sun </span>
+
+            <span class="calendar__day-gregorian"> 6 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">04:26</div>
+
+        <div class="calendar__day-number">۱۵</div>
+      </article>
+
+      <!-- ۱۶ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> دوشنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۲۳ </span>
+
+            <span class="calendar__day-week-en"> Mon </span>
+
+            <span class="calendar__day-gregorian"> 7 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">02:58</div>
+
+        <div class="calendar__day-number">۱۶</div>
+      </article>
+
+      <!-- ۱۷ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> سه‌شنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۲۴ </span>
+
+            <span class="calendar__day-week-en"> Tue </span>
+
+            <span class="calendar__day-gregorian"> 8 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">03:41</div>
+
+        <div class="calendar__day-number">۱۷</div>
+      </article>
+
+      <!-- ۱۸ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> چهارشنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۲۵ </span>
+
+            <span class="calendar__day-week-en"> Wed </span>
+
+            <span class="calendar__day-gregorian"> 9 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">01:46</div>
+
+        <div class="calendar__day-number">۱۸</div>
+      </article>
+
+      <!-- ۱۹ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> پنجشنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۲۶ </span>
+
+            <span class="calendar__day-week-en"> Thu </span>
+
+            <span class="calendar__day-gregorian"> 10 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">03:12</div>
+
+        <div class="calendar__day-number">۱۹</div>
+      </article>
+
+      <!-- ۲۰ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> جمعه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۲۷ </span>
+
+            <span class="calendar__day-week-en"> Fri </span>
+
+            <span class="calendar__day-gregorian"> 11 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">00:56</div>
+
+        <div class="calendar__day-number">۲۰</div>
+      </article>
+
+      <!-- ۲۱ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> شنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۲۸ </span>
+
+            <span class="calendar__day-week-en"> Sat </span>
+
+            <span class="calendar__day-gregorian"> 12 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">02:33</div>
+
+        <div class="calendar__day-number">۲۱</div>
+      </article>
+
+      <!-- ۲۲ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> یکشنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۲۹ </span>
+
+            <span class="calendar__day-week-en"> Sun </span>
+
+            <span class="calendar__day-gregorian"> 13 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">03:27</div>
+
+        <div class="calendar__day-number">۲۲</div>
+      </article>
+
+      <!-- ۲۳ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> دوشنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۳۰ </span>
+
+            <span class="calendar__day-week-en"> Mon </span>
+
+            <span class="calendar__day-gregorian"> 14 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">04:01</div>
+
+        <div class="calendar__day-number">۲۳</div>
+      </article>
+
+      <!-- ۲۴ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> سه‌شنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۱ </span>
+
+            <span class="calendar__day-week-en"> Tue </span>
+
+            <span class="calendar__day-gregorian"> 15 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">02:19</div>
+
+        <div class="calendar__day-number">۲۴</div>
+      </article>
+
+      <!-- ۲۵ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> چهارشنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۲ </span>
+
+            <span class="calendar__day-week-en"> Wed </span>
+
+            <span class="calendar__day-gregorian"> 16 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">03:53</div>
+
+        <div class="calendar__day-number">۲۵</div>
+      </article>
+
+      <!-- ۲۶ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> پنجشنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۳ </span>
+
+            <span class="calendar__day-week-en"> Thu </span>
+
+            <span class="calendar__day-gregorian"> 17 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">01:28</div>
+
+        <div class="calendar__day-number">۲۶</div>
+      </article>
+
+      <!-- ۲۷ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> جمعه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۴ </span>
+
+            <span class="calendar__day-week-en"> Fri </span>
+
+            <span class="calendar__day-gregorian"> 18 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">00:42</div>
+
+        <div class="calendar__day-number">۲۷</div>
+      </article>
+
+      <!-- ۲۸ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> شنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۵ </span>
+
+            <span class="calendar__day-week-en"> Sat </span>
+
+            <span class="calendar__day-gregorian"> 19 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">02:51</div>
+
+        <div class="calendar__day-number">۲۸</div>
+      </article>
+
+      <!-- ۲۹ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> یکشنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۶ </span>
+
+            <span class="calendar__day-week-en"> Sun </span>
+
+            <span class="calendar__day-gregorian"> 20 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">03:36</div>
+
+        <div class="calendar__day-number">۲۹</div>
+      </article>
+
+      <!-- ۳۰ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> دوشنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۷ </span>
+
+            <span class="calendar__day-week-en"> Mon </span>
+
+            <span class="calendar__day-gregorian"> 21 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">02:08</div>
+
+        <div class="calendar__day-number">۳۰</div>
+      </article>
+
+      <!-- ۳۱ شهریور -->
+
+      <article class="calendar__day">
+        <div class="calendar__day-info">
+          <span class="calendar__day-week"> سه‌شنبه </span>
+
+          <div class="calendar__day-subinfo">
+            <span class="calendar__day-islamic"> ۸ </span>
+
+            <span class="calendar__day-week-en"> Tue </span>
+
+            <span class="calendar__day-gregorian"> 22 </span>
+          </div>
+        </div>
+
+        <div class="calendar__day-useful-time">03:14</div>
+
+        <div class="calendar__day-number">۳۱</div>
+      </article>
+    </div>
+  </div>
+</section>    
+    `;
+}

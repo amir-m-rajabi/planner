@@ -162,7 +162,7 @@
 .calendar__islamic-month {
     color: var(--color-text-secondary);
 
-    font-size: 10px;
+    font-size: 8px;
     font-weight: 500;
 
     white-space: nowrap;

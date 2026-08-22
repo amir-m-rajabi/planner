@@ -7,6 +7,21 @@
     <link rel="stylesheet" href="/Frontend/css/main.css" />
     <link rel="stylesheet" href="/Frontend/Components/header/header.css" />
     <link rel="stylesheet" href="/Frontend/pages/dashboard/dashboard.css" />
+    <link rel="stylesheet" href="/Frontend/Components/dashboard/timed-activities/timed-activities.css">
+    <link rel="stylesheet" href="/Frontend/Components/dashboard/untimed-activities/untimed-activities.css">
+    <link rel="stylesheet" href="/Frontend/Components/dashboard/sessions/sessions.css">
+    <link rel="stylesheet" href="/Frontend/Components/dashboard/clock/clock.css">
+    <link rel="stylesheet" href="/Frontend/Components/dashboard/calendar/calendar.css">
+    <link rel="stylesheet" href="/Frontend/Components/dashboard/statistics/statistics.css">
+    <link rel="stylesheet" href="/Frontend/Components/dashboard/daily-note/daily-note.css">
+    <link rel="stylesheet" href="/Frontend/pages/activities/activity.css">
+    <link rel="stylesheet" href="/Frontend/Components/activities/activity-card/activity-card.css"/>
+    <link rel="stylesheet" href="/Frontend/Components/activities/untimed-activity-card/untimed-activity-cards.css"/>
+    <link rel="stylesheet" href="/Frontend/Components/activities/activity-filter/activity-filter.css"/>
+    <link rel="stylesheet" href="/Frontend/Components/activities/activity-modal/activity-modal.css"/>
+    <link rel="stylesheet" href="/Frontend/pages/reports/reports.css">
+    <link rel="stylesheet" href="/Frontend/pages/calendar/calendar.css">
+    <link rel="stylesheet" href="/Frontend/pages/profile/profile.css">
     <link
       rel="shortcut icon"
       href="/Frontend/assets/images/Logo.png"
@@ -14,84 +29,12 @@
     />
   </head>
   <body>
-    <header class="header">
-      <div class="header__container">
-        <!-- Logo -->
-        <a href="#" class="logo">
-          <img src="assets/images/logo.png" alt="Planner" class="logo__image" />
-        </a>
+    
+    <div id="app">
 
-        <!-- Navigation -->
-        <nav class="navigation" aria-label="منوی اصلی">
-          <ul class="navigation__list">
-            <li class="navigation__item">
-              <a href="#" class="navigation__link navigation__link--active">
-                داشبورد
-              </a>
-            </li>
 
-            <li class="navigation__item">
-              <a href="#" class="navigation__link"> فعالیت‌ها </a>
-            </li>
+    </div>
 
-            <li class="navigation__item">
-              <a href="#" class="navigation__link"> گزارشات </a>
-            </li>
-
-            <li class="navigation__item">
-              <a href="#" class="navigation__link"> تقویم </a>
-            </li>
-          </ul>
-        </nav>
-
-        <!-- Profile -->
-        <a href="#" class="profile">
-          <img
-            src="assets/images/Profile.jpg"
-            alt="پروفایل کاربر"
-            class="profile__image"
-          />
-        </a>
-      </div>
-
-      <!-- <div class="auth-actions">
-        <a href="#" class="auth-actions__login"> ورود </a>
-
-        <a href="#" class="auth-actions__register"> ثبت‌نام </a>
-      </div> -->
-    </header>
-
-    <main class="dashboard">
-      <div class="dashboard__container">
-        <section class="dashboard__layout">
-          <!-- Right -->
-          <div class="dashboard__activities">
-            <section class="dashboard__timed-activities">
-              فعالیت‌های زمان‌دار
-            </section>
-
-            <section class="dashboard__untimed-activities">
-              فعالیت‌های بدون زمان
-            </section>
-
-            <section class="dashboard__sessions">سشن‌ها</section>
-
-            <section class="dashboard__notes">دفترچه یادداشت</section>
-          </div>
-
-          <!-- Center -->
-          <div class="dashboard__center">
-            <section class="dashboard__clock">ساعت</section>
-
-            <section class="dashboard__statistics">آمار</section>
-          </div>
-
-          <!-- Calendar -->
-          <section class="dashboard__calendar">تقویم</section>
-        </section>
-      </div>
-    </main>
-
-    <script src="js/app.js"></script>
+    <script type="module" src="/Frontend/js/app.js"></script>
   </body>
 </html>

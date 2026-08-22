@@ -1,4 +1,6 @@
-<section class="statistics">
+export function ReportsView(){
+    return `
+        <section class="statistics">
   <!-- ================================
          Statistics Type
     ================================= -->
@@ -111,29 +113,6 @@
     </div>
   </section>
 
-  <!-- ================================
-         Current Selection
-    ================================= -->
-
-  <!-- <div class="statistics-current">
-    <div class="statistics-current__main">
-      <span class="statistics-current__eyebrow"> بازه انتخاب‌شده </span>
-
-      <strong class="statistics-current__title"> شهریور ۱۴۰۵ </strong>
-    </div>
-
-    <div class="statistics-current__summary">
-      <div>
-        <span>روزهای بررسی‌شده</span>
-        <strong>۱۹</strong>
-      </div>
-
-      <div>
-        <span>روز فعال</span>
-        <strong>۱۵</strong>
-      </div>
-    </div>
-  </div> -->
 
   <!-- ================================
          TIMED STATISTICS
@@ -390,98 +369,6 @@
     </div>
   </section>
 
-  <!-- ================================
-         Year / Month Modal
-         Later JS
-    ================================= -->
 
-  <div class="statistics-selection-modal" id="statisticsSelectionModal" hidden>
-    <div class="statistics-selection-modal__overlay"></div>
-
-    <div class="statistics-selection-modal__box">
-      <header class="statistics-selection-modal__header">
-        <div>
-          <span> انتخاب بازه </span>
-
-          <h2>دوره آماری موردنظر</h2>
-        </div>
-
-        <button type="button" class="statistics-selection-modal__close">
-          ×
-        </button>
-      </header>
-
-      <div class="statistics-selection-modal__body">
-        <!-- Year -->
-
-        <div class="statistics-selection-group">
-          <div class="statistics-selection-group__header">
-            <strong> سال </strong>
-
-            <span> انتخاب سال آماری </span>
-          </div>
-
-          <div class="statistics-years">
-            <button type="button">۱۴۰۲</button>
-            <button type="button">۱۴۰۳</button>
-            <button type="button">۱۴۰۴</button>
-            <button type="button" class="statistics-years__active">۱۴۰۵</button>
-          </div>
-        </div>
-
-        <!-- Month -->
-
-        <div class="statistics-selection-group">
-          <div class="statistics-selection-group__header">
-            <strong> ماه </strong>
-
-            <span> یا یک ماه مشخص را انتخاب کنید </span>
-          </div>
-
-          <div class="statistics-months">
-            <button type="button">فروردین</button>
-            <button type="button">اردیبهشت</button>
-            <button type="button">خرداد</button>
-            <button type="button">تیر</button>
-
-            <button type="button">مرداد</button>
-            <button type="button" class="statistics-months__active">
-              شهریور
-            </button>
-            <button type="button">مهر</button>
-            <button type="button">آبان</button>
-
-            <button type="button">آذر</button>
-            <button type="button">دی</button>
-            <button type="button">بهمن</button>
-            <button type="button">اسفند</button>
-          </div>
-        </div>
-
-        <!-- Custom Range -->
-
-        <button type="button" class="statistics-custom-range">
-          <span> ▣ </span>
-
-          <div>
-            <strong> بازه دلخواه </strong>
-
-            <small> برای انتخاب دقیق تاریخ شروع و پایان </small>
-          </div>
-
-          <span> ← </span>
-        </button>
-      </div>
-
-      <footer class="statistics-selection-modal__footer">
-        <button type="button" class="statistics-selection-modal__cancel">
-          انصراف
-        </button>
-
-        <button type="button" class="statistics-selection-modal__confirm">
-          نمایش آمار
-        </button>
-      </footer>
-    </div>
-  </div>
-</section>
+    `;
+}

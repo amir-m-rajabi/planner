@@ -276,11 +276,11 @@
 ======================================== */
 
 .activity-card__delete:hover {
-    background-color: rgba(210, 70, 70, 0.08);
+    background-color: rgba(210, 49, 49, 0.232);
 
-    border-color: rgba(210, 70, 70, 0.25);
+    border-color: rgba(203, 62, 62, 0.642);
 
-    color: #c94b4b;
+    color: #9b0c0c;
 
     transform: translateY(-1px);
 }
