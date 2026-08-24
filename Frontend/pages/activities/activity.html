@@ -1,3 +1,36 @@
+<!-- ========================================
+            Activity FilterHead Component
+      ======================================== -->
+<div class="activity-status-filter" role="tablist" aria-label="وضعیت فعالیت‌ها">
+  <button
+    class="activity-status-filter__item activity-status-filter__item--active"
+    type="button"
+    role="tab"
+    aria-selected="true"
+    data-status="active"
+  >
+    <span class="activity-status-filter__indicator"></span>
+
+    <span class="activity-status-filter__label"> فعالیت‌های فعال </span>
+
+    <span class="activity-status-filter__count"> 6 </span>
+  </button>
+
+  <button
+    class="activity-status-filter__item"
+    type="button"
+    role="tab"
+    aria-selected="false"
+    data-status="archived"
+  >
+    <span class="activity-status-filter__indicator"></span>
+
+    <span class="activity-status-filter__label"> آرشیو شده </span>
+
+    <span class="activity-status-filter__count"> 3 </span>
+  </button>
+</div>
+
 <main class="activities-page">
   <div class="activities-page__container">
     <!-- Page Header -->
@@ -504,6 +537,367 @@
     </section>
   </div>
 </main>
+
+<!-- ========================================
+            Timed Activity Card Component
+      ======================================== -->
+<article
+  class="activity-card activity-card--timed"
+  data-activity-id="1"
+  data-activity-type="timed"
+>
+  <!-- Activity Color -->
+  <span class="activity-card__color" aria-hidden="true"></span>
+
+  <!-- Main Content -->
+  <div class="activity-card__content">
+    <div class="activity-card__header">
+      <div class="activity-card__title-wrapper">
+        <h3 class="activity-card__title">مطالعه ریاضی</h3>
+
+        <span class="activity-card__type"> زمان‌دار </span>
+      </div>
+    </div>
+
+    <!-- Activity Information -->
+    <div class="activity-card__info">
+      <span class="activity-card__created"> ایجاد شده: ۱۵ شهریور ۱۴۰۵ </span>
+
+      <span class="activity-card__duration"> امروز: 02:38 </span>
+    </div>
+  </div>
+
+  <!-- Activity Actions -->
+  <div class="activity-card__actions">
+    <button
+      class="activity-card__action-button activity-card__edit"
+      type="button"
+      aria-label="ویرایش فعالیت"
+      data-action="edit"
+    >
+      <span class="activity-card__action-icon" aria-hidden="true"> ✎ </span>
+    </button>
+
+    <button
+      class="activity-card__action-button activity-card__archive"
+      type="button"
+      aria-label="آرشیو فعالیت"
+      data-action="archive"
+    >
+      <span class="activity-card__action-icon" aria-hidden="true"> × </span>
+    </button>
+
+    <button class="activity-card__start" type="button" data-action="start">
+      <span class="activity-card__start-icon" aria-hidden="true"> ▶ </span>
+
+      <span> شروع </span>
+    </button>
+  </div>
+</article>
+
+<article
+  class="activity-card activity-card--timed activity-card--active"
+  data-activity-id="2"
+  data-activity-type="timed"
+>
+  <!-- Activity Color -->
+  <span class="activity-card__color" aria-hidden="true"></span>
+
+  <!-- Main Content -->
+  <div class="activity-card__content">
+    <div class="activity-card__header">
+      <div class="activity-card__title-wrapper">
+        <h3 class="activity-card__title">برنامه نویسی</h3>
+
+        <span class="activity-card__type"> زمان‌دار </span>
+      </div>
+    </div>
+
+    <!-- Activity Information -->
+    <div class="activity-card__info">
+      <span class="activity-card__created"> ایجاد شده: ۱۵ شهریور ۱۴۰۵ </span>
+
+      <span class="activity-card__elapsed"> 00:37 :امروز</span>
+      <span class="activity-card__status"> در حال انجام </span>
+    </div>
+  </div>
+
+  <!-- Activity Actions -->
+  <div class="activity-card__actions">
+    <button
+      class="activity-card__start activity-card__start--stop"
+      type="button"
+      data-action="stop"
+    >
+      <span class="activity-card__start-icon" aria-hidden="true"> ■ </span>
+
+      <span> پایان </span>
+    </button>
+  </div>
+</article>
+
+<!-- archive -->
+<article
+  class="activity-card activity-card--archived"
+  data-activity-id="1"
+  data-activity-status="archived"
+>
+  <span class="activity-card__color" aria-hidden="true"></span>
+
+  <div class="activity-card__content">
+    <div class="activity-card__title-wrapper">
+      <h3 class="activity-card__title">مطالعه ریاضی</h3>
+
+      <span class="activity-card__type"> زمان‌دار </span>
+    </div>
+
+    <div class="activity-card__info">
+      <span> ایجاد شده: ۱۵ شهریور </span>
+
+      <span> آخرین فعالیت: ۱۸ شهریور </span>
+    </div>
+  </div>
+
+  <div class="activity-card__actions">
+    <!-- Edit -->
+    <button
+      class="activity-card__action-button activity-card__edit"
+      type="button"
+      aria-label="ویرایش فعالیت"
+      data-action="edit"
+    >
+      ✎
+    </button>
+
+    <!-- Restore -->
+    <button
+      class="activity-card__action-button activity-card__restore"
+      type="button"
+      aria-label="بازگردانی فعالیت"
+      data-action="restore"
+    >
+      ↩
+    </button>
+
+    <!-- Delete -->
+    <button
+      class="activity-card__action-button activity-card__delete"
+      type="button"
+      aria-label="حذف کامل فعالیت"
+      data-action="delete"
+    >
+      🗑
+    </button>
+  </div>
+</article>
+
+<!-- ========================================
+            Untimed Activity Card Component
+      ======================================== -->
+
+<article
+  class="untimed-activity-card"
+  data-activity-id="4"
+  data-activity-type="untimed"
+>
+  <!-- Activity Color -->
+  <span class="untimed-activity-card__color" aria-hidden="true"></span>
+
+  <!-- Main Content -->
+  <div class="untimed-activity-card__content">
+    <!-- Header -->
+    <div class="untimed-activity-card__header">
+      <div class="untimed-activity-card__title-wrapper">
+        <h3 class="untimed-activity-card__title">مطالعه زبان</h3>
+
+        <span class="untimed-activity-card__type"> بدون زمان </span>
+      </div>
+    </div>
+
+    <!-- Information -->
+    <div class="untimed-activity-card__info">
+      <span class="untimed-activity-card__created"> ایجاد شده: ۱۵ شهریور </span>
+
+      <span class="untimed-activity-card__goal"> هدف: ۶ بار </span>
+    </div>
+
+    <!-- Checkboxes -->
+    <div
+      class="untimed-activity-card__checks"
+      role="group"
+      aria-label="پیشرفت فعالیت"
+    >
+      <label class="untimed-activity-card__check">
+        <input type="checkbox" checked />
+
+        <span class="untimed-activity-card__checkbox">
+          <span class="untimed-activity-card__checkmark"> ✓ </span>
+        </span>
+      </label>
+
+      <label class="untimed-activity-card__check">
+        <input type="checkbox" checked />
+
+        <span class="untimed-activity-card__checkbox">
+          <span class="untimed-activity-card__checkmark"> ✓ </span>
+        </span>
+      </label>
+
+      <label class="untimed-activity-card__check">
+        <input type="checkbox" checked />
+
+        <span class="untimed-activity-card__checkbox">
+          <span class="untimed-activity-card__checkmark"> ✓ </span>
+        </span>
+      </label>
+
+      <label class="untimed-activity-card__check">
+        <input type="checkbox" />
+
+        <span class="untimed-activity-card__checkbox">
+          <span class="untimed-activity-card__checkmark"> ✓ </span>
+        </span>
+      </label>
+
+      <label class="untimed-activity-card__check">
+        <input type="checkbox" />
+
+        <span class="untimed-activity-card__checkbox">
+          <span class="untimed-activity-card__checkmark"> ✓ </span>
+        </span>
+      </label>
+
+      <label class="untimed-activity-card__check">
+        <input type="checkbox" />
+
+        <span class="untimed-activity-card__checkbox">
+          <span class="untimed-activity-card__checkmark"> ✓ </span>
+        </span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="untimed-activity-card__actions">
+    <button
+      class="untimed-activity-card__action-button untimed-activity-card__edit"
+      type="button"
+      aria-label="ویرایش فعالیت"
+      data-action="edit"
+    >
+      <span class="untimed-activity-card__action-icon" aria-hidden="true">
+        ✎
+      </span>
+    </button>
+
+    <button
+      class="untimed-activity-card__action-button untimed-activity-card__archive"
+      type="button"
+      aria-label="آرشیو فعالیت"
+      data-action="archive"
+    >
+      <span class="untimed-activity-card__action-icon" aria-hidden="true">
+        ×
+      </span>
+    </button>
+  </div>
+</article>
+
+<!-- archive -->
+<article
+  class="untimed-activity-card untimed-activity-card--archived"
+  data-activity-id="4"
+  data-activity-type="untimed"
+  data-activity-status="archived"
+>
+  <!-- Activity Color -->
+  <span class="untimed-activity-card__color" aria-hidden="true"></span>
+
+  <!-- Main Content -->
+  <div class="untimed-activity-card__content">
+    <div class="untimed-activity-card__header">
+      <div class="untimed-activity-card__title-wrapper">
+        <h3 class="untimed-activity-card__title">مطالعه زبان</h3>
+
+        <span class="untimed-activity-card__type"> بدون زمان </span>
+      </div>
+    </div>
+
+    <div class="untimed-activity-card__info">
+      <span class="untimed-activity-card__created"> ایجاد شده: ۱۵ شهریور </span>
+
+      <span class="untimed-activity-card__goal"> هدف: ۶ بار </span>
+    </div>
+
+    <!-- Progress -->
+    <div class="untimed-activity-card__checks" aria-label="پیشرفت فعالیت">
+      <span
+        class="untimed-activity-card__checkbox untimed-activity-card__checkbox--checked"
+      >
+        ✓
+      </span>
+
+      <span
+        class="untimed-activity-card__checkbox untimed-activity-card__checkbox--checked"
+      >
+        ✓
+      </span>
+
+      <span
+        class="untimed-activity-card__checkbox untimed-activity-card__checkbox--checked"
+      >
+        ✓
+      </span>
+
+      <span class="untimed-activity-card__checkbox"> </span>
+
+      <span class="untimed-activity-card__checkbox"> </span>
+
+      <span class="untimed-activity-card__checkbox"> </span>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="untimed-activity-card__actions">
+    <!-- Edit -->
+    <button
+      class="untimed-activity-card__action-button untimed-activity-card__edit"
+      type="button"
+      aria-label="ویرایش فعالیت"
+      data-action="edit"
+    >
+      <span class="untimed-activity-card__action-icon" aria-hidden="true">
+        ✎
+      </span>
+    </button>
+
+    <!-- Restore -->
+    <button
+      class="untimed-activity-card__action-button untimed-activity-card__restore"
+      type="button"
+      aria-label="بازگردانی فعالیت"
+      data-action="restore"
+    >
+      <span class="untimed-activity-card__action-icon" aria-hidden="true">
+        ↩
+      </span>
+    </button>
+
+    <!-- Delete -->
+    <button
+      class="untimed-activity-card__action-button untimed-activity-card__delete"
+      type="button"
+      aria-label="حذف کامل فعالیت"
+      data-action="delete"
+    >
+      <span class="untimed-activity-card__action-icon" aria-hidden="true">
+        🗑
+      </span>
+    </button>
+  </div>
+</article>
+
+
 
 <!-- ========================================
                  Activity Form Modal

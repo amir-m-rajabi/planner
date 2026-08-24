@@ -227,148 +227,146 @@ export function ReportsView(){
       </div>
     </div>
   </section>
-
-  <!-- ================================
-         UNTIMED STATISTICS
-    ================================= -->
-
-  <section
-    class="statistics-content statistics-content--untimed"
-    data-statistics-content="untimed"
-    hidden
-  >
-    <div class="statistics-main-card">
-      <div class="statistics-main-card__header">
-        <div>
-          <span class="statistics-main-card__eyebrow">
-            فعالیت‌های بدون زمان
-          </span>
-
-          <h2 class="statistics-main-card__title">روند انجام فعالیت‌ها</h2>
-        </div>
-
-        <div class="statistics-main-card__total">
-          <span> مجموع انجام‌شده </span>
-
-          <strong> ۸۶ </strong>
-        </div>
-      </div>
-
-      <!-- Line Chart -->
-
-      <div class="statistics-line-chart">
-        <div class="statistics-line-chart__y-axis">
-          <span>۱۰۰</span>
-          <span>۸۰</span>
-          <span>۶۰</span>
-          <span>۴۰</span>
-          <span>۲۰</span>
-          <span>۰</span>
-        </div>
-
-        <div class="statistics-line-chart__body">
-          <div class="statistics-line-chart__grid">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-
-          <div class="statistics-line-chart__line">
-            <span style="--point-x: 5%; --point-y: 72%"></span>
-            <span style="--point-x: 20%; --point-y: 48%"></span>
-            <span style="--point-x: 35%; --point-y: 58%"></span>
-            <span style="--point-x: 50%; --point-y: 28%"></span>
-            <span style="--point-x: 65%; --point-y: 42%"></span>
-            <span style="--point-x: 80%; --point-y: 18%"></span>
-            <span style="--point-x: 95%; --point-y: 30%"></span>
-          </div>
-
-          <div class="statistics-line-chart__days">
-            <span>۱</span>
-            <span>۵</span>
-            <span>۱۰</span>
-            <span>۱۵</span>
-            <span>۲۰</span>
-            <span>۲۵</span>
-            <span>۳۰</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Activity Breakdown -->
-
-      <div class="statistics-breakdown">
-        <article class="statistics-activity">
-          <span
-            class="statistics-activity__color"
-            style="--activity-color: #4f9ea5"
-          ></span>
-
-          <div class="statistics-activity__info">
-            <strong> مطالعه کتاب </strong>
-
-            <span> ۱۸ از ۲۰ مورد </span>
-          </div>
-
-          <strong class="statistics-activity__percent"> ۹۰٪ </strong>
-        </article>
-
-        <article class="statistics-activity">
-          <span
-            class="statistics-activity__color"
-            style="--activity-color: #e0a458"
-          ></span>
-
-          <div class="statistics-activity__info">
-            <strong> تمرین زبان </strong>
-
-            <span> ۱۲ از ۱۵ مورد </span>
-          </div>
-
-          <strong class="statistics-activity__percent"> ۸۰٪ </strong>
-        </article>
-
-        <article class="statistics-activity">
-          <span
-            class="statistics-activity__color"
-            style="--activity-color: #d96b6b"
-          ></span>
-
-          <div class="statistics-activity__info">
-            <strong> حل تمرین </strong>
-
-            <span> ۸ از ۱۰ مورد </span>
-          </div>
-
-          <strong class="statistics-activity__percent"> ۸۰٪ </strong>
-        </article>
-      </div>
-    </div>
-
-    <div class="statistics-insights">
-      <div class="statistics-insight">
-        <span> بهترین فعالیت </span>
-
-        <strong> مطالعه کتاب </strong>
-      </div>
-
-      <div class="statistics-insight">
-        <span> میانگین روزانه </span>
-
-        <strong> ۴٫۵ مورد </strong>
-      </div>
-
-      <div class="statistics-insight">
-        <span> مجموع اهداف </span>
-
-        <strong> ۱۰۸ </strong>
-      </div>
-    </div>
-  </section>
-
-
     `;
 }
+
+  // <!-- ================================
+  //        UNTIMED STATISTICS
+  //   ================================= -->
+
+  // <section
+  //   class="statistics-content statistics-content--untimed"
+  //   data-statistics-content="untimed"
+  //   hidden
+  // >
+  //   <div class="statistics-main-card">
+  //     <div class="statistics-main-card__header">
+  //       <div>
+  //         <span class="statistics-main-card__eyebrow">
+  //           فعالیت‌های بدون زمان
+  //         </span>
+
+  //         <h2 class="statistics-main-card__title">روند انجام فعالیت‌ها</h2>
+  //       </div>
+
+  //       <div class="statistics-main-card__total">
+  //         <span> مجموع انجام‌شده </span>
+
+  //         <strong> ۸۶ </strong>
+  //       </div>
+  //     </div>
+
+      // <!-- Line Chart -->
+
+      // <div class="statistics-line-chart">
+      //   <div class="statistics-line-chart__y-axis">
+      //     <span>۱۰۰</span>
+      //     <span>۸۰</span>
+      //     <span>۶۰</span>
+      //     <span>۴۰</span>
+      //     <span>۲۰</span>
+      //     <span>۰</span>
+      //   </div>
+
+      //   <div class="statistics-line-chart__body">
+      //     <div class="statistics-line-chart__grid">
+      //       <span></span>
+      //       <span></span>
+      //       <span></span>
+      //       <span></span>
+      //       <span></span>
+      //       <span></span>
+      //     </div>
+
+      //     <div class="statistics-line-chart__line">
+      //       <span style="--point-x: 5%; --point-y: 72%"></span>
+      //       <span style="--point-x: 20%; --point-y: 48%"></span>
+      //       <span style="--point-x: 35%; --point-y: 58%"></span>
+      //       <span style="--point-x: 50%; --point-y: 28%"></span>
+      //       <span style="--point-x: 65%; --point-y: 42%"></span>
+      //       <span style="--point-x: 80%; --point-y: 18%"></span>
+      //       <span style="--point-x: 95%; --point-y: 30%"></span>
+      //     </div>
+
+      //     <div class="statistics-line-chart__days">
+      //       <span>۱</span>
+      //       <span>۵</span>
+      //       <span>۱۰</span>
+      //       <span>۱۵</span>
+      //       <span>۲۰</span>
+      //       <span>۲۵</span>
+      //       <span>۳۰</span>
+      //     </div>
+      //   </div>
+      // </div>
+
+      // <!-- Activity Breakdown -->
+
+  //     <div class="statistics-breakdown">
+  //       <article class="statistics-activity">
+  //         <span
+  //           class="statistics-activity__color"
+  //           style="--activity-color: #4f9ea5"
+  //         ></span>
+
+  //         <div class="statistics-activity__info">
+  //           <strong> مطالعه کتاب </strong>
+
+  //           <span> ۱۸ از ۲۰ مورد </span>
+  //         </div>
+
+  //         <strong class="statistics-activity__percent"> ۹۰٪ </strong>
+  //       </article>
+
+  //       <article class="statistics-activity">
+  //         <span
+  //           class="statistics-activity__color"
+  //           style="--activity-color: #e0a458"
+  //         ></span>
+
+  //         <div class="statistics-activity__info">
+  //           <strong> تمرین زبان </strong>
+
+  //           <span> ۱۲ از ۱۵ مورد </span>
+  //         </div>
+
+  //         <strong class="statistics-activity__percent"> ۸۰٪ </strong>
+  //       </article>
+
+  //       <article class="statistics-activity">
+  //         <span
+  //           class="statistics-activity__color"
+  //           style="--activity-color: #d96b6b"
+  //         ></span>
+
+  //         <div class="statistics-activity__info">
+  //           <strong> حل تمرین </strong>
+
+  //           <span> ۸ از ۱۰ مورد </span>
+  //         </div>
+
+  //         <strong class="statistics-activity__percent"> ۸۰٪ </strong>
+  //       </article>
+  //     </div>
+  //   </div>
+
+  //   <div class="statistics-insights">
+  //     <div class="statistics-insight">
+  //       <span> بهترین فعالیت </span>
+
+  //       <strong> مطالعه کتاب </strong>
+  //     </div>
+
+  //     <div class="statistics-insight">
+  //       <span> میانگین روزانه </span>
+
+  //       <strong> ۴٫۵ مورد </strong>
+  //     </div>
+
+  //     <div class="statistics-insight">
+  //       <span> مجموع اهداف </span>
+
+  //       <strong> ۱۰۸ </strong>
+  //     </div>
+  //   </div>
+  // </section>

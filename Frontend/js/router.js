@@ -3,6 +3,7 @@ import { ActivitiesView } from "../pages/activities/activities-view.js";
 import { ReportsView } from "../pages/reports/reports-view.js";
 import { CalendarView } from "../pages/calendar/calendar-view.js";
 import { ProfileView } from "../pages/profile/profile-view.js";
+import { renderTimedActivitiesToDOM } from "../Components/dashboard/timed-activities/timed-activities.js"
 
 export function router() {
 
@@ -16,6 +17,7 @@ export function router() {
         case "/":
         case "/Frontend/index.html":
             pageContent.innerHTML = DashboardView();
+            renderTimedActivitiesToDOM()
             break;
            
         case "/activities":

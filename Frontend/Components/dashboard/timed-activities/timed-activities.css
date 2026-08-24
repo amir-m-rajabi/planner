@@ -294,6 +294,25 @@
     transform: translateY(0);
 }
 
+.timed-activity__start.is-active {
+    color: #ffffff;
+    background-color: var(--activity-color);
+    border-color: var(--activity-color);
+
+    box-shadow:
+        0 4px 10px color-mix(
+            in srgb,
+            var(--activity-color) 25%,
+            transparent
+        );
+}
+
+.timed-activity__start.is-active:hover {
+    color: #ffffff;
+    background-color: var(--activity-color);
+    border-color: var(--activity-color);
+}
+
 
 /* ========================================
    Start Icon

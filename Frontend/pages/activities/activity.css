@@ -1,4 +1,213 @@
 /* ========================================
+   Activity Status Filter
+======================================== */
+
+.activity-status-filter {
+    width: fit-content;
+
+    display: flex;
+    align-items: center;
+
+    padding: 4px;
+
+    background-color: var(--color-background);
+
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+
+    box-shadow: var(--shadow-sm);
+
+    gap: 3px;
+}
+
+
+/* ========================================
+   Filter Item
+======================================== */
+
+.activity-status-filter__item {
+    position: relative;
+
+    min-width: 145px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 9px 14px;
+
+    border: 0;
+    border-radius: 9px;
+
+    background-color: transparent;
+
+    color: var(--color-text-secondary);
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* ========================================
+   Indicator
+======================================== */
+
+.activity-status-filter__indicator {
+    width: 6px;
+    height: 6px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background-color: var(--color-text-secondary);
+
+    opacity: 0.45;
+
+    transition:
+        background-color 0.2s ease,
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* ========================================
+   Count
+======================================== */
+
+.activity-status-filter__count {
+    min-width: 20px;
+    height: 20px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding-inline: 5px;
+
+    border-radius: 999px;
+
+    background-color: rgba(0, 0, 0, 0.04);
+
+    color: var(--color-text-secondary);
+
+    font-size: 10px;
+    font-weight: 600;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+
+/* ========================================
+   Hover
+======================================== */
+
+.activity-status-filter__item:hover {
+    color: var(--color-text);
+
+    background-color: var(--color-surface);
+}
+
+
+.activity-status-filter__item:hover
+.activity-status-filter__indicator {
+    opacity: 0.8;
+
+    transform: scale(1.15);
+}
+
+
+/* ========================================
+   Active
+======================================== */
+
+.activity-status-filter__item--active {
+    background-color: var(--color-surface);
+
+    color: var(--color-text);
+
+    font-weight: 600;
+
+    box-shadow: var(--shadow-sm);
+}
+
+
+.activity-status-filter__item--active
+.activity-status-filter__indicator {
+    background-color: var(--color-primary);
+
+    opacity: 1;
+
+    transform: scale(1.15);
+}
+
+
+.activity-status-filter__item--active
+.activity-status-filter__count {
+    background-color: rgba(79, 158, 165, 0.1);
+
+    color: var(--color-primary);
+}
+
+
+/* ========================================
+   Active Hover
+======================================== */
+
+.activity-status-filter__item--active:hover {
+    color: var(--color-text);
+}
+
+
+/* ========================================
+   Focus
+======================================== */
+
+.activity-status-filter__item:focus-visible {
+    outline: 2px solid var(--color-primary);
+
+    outline-offset: 2px;
+}
+
+
+/* ========================================
+   Responsive
+======================================== */
+
+@media (max-width: 500px) {
+
+    .activity-status-filter {
+        width: 100%;
+    }
+
+
+    .activity-status-filter__item {
+        min-width: 0;
+
+        flex: 1;
+
+        padding-inline: 10px;
+
+        font-size: 11px;
+    }
+
+}
+
+
+/* ========================================
    Activities Page
 ======================================== */
 
@@ -327,6 +536,1390 @@
 
     .activity-column__list {
         padding: 12px;
+    }
+
+}
+
+
+/* ========================================
+   Timed Activity Card
+======================================== */
+
+.activity-card {
+    position: relative;
+
+    width: 100%;
+    min-height: 86px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 14px 15px 14px 16px;
+
+    background-color: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-sm);
+
+    overflow: hidden;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* ========================================
+   Hover
+======================================== */
+
+.activity-card:hover {
+    border-color: rgba(79, 158, 165, 0.25);
+
+    box-shadow: var(--shadow-md);
+
+    transform: translateY(-1px);
+}
+
+
+/* ========================================
+   Activity Color
+======================================== */
+
+.activity-card__color {
+    position: absolute;
+
+    top: 0;
+    right: 0;
+
+    width: 15px;
+    height: 100%;
+
+    background-color: #4f9ea5;
+
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+
+
+/* ========================================
+   Content
+======================================== */
+
+.activity-card__content {
+    min-width: 0;
+
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+
+    padding-right: 9px;
+}
+
+
+/* ========================================
+   Header
+======================================== */
+
+.activity-card__header {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+}
+
+
+.activity-card__title-wrapper {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+}
+
+
+/* ========================================
+   Title
+======================================== */
+
+.activity-card__title {
+    min-width: 0;
+
+    margin: 0;
+
+    overflow: hidden;
+
+    color: var(--color-text);
+
+    font-size: 13px;
+    font-weight: 650;
+
+    line-height: 1.5;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* ========================================
+   Type
+======================================== */
+
+.activity-card__type {
+    flex-shrink: 0;
+
+    padding: 2px 6px;
+
+    border-radius: 999px;
+
+    background-color: rgba(79, 158, 165, 0.08);
+
+    color: var(--color-primary);
+
+    font-size: 9px;
+    font-weight: 500;
+}
+
+
+/* ========================================
+   Information
+======================================== */
+
+.activity-card__info {
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    color: var(--color-text-secondary);
+
+    font-size: 10px;
+}
+
+
+/* ========================================
+   Actions
+======================================== */
+
+.activity-card__actions {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+
+    margin-right: 12px;
+}
+
+
+/* ========================================
+   Edit / Archive Buttons
+======================================== */
+
+.activity-card__action-button {
+    width: 29px;
+    height: 29px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+
+    background-color: transparent;
+
+    color: var(--color-text-secondary);
+
+    font-family: inherit;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.activity-card__archive {
+    font-size: 14px;
+
+    line-height: 1;
+}
+
+
+.activity-card__edit:hover {
+    background-color: rgba(186, 206, 87, 0.432);
+
+    border-color: rgba(198, 230, 79, 0.522);
+
+    color: var(--color-primary);
+
+    transform: translateY(-1px);
+}
+
+
+.activity-card__archive:hover {
+    background-color: rgba(210, 70, 70, 0.08);
+
+    border-color: rgba(210, 70, 70, 0.25);
+
+    color: #c94b4b;
+
+    transform: translateY(-1px);
+}
+
+
+
+
+/* ========================================
+   Start Button
+======================================== */
+
+.activity-card__start {
+    min-width: 68px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    padding: 7px 9px;
+
+    border: 1px solid rgba(79, 158, 165, 0.22);
+    border-radius: 8px;
+
+    background-color: rgba(79, 158, 165, 0.07);
+
+    color: var(--color-primary);
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.activity-card__start-icon {
+    font-size: 8px;
+}
+
+
+.activity-card__start:hover {
+    background-color: var(--color-primary);
+
+    border-color: var(--color-primary);
+
+    color: var(--color-surface);
+
+    box-shadow: 0 4px 12px rgba(79, 158, 165, 0.16);
+
+    transform: translateY(-1px);
+}
+
+
+/* ========================================
+   Active State
+======================================== */
+
+.activity-card--active {
+    border-color: rgba(79, 158, 165, 0.35);
+    
+    box-shadow: var(--shadow-md);
+}
+
+
+.activity-card--active .activity-card__color {
+    width: 15px;
+}
+
+
+.activity-card__status {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 5px;
+
+    color: var(--color-primary);
+
+    font-weight: 600;
+}
+
+
+.activity-card__status::before {
+    content: "";
+
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background-color: var(--color-primary);
+
+    animation: activity-pulse 1.5s ease-in-out infinite;
+}
+
+
+.activity-card__elapsed {
+    direction: ltr;
+
+    font-variant-numeric: tabular-nums;
+
+    color: var(--color-text);
+
+    font-weight: 600;
+}
+
+
+/* ========================================
+   Stop Button
+======================================== */
+
+.activity-card__start--stop {
+    background-color: var(--color-primary);
+
+    border-color: var(--color-primary);
+
+    color: var(--color-surface);
+}
+
+
+.activity-card__start--stop:hover {
+    background-color: transparent;
+
+    color: var(--color-primary);
+
+    box-shadow: none;
+}
+
+
+/* ========================================
+   Animation
+======================================== */
+
+@keyframes activity-pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.45;
+        transform: scale(0.75);
+    }
+}
+
+
+/* ========================================
+   Focus
+======================================== */
+
+.activity-card__action-button:focus-visible,
+.activity-card__start:focus-visible {
+    outline: 2px solid var(--color-primary);
+
+    outline-offset: 2px;
+}
+
+
+/* ========================================
+   Small Screens
+======================================== */
+
+@media (max-width: 500px) {
+
+    .activity-card {
+        padding: 13px;
+    }
+
+    .activity-card__type {
+        display: none;
+    }
+
+    .activity-card__actions {
+        margin-right: 8px;
+
+        gap: 4px;
+    }
+
+    .activity-card__action-button {
+        width: 27px;
+        height: 27px;
+    }
+
+    .activity-card__start {
+        min-width: 62px;
+
+        padding-inline: 7px;
+    }
+
+}
+
+
+/* ========================================
+   Activity Form Modal
+======================================== */
+
+.activity-form {
+    display: none;
+
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 24px;
+
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(15, 23, 42, 0.42);
+
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+
+    z-index: 1000;
+
+    direction: rtl;
+}
+
+.activity-form.is-open {
+    display: flex;
+}
+
+
+/* ========================================
+   Container
+======================================== */
+
+.activity-form__container {
+    width: min(100%, 480px);
+    max-height: calc(100vh - 48px);
+
+    display: flex;
+    flex-direction: column;
+
+    background: #ffffff;
+
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 18px;
+
+    box-shadow:
+        0 20px 50px rgba(15, 23, 42, 0.16),
+        0 4px 12px rgba(15, 23, 42, 0.06);
+
+    overflow: hidden;
+
+    animation: activityFormEnter 180ms ease-out;
+}
+
+
+/* ========================================
+   Header
+======================================== */
+
+.activity-form__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 22px 24px 18px;
+
+    border-bottom: 1px solid #edf0f2;
+}
+
+.activity-form__heading {
+    min-width: 0;
+}
+
+.activity-form__eyebrow {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #8a929b;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.activity-form__title {
+    margin: 0;
+
+    color: #20262d;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    line-height: 1.5;
+}
+
+.activity-form__description {
+    margin: 6px 0 0;
+
+    color: #7b838c;
+
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+
+/* ========================================
+   Close Button
+======================================== */
+
+.activity-form__close {
+    flex: 0 0 32px;
+
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid #edf0f2;
+    border-radius: 9px;
+
+    background: #f8f9fa;
+    color: #737b84;
+
+    font-family: inherit;
+    font-size: 20px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background-color 160ms ease,
+        color 160ms ease,
+        border-color 160ms ease,
+        transform 160ms ease;
+}
+
+.activity-form__close:hover {
+    background: #f1f3f5;
+    color: #343a40;
+    border-color: #e1e5e8;
+
+    transform: rotate(4deg);
+}
+
+
+/* ========================================
+   Form
+======================================== */
+
+.activity-form__form {
+    display: flex;
+    flex-direction: column;
+
+    min-height: 0;
+
+    padding: 22px 24px 24px;
+
+    overflow-y: auto;
+}
+
+
+/* ========================================
+   Section
+======================================== */
+
+.activity-form__section {
+    margin: 0;
+    padding: 0;
+
+    border: 0;
+}
+
+.activity-form__section-title {
+    margin-bottom: 18px;
+
+    color: #353c43;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+
+/* ========================================
+   Fields
+======================================== */
+
+.activity-form__field {
+    margin-bottom: 18px;
+}
+
+.activity-form__label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #4d555d;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+/* ========================================
+   Text Input
+======================================== */
+
+.activity-form__input {
+    width: 100%;
+    height: 42px;
+
+    padding: 0 12px;
+
+    border: 1px solid #dfe4e8;
+    border-radius: 9px;
+
+    outline: none;
+
+    background: #ffffff;
+    color: #252b31;
+
+    font-family: inherit;
+    font-size: 13px;
+
+    transition:
+        border-color 160ms ease,
+        box-shadow 160ms ease,
+        background-color 160ms ease;
+}
+
+.activity-form__input::placeholder {
+    color: #aab1b8;
+}
+
+.activity-form__input:hover {
+    border-color: #c9d0d6;
+}
+
+.activity-form__input:focus {
+    border-color: #4f9ea5;
+
+    box-shadow:
+        0 0 0 3px rgba(79, 158, 165, 0.10);
+}
+
+
+/* ========================================
+   Color Picker
+======================================== */
+
+.activity-form__color-picker {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    height: 42px;
+
+    padding: 5px 8px 5px 12px;
+
+    border: 1px solid #dfe4e8;
+    border-radius: 9px;
+
+    background: #ffffff;
+}
+
+.activity-form__color-input {
+    width: 32px;
+    height: 32px;
+
+    padding: 0;
+
+    border: 0;
+    border-radius: 7px;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    overflow: hidden;
+}
+
+.activity-form__color-preview {
+    color: #7a828a;
+
+    font-size: 12px;
+}
+
+
+/* ========================================
+   Actions
+======================================== */
+
+.activity-form__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 9px;
+
+    margin-top: 8px;
+    padding-top: 18px;
+
+    border-top: 1px solid #edf0f2;
+}
+
+
+/* Cancel */
+
+.activity-form__cancel {
+    height: 38px;
+
+    padding: 0 16px;
+
+    border: 1px solid #e1e5e8;
+    border-radius: 9px;
+
+    background: #ffffff;
+    color: #68717a;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background-color 160ms ease,
+        border-color 160ms ease,
+        color 160ms ease;
+}
+
+.activity-form__cancel:hover {
+    background: #f7f8f9;
+    border-color: #d5dadd;
+    color: #3f474e;
+}
+
+
+/* Submit */
+
+.activity-form__submit {
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 0 17px;
+
+    border: 1px solid #4f9ea5;
+    border-radius: 9px;
+
+    background: #4f9ea5;
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 4px 10px rgba(79, 158, 165, 0.16);
+
+    transition:
+        background-color 160ms ease,
+        border-color 160ms ease,
+        box-shadow 160ms ease,
+        transform 160ms ease;
+}
+
+.activity-form__submit:hover {
+    background: #438c93;
+    border-color: #438c93;
+
+    box-shadow:
+        0 6px 14px rgba(79, 158, 165, 0.22);
+
+    transform: translateY(-1px);
+}
+
+.activity-form__submit:active {
+    transform: translateY(0);
+}
+
+.activity-form__submit-icon {
+    font-size: 15px;
+    line-height: 1;
+}
+
+
+/* ========================================
+   Hidden Untimed Field
+======================================== */
+
+.activity-form__field--untimed[hidden] {
+    display: none;
+}
+
+
+/* ========================================
+   Animation
+======================================== */
+
+@keyframes activityFormEnter {
+
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* ========================================
+   Responsive
+======================================== */
+
+@media (max-width: 520px) {
+
+    .activity-form {
+        padding: 14px;
+    }
+
+    .activity-form__container {
+        max-height: calc(100vh - 28px);
+
+        border-radius: 15px;
+    }
+
+    .activity-form__header {
+        padding: 18px 18px 16px;
+    }
+
+    .activity-form__form {
+        padding: 18px;
+    }
+
+    .activity-form__title {
+        font-size: 16px;
+    }
+
+    .activity-form__actions {
+        flex-direction: row;
+    }
+
+    .activity-form__cancel,
+    .activity-form__submit {
+        flex: 1;
+    }
+}
+
+
+
+
+/* ========================================
+   Untimed Activity Card
+======================================== */
+
+.untimed-activity-card {
+    position: relative;
+
+    width: 100%;
+    min-height: 120px;
+
+    display: flex;
+    align-items: stretch;
+
+    padding: 14px 15px 14px 16px;
+
+    background-color: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-sm);
+
+    overflow: hidden;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* ========================================
+   Hover
+======================================== */
+
+.untimed-activity-card:hover {
+    border-color: rgba(79, 158, 165, 0.25);
+
+    box-shadow: var(--shadow-md);
+
+    transform: translateY(-1px);
+}
+
+
+/* ========================================
+   Activity Color
+======================================== */
+
+.untimed-activity-card__color {
+    position: absolute;
+
+    top: 0;
+    right: 0;
+
+    width: 4px;
+    height: 100%;
+
+    background-color: #4f9ea5;
+
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+
+
+/* ========================================
+   Content
+======================================== */
+
+.untimed-activity-card__content {
+    min-width: 0;
+
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+
+    padding-right: 9px;
+}
+
+
+/* ========================================
+   Header
+======================================== */
+
+.untimed-activity-card__header {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+}
+
+
+.untimed-activity-card__title-wrapper {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+}
+
+
+/* ========================================
+   Title
+======================================== */
+
+.untimed-activity-card__title {
+    min-width: 0;
+
+    margin: 0;
+
+    overflow: hidden;
+
+    color: var(--color-text);
+
+    font-size: 13px;
+    font-weight: 650;
+
+    line-height: 1.5;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* ========================================
+   Type
+======================================== */
+
+.untimed-activity-card__type {
+    flex-shrink: 0;
+
+    padding: 2px 6px;
+
+    border-radius: 999px;
+
+    background-color: rgba(79, 158, 165, 0.08);
+
+    color: var(--color-primary);
+
+    font-size: 9px;
+    font-weight: 500;
+}
+
+
+/* ========================================
+   Information
+======================================== */
+
+.untimed-activity-card__info {
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    color: var(--color-text-secondary);
+
+    font-size: 10px;
+}
+
+
+/* ========================================
+   Checkboxes Container
+======================================== */
+
+.untimed-activity-card__checks {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    direction: rtl;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    padding: 2px 1px 5px;
+}
+
+
+/* Hide Scrollbar */
+
+.untimed-activity-card__checks {
+    scrollbar-width: none;
+}
+
+.untimed-activity-card__checks::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* ========================================
+   Checkbox
+======================================== */
+
+.untimed-activity-card__check {
+    flex: 0 0 auto;
+
+    position: relative;
+
+    display: flex;
+
+    cursor: pointer;
+}
+
+
+.untimed-activity-card__check input {
+    position: absolute;
+
+    width: 1px;
+    height: 1px;
+
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+
+/* ========================================
+   Checkbox Visual
+======================================== */
+
+.untimed-activity-card__checkbox {
+    width: 24px;
+    height: 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--color-border);
+    border-radius: 7px;
+
+    background-color: var(--color-background);
+
+    color: transparent;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+/* ========================================
+   Checkmark
+======================================== */
+
+.untimed-activity-card__checkmark {
+    font-size: 13px;
+    font-weight: 700;
+
+    transform: scale(0);
+
+    transition:
+        transform 0.2s ease;
+}
+
+
+/* ========================================
+   Checked
+======================================== */
+
+.untimed-activity-card__check input:checked
++ .untimed-activity-card__checkbox {
+
+    background-color: var(--color-primary);
+
+    border-color: var(--color-primary);
+
+    color: var(--color-surface);
+
+    box-shadow: 0 4px 10px rgba(79, 158, 165, 0.18);
+}
+
+
+.untimed-activity-card__check input:checked
++ .untimed-activity-card__checkbox
+.untimed-activity-card__checkmark {
+
+    transform: scale(1);
+}
+
+
+/* ========================================
+   Checkbox Hover
+======================================== */
+
+.untimed-activity-card__check:hover
+.untimed-activity-card__checkbox {
+
+    border-color: var(--color-primary);
+
+    transform: translateY(-1px);
+}
+
+
+/* ========================================
+   Actions
+======================================== */
+
+.untimed-activity-card__actions {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 5px;
+
+    margin-right: 12px;
+}
+
+
+/* ========================================
+   Action Buttons
+======================================== */
+
+.untimed-activity-card__action-button {
+    width: 29px;
+    height: 29px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+
+    background-color: transparent;
+
+    color: var(--color-text-secondary);
+
+    font-family: inherit;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.untimed-activity-card__action-icon {
+    font-size: 14px;
+
+    line-height: 1;
+}
+
+
+/* ========================================
+   Edit
+======================================== */
+
+.untimed-activity-card__edit:hover {
+    background-color: rgba(186, 206, 87, 0.432);
+
+    border-color: rgba(198, 230, 79, 0.522);
+
+    color: var(--color-primary);
+
+    transform: translateY(-1px);
+}
+
+
+/* ========================================
+   Archive
+======================================== */
+
+.untimed-activity-card__archive:hover {
+    background-color: rgba(210, 70, 70, 0.08);
+
+    border-color: rgba(210, 70, 70, 0.25);
+
+    color: #c94b4b;
+
+    transform: translateY(-1px);
+}
+
+
+/* ========================================
+   Focus
+======================================== */
+
+.untimed-activity-card__action-button:focus-visible,
+.untimed-activity-card__check input:focus-visible
++ .untimed-activity-card__checkbox {
+
+    outline: 2px solid var(--color-primary);
+
+    outline-offset: 2px;
+}
+
+
+/* ========================================
+   Archived State
+======================================== */
+
+.untimed-activity-card--archived {
+    opacity: 0.82;
+}
+
+
+.untimed-activity-card--archived
+.untimed-activity-card__color {
+    opacity: 0.55;
+}
+
+
+.untimed-activity-card--archived:hover {
+    opacity: 1;
+}
+
+
+/* ========================================
+   Restore
+======================================== */
+
+.untimed-activity-card__restore:hover {
+    background-color: rgba(79, 158, 165, 0.08);
+
+    border-color: rgba(79, 158, 165, 0.25);
+
+    color: var(--color-primary);
+
+    transform: translateY(-1px);
+}
+
+
+/* ========================================
+   Delete
+======================================== */
+
+.untimed-activity-card__delete:hover {
+    background-color: rgba(210, 49, 49, 0.232);
+
+    border-color: rgba(203, 62, 62, 0.642);
+
+    color: #9b0c0c;
+
+    transform: translateY(-1px);
+}
+
+/* ========================================
+   Responsive
+======================================== */
+
+@media (max-width: 500px) {
+
+    .untimed-activity-card {
+        padding: 13px;
+    }
+
+    .untimed-activity-card__type {
+        display: none;
+    }
+
+    .untimed-activity-card__actions {
+        margin-right: 8px;
+    }
+
+    .untimed-activity-card__action-button {
+        width: 27px;
+        height: 27px;
     }
 
 }
