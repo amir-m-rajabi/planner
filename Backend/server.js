@@ -465,10 +465,16 @@ app.delete('/api/untimed-activities/:id',async(req,res)=>{
 
 // Create a new Untimed Activity Record
 app.post('/api/untimed-activity-records',async(req,res)=>{
-    const {activity_id,record_date} = req.body
+    const {activity_id,record_date,completed_checks} = req.body
+
+        if (!activity_id || !record_date || !Array.isArray(completed_checks)) {
+            return res.status(400).json({
+                message: 'activity_id, record_date and completed_checks are required'
+            });
+        }
 
     const recordResult = await pool.query(`SELECT * FROM untimed_activity_records
-                                            WHERE activity_id = $1 AND record_date = $2`,[activity_id,record_date])
+                                            WHERE activity_id = $1 AND record_date = $2::date`,[activity_id,record_date])
 
     if(recordResult.rows.length > 0){
         return res.status(400).json({
@@ -476,9 +482,11 @@ app.post('/api/untimed-activity-records',async(req,res)=>{
         })
     }
 
-    const result = await pool.query(`INSERT INTO untimed_activity_records(activity_id,record_date,completed_count)
-                                        VALUES($1,$2,1)
-                                            RETURNING *`,[activity_id,record_date])
+    const completedCount = completed_checks.length;
+
+    const result = await pool.query(`INSERT INTO untimed_activity_records(activity_id,record_date,completed_count,completed_checks)
+                                        VALUES($1,$2::date,$3,$4)
+                                            RETURNING *`,[activity_id,record_date,completedCount,completed_checks])
 
     res.status(201).json(result.rows[0])
 })
@@ -497,7 +505,13 @@ app.get('/api/untimed-activity-records/:activityId',async(req,res)=>{
 app.patch('/api/untimed-activity-records/:id',async(req,res)=>{
 
     const {id} = req.params
-    const {completed_count} = req.body
+    const {completed_checks} = req.body
+
+        if (!Array.isArray(completed_checks)) {
+            return res.status(400).json({
+                message: 'completed_checks must be an array'
+            });
+        }
 
     const recordResult = await pool.query(`SELECT untimed_activity_records.* , untimed_activities.target_count
                                             FROM untimed_activity_records
@@ -512,18 +526,34 @@ app.patch('/api/untimed-activity-records/:id',async(req,res)=>{
 
     const record = recordResult.rows[0]
 
-    if(completed_count < 0 || completed_count > record.target_count){
-        res.status(400).json({
-            message: 'completed_count must be between 0 and target_count'
-        })
-    }
+    const invalidCheck =
+        completed_checks.some(
+            checkIndex =>
+                !Number.isInteger(checkIndex) ||
+                checkIndex < 0 ||
+                checkIndex >= record.target_count
+        );
+
+        if (invalidCheck) {
+
+            return res.status(400).json({
+                message: 'Invalid check index'
+            });
+        }
+
+
+    const completedCount = completed_checks.length;
+
 
     const result = await pool.query(`UPDATE untimed_activity_records
-                                        SET completed_count = $1
-                                            WHERE id = $2
-                                                RETURNING *`,[completed_count,id])
+                                        SET completed_count = $1,
+                                            completed_checks = $2,
+                                            update_at = CURRENT_TIMESTAMP
+                                            WHERE id = $3
+                                                RETURNING *`,[completedCount,completed_checks,id])
 
-    res.json(result.rows[0])                                                                                            
+    res.json(result.rows[0]) 
+
 })
 
 // Delete an Untimed Activity Record

@@ -4,6 +4,11 @@ import { ReportsView } from "../pages/reports/reports-view.js";
 import { CalendarView } from "../pages/calendar/calendar-view.js";
 import { ProfileView } from "../pages/profile/profile-view.js";
 import { renderTimedActivitiesToDOM } from "../Components/dashboard/timed-activities/timed-activities.js"
+import { initDailyNotes } from "../Components/dashboard/daily-note/daily-note.js";
+import { initUntimedActivities } from "../Components/dashboard/untimed-activities/untimed-activities.js"
+
+import { initClock } from "../Components/dashboard/clock/clock.js"
+
 
 export function router() {
 
@@ -18,6 +23,9 @@ export function router() {
         case "/Frontend/index.html":
             pageContent.innerHTML = DashboardView();
             renderTimedActivitiesToDOM()
+            initUntimedActivities()
+            initDailyNotes()
+            initClock()
             break;
            
         case "/activities":
