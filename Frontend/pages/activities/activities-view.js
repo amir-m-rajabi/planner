@@ -1,3 +1,12 @@
+import {
+    timedActivities,
+    ActivityFormModal,
+    ConcurrentActivityWarningModal,
+    requestStartActivity,
+    openActivityForm,
+    getActiveActivity
+} from "../../Components/dashboard/timed-activities/timed-activities.js";
+
 export function ActivitiesView(){
     return `
         <main class="activities-page">
@@ -64,7 +73,7 @@ export function ActivitiesView(){
               <div class="activity-column__heading">
                 <h2 class="activity-column__title">فعالیت‌های زمان‌دار</h2>
 
-                <span class="activity-column__count"> 3 </span>
+                <span class="activity-column__count" id="timedActivitiesCount"> 0 </span>
               </div>
 
               <button
@@ -82,171 +91,7 @@ export function ActivitiesView(){
 
             <div class="activity-column__list">
               <!-- Timed Activity Cards -->
-              <article
-                class="activity-card activity-card--timed"
-                data-activity-id="1"
-                data-activity-type="timed"
-              >
-                <!-- Activity Color -->
-                <span class="activity-card__color" aria-hidden="true"></span>
-
-                <!-- Main Content -->
-                <div class="activity-card__content">
-                  <div class="activity-card__header">
-                    <div class="activity-card__title-wrapper">
-                      <h3 class="activity-card__title">مطالعه ریاضی</h3>
-
-                      <span class="activity-card__type"> زمان‌دار </span>
-                    </div>
-                  </div>
-
-                  <!-- Activity Information -->
-                  <div class="activity-card__info">
-                    <span class="activity-card__created">
-                      ایجاد شده: ۱۵ شهریور ۱۴۰۵
-                    </span>
-
-                    <span class="activity-card__duration"> امروز: 02:38 </span>
-                  </div>
-                </div>
-
-                <!-- Activity Actions -->
-                <div class="activity-card__actions">
-                  <button
-                    class="activity-card__action-button activity-card__edit"
-                    type="button"
-                    aria-label="ویرایش فعالیت"
-                    data-action="edit"
-                  >
-                    <span class="activity-card__action-icon" aria-hidden="true">
-                      ✎
-                    </span>
-                  </button>
-
-                  <button
-                    class="activity-card__action-button activity-card__archive"
-                    type="button"
-                    aria-label="آرشیو فعالیت"
-                    data-action="archive"
-                  >
-                    <span class="activity-card__action-icon" aria-hidden="true">
-                      🗑
-                    </span>
-                  </button>
-
-                  <button
-                    class="activity-card__start"
-                    type="button"
-                    data-action="start"
-                  >
-                    <span class="activity-card__start-icon" aria-hidden="true">
-                      ▶
-                    </span>
-
-                    <span> شروع </span>
-                  </button>
-                </div>
-              </article>
-
-              <article
-                class="activity-card activity-card--timed activity-card--active"
-                data-activity-id="2"
-                data-activity-type="timed"
-              >
-                <!-- Activity Color -->
-                <span class="activity-card__color" aria-hidden="true"></span>
-
-                <!-- Main Content -->
-                <div class="activity-card__content">
-                  <div class="activity-card__header">
-                    <div class="activity-card__title-wrapper">
-                      <h3 class="activity-card__title">برنامه نویسی</h3>
-
-                      <span class="activity-card__type"> زمان‌دار </span>
-                    </div>
-                  </div>
-
-                  <!-- Activity Information -->
-                  <div class="activity-card__info">
-                    <span class="activity-card__created">
-                      ایجاد شده: ۱۵ شهریور ۱۴۰۵
-                    </span>
-
-                    <span class="activity-card__elapsed"> 00:37 :امروز</span>
-                    <span class="activity-card__status"> در حال انجام </span>
-                  </div>
-                </div>
-
-                <!-- Activity Actions -->
-                <div class="activity-card__actions">
-                  <button
-                    class="activity-card__start activity-card__start--stop"
-                    type="button"
-                    data-action="stop"
-                  >
-                    <span class="activity-card__start-icon" aria-hidden="true">
-                      ■
-                    </span>
-
-                    <span> پایان </span>
-                  </button>
-                </div>
-              </article>
-
-              <!-- archive -->
-              <article
-                class="activity-card activity-card--archived"
-                data-activity-id="1"
-                data-activity-status="archived"
-              >
-                <span class="activity-card__color" aria-hidden="true"></span>
-
-                <div class="activity-card__content">
-                  <div class="activity-card__title-wrapper">
-                    <h3 class="activity-card__title">مطالعه ریاضی</h3>
-
-                    <span class="activity-card__type"> زمان‌دار </span>
-                  </div>
-
-                  <div class="activity-card__info">
-                    <span> ایجاد شده: ۱۵ شهریور </span>
-
-                    <span> آخرین فعالیت: ۱۸ شهریور </span>
-                  </div>
-                </div>
-
-                <div class="activity-card__actions">
-                  <!-- Edit -->
-                  <button
-                    class="activity-card__action-button activity-card__edit"
-                    type="button"
-                    aria-label="ویرایش فعالیت"
-                    data-action="edit"
-                  >
-                    ✎
-                  </button>
-
-                  <!-- Restore -->
-                  <button
-                    class="activity-card__action-button activity-card__restore"
-                    type="button"
-                    aria-label="بازگردانی فعالیت"
-                    data-action="restore"
-                  >
-                    ↩
-                  </button>
-
-                  <!-- Delete -->
-                  <button
-                    class="activity-card__action-button activity-card__delete"
-                    type="button"
-                    aria-label="حذف کامل فعالیت"
-                    data-action="delete"
-                  >
-                    ×
-                  </button>
-                </div>
-              </article>
+            
             </div>
           </section>
 
@@ -527,5 +372,343 @@ export function ActivitiesView(){
           </section>
         </section>
       </div>
+
+      ${ActivityFormModal()}
+      ${ArchiveConfirmModal()}
+      ${ConcurrentActivityWarningModal()}
     `;
 }
+
+
+// ========================================
+// Render Timed Activities
+// ========================================
+
+export function renderTimedActivities() {
+
+    const list = document.querySelector(
+        ".activity-column--timed .activity-column__list"
+    );
+
+    if (!list) {
+        return;
+    }
+
+    const activeActivities = timedActivities.filter(
+        activity => !activity.archived
+    );
+
+    list.innerHTML = activeActivities
+        .map(activity => {
+
+            return `
+                <article
+                    class="activity-card activity-card--timed"
+                    data-activity-id="${activity.id}"
+                    data-activity-type="timed"
+                    style="--activity-color: ${activity.color};"
+                >
+
+                    <!-- Activity Color -->
+                    <span
+                        class="activity-card__color"
+                        aria-hidden="true"
+                    ></span>
+
+                    <!-- Main Content -->
+                    <div class="activity-card__content">
+
+                        <div class="activity-card__header">
+
+                            <div class="activity-card__title-wrapper">
+
+                                <h3 class="activity-card__title">
+                                    ${activity.title}
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+                        <div class="activity-card__info">
+
+                            <span class="activity-card__created">
+                                ایجاد شده در ${formatCreatedDate(activity.createdAt)}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="activity-card__actions">
+
+                        <button
+                            class="activity-card__action-button activity-card__edit"
+                            type="button"
+                            aria-label="ویرایش فعالیت"
+                            data-action="edit"
+                        >
+                            <span
+                                class="activity-card__action-icon"
+                                aria-hidden="true"
+                            >
+                                ✎
+                            </span>
+                        </button>
+
+                        <button
+                            class="activity-card__action-button activity-card__archive"
+                            type="button"
+                            aria-label="آرشیو فعالیت"
+                            data-action="archive"
+                            data-activity-id="${activity.id}"
+                        >
+                            <span
+                                class="activity-card__action-icon"
+                                aria-hidden="true"
+                            >
+                                🗑
+                            </span>
+                        </button>
+
+                        <button
+                            class="activity-card__start"
+                            type="button"
+                            data-action="start"
+                            style="--activity-color: ${activity.color};"
+                        >
+                            <span
+                                class="activity-card__start-icon"
+                                aria-hidden="true"
+                            >
+                                ▶
+                            </span>
+
+                            <span>
+                                شروع
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </article>
+            `;
+
+        })
+        .join("");
+
+    updateTimedActivitiesCount(activeActivities.length);
+    restoreActiveTimedCard();
+}
+
+function updateTimedActivitiesCount(count) {
+    const countEl = document.querySelector("#timedActivitiesCount");
+    if (!countEl) return;
+    countEl.textContent = count;
+}
+
+// اگه یه فعالیت (حتی از داشبورد) در حال اجراست، دکمه‌ی همون کارت
+// روی این صفحه هم باید حالت «پایان» رو نشون بده، نه «شروع».
+function restoreActiveTimedCard() {
+    const activeActivity = getActiveActivity();
+    if (!activeActivity) return;
+
+    const card = document.querySelector(
+        `.activity-column--timed .activity-card[data-activity-id="${activeActivity.id}"]`
+    );
+    if (!card) return;
+
+    const button = card.querySelector(".activity-card__start");
+    if (!button) return;
+
+    button.classList.add("is-active");
+
+    const icon = button.querySelector("span:first-child");
+    if (icon) icon.textContent = "■";
+
+    const text = button.querySelector("span:last-child");
+    if (text) text.textContent = "پایان";
+}
+
+function formatCreatedDate(date) {
+    const createdDate = new Date(date);
+
+    return new Intl.DateTimeFormat("fa-IR", {
+        day: "numeric",
+        month: "long"
+    }).format(createdDate);
+}
+
+
+// ========================================
+// دکمه‌ی شروع/پایان — از همون منطق مشترک با داشبورد استفاده می‌کنه
+// ========================================
+document.addEventListener("click", (event) => {
+    const startButton = event.target.closest(
+        ".activity-column--timed .activity-card__start"
+    );
+
+    if (!startButton) return;
+
+    const card = startButton.closest(".activity-card");
+    if (!card) return;
+
+    const activityId = Number(card.dataset.activityId);
+    const activity = timedActivities.find(item => item.id === activityId);
+    if (!activity) return;
+
+    requestStartActivity(activity, startButton);
+});
+
+
+// ========================================
+// دکمه‌ی ویرایش — همون مودال ایجاد فعالیت، فقط توی حالت ویرایش
+// ========================================
+document.addEventListener("click", (event) => {
+    const editButton = event.target.closest(
+        '.activity-column--timed [data-action="edit"]'
+    );
+
+    if (!editButton) return;
+
+    const card = editButton.closest(".activity-card");
+    if (!card) return;
+
+    const activityId = Number(card.dataset.activityId);
+    const activity = timedActivities.find(item => item.id === activityId);
+    if (!activity) return;
+
+    openActivityForm(activity);
+});
+
+
+// ========================================
+// Archive Confirm Modal
+// ساختارش مثل بقیه‌ی مودال‌های تاییدی اپ (آیکون + پیام +
+// دکمه‌های انصراف/تایید)، فقط برای فعالیت‌های زمان‌دار.
+// ========================================
+
+let activityPendingArchive = null;
+
+function ArchiveConfirmModal() {
+    return `
+        <div class="archive-confirm-modal" id="archiveConfirmModal" aria-hidden="true">
+            <div class="archive-confirm-modal__overlay"></div>
+
+            <div
+                class="archive-confirm-modal__box"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="archiveConfirmTitle"
+            >
+                <div class="archive-confirm-modal__icon" aria-hidden="true">🗑</div>
+
+                <div class="archive-confirm-modal__content">
+                    <h2 class="archive-confirm-modal__title" id="archiveConfirmTitle">
+                        آرشیو فعالیت
+                    </h2>
+
+                    <p class="archive-confirm-modal__message">
+                        آیا از آرشیو کردن این فعالیت مطمئن هستید؟
+                    </p>
+
+                    <div class="archive-confirm-modal__activity">
+                        <span class="archive-confirm-modal__activity-color" id="archiveConfirmColor"></span>
+                        <strong id="archiveConfirmName">—</strong>
+                    </div>
+
+                    <p class="archive-confirm-modal__note">
+                        فعالیت آرشیوشده از لیست فعالیت‌های فعال خارج می‌شه، ولی سابقه‌ی سشن‌هاش حفظ می‌مونه.
+                    </p>
+                </div>
+
+                <div class="archive-confirm-modal__actions">
+                    <button type="button" class="archive-confirm-modal__cancel" id="archiveConfirmCancel">
+                        انصراف
+                    </button>
+
+                    <button type="button" class="archive-confirm-modal__confirm" id="archiveConfirmConfirm">
+                        آرشیو کن
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function openArchiveConfirmModal(activity) {
+    activityPendingArchive = activity;
+
+    const modal = document.querySelector("#archiveConfirmModal");
+    if (!modal) return;
+
+    const colorEl = modal.querySelector("#archiveConfirmColor");
+    const nameEl = modal.querySelector("#archiveConfirmName");
+
+    if (colorEl) colorEl.style.backgroundColor = activity.color;
+    if (nameEl) nameEl.textContent = activity.title;
+
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+}
+
+function closeArchiveConfirmModal() {
+    const modal = document.querySelector("#archiveConfirmModal");
+    if (!modal) return;
+
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+    activityPendingArchive = null;
+}
+
+// باز کردن مودال آرشیو با کلیک روی دکمه‌ی سطل‌آشغال (فقط ستون زمان‌دار)
+document.addEventListener("click", (event) => {
+    const archiveButton = event.target.closest(
+        '.activity-column--timed [data-action="archive"]'
+    );
+
+    if (!archiveButton) return;
+
+    const activityId = Number(archiveButton.dataset.activityId);
+    const activity = timedActivities.find(item => item.id === activityId);
+
+    if (!activity) return;
+
+    openArchiveConfirmModal(activity);
+});
+
+// انصراف / کلیک روی overlay
+document.addEventListener("click", (event) => {
+    if (
+        event.target.closest("#archiveConfirmCancel") ||
+        event.target.closest(".archive-confirm-modal__overlay")
+    ) {
+        closeArchiveConfirmModal();
+    }
+});
+
+document.addEventListener("keyup", (event) => {
+    if (event.key === "Escape") {
+        closeArchiveConfirmModal();
+    }
+});
+
+// تایید نهایی آرشیو
+document.addEventListener("click", (event) => {
+    const confirmButton = event.target.closest("#archiveConfirmConfirm");
+    if (!confirmButton) return;
+    if (!activityPendingArchive) return;
+
+    activityPendingArchive.archived = true;
+
+    closeArchiveConfirmModal();
+    renderTimedActivities();
+});
+
+// وقتی از هرجای دیگه (مثلاً مودال ایجاد/ویرایش فعالیت که مشترکه)
+// چیزی توی لیست فعالیت‌ها عوض شد، لیست این صفحه هم به‌روز بشه.
+document.addEventListener("timed-activities:changed", () => {
+    renderTimedActivities();
+});

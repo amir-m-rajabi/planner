@@ -1,5 +1,20 @@
 .dashboard {
     width: 100%;
+    position: relative;
+}
+
+/* یه گرادیانت خیلی ملایم پشت کل داشبورد، برای عمق —
+   fixed و pointer-events:none هست، پس هیچ اثری روی
+   لایوت یا کلیک‌ها نداره. */
+.dashboard::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(1200px 600px at 15% -10%, rgba(33, 110, 137, 0.06), transparent 60%),
+        radial-gradient(900px 500px at 100% 10%, rgba(127, 184, 106, 0.05), transparent 60%);
+    pointer-events: none;
+    z-index: -1;
 }
 
 .dashboard__container {
@@ -10,7 +25,7 @@
 
     margin-inline: auto;
 
-    padding:16px 32px 16px;
+    padding: 16px 32px 16px;
 }
 
 .dashboard__layout {
@@ -57,15 +72,28 @@
     overflow: hidden;
 }
 
-/* left */
-.dashboard__calendar {
+/* ========================================
+   کارت‌های ماژول‌ها (تقویم + بقیه‌ی باکس‌ها)
+   همه‌ی اندازه‌ها دقیقاً همون قبلیه، فقط ظاهرشون
+   یه لایه عمق و یه خط تاکید برند بالای هرکدوم گرفته.
+======================================== */
+.dashboard__calendar,
+.dashboard__clock,
+.dashboard__statistics,
+.dashboard__timed-activities,
+.dashboard__untimed-activities,
+.dashboard__sessions,
+.dashboard__notes {
+    position: relative;
+
     min-width: 0;
+    min-height: 0;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    background-color: var(--color-surface);
+    background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-surface-hover) 100%);
 
     border: 1px solid var(--color-border);
 
@@ -76,29 +104,36 @@
     color: var(--color-text-secondary);
 
     overflow: hidden;
+
+    transition: box-shadow var(--duration-base) var(--ease-standard),
+                border-color var(--duration-base) var(--ease-standard);
 }
 
-.dashboard__clock,
-.dashboard__statistics,
-.dashboard__timed-activities,
-.dashboard__untimed-activities,
-.dashboard__sessions,
-.dashboard__notes {
-    min-width: 0;
-    min-height: 0;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background-color: var(--color-surface);
-
-    border: 1px solid var(--color-border);
-
-    border-radius: var(--radius-lg);
-
-    box-shadow: var(--shadow-sm);
-
-    color: var(--color-text-secondary);
+/* خط نازک تاکید برند بالای هر کارت — امضای بصری مشترک همه‌ی ماژول‌ها */
+.dashboard__calendar::before,
+.dashboard__clock::before,
+.dashboard__statistics::before,
+.dashboard__timed-activities::before,
+.dashboard__untimed-activities::before,
+.dashboard__sessions::before,
+.dashboard__notes::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light), var(--color-accent));
+    opacity: 0.85;
 }
 
+.dashboard__calendar:hover,
+.dashboard__clock:hover,
+.dashboard__statistics:hover,
+.dashboard__timed-activities:hover,
+.dashboard__untimed-activities:hover,
+.dashboard__sessions:hover,
+.dashboard__notes:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-border-strong);
+}

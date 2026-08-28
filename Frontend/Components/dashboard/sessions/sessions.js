@@ -40,8 +40,155 @@ let sessionToDelete = null;
 let sessionForNote = null;
 
 // ========================================
+// توابع کمکی زمان
+// ========================================
+
+function getCurrentTime() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`;
+}
+
+function getCurrentHour() {
+    return String(new Date().getHours()).padStart(2, '0');
+}
+
+function getCurrentMinute() {
+    return String(new Date().getMinutes()).padStart(2, '0');
+}
+
+function timeToMinutes(time) {
+    const parts = time.split(':');
+    return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+}
+
+function minutesToTime(minutes) {
+    const h = String(Math.floor(minutes / 60)).padStart(2, '0');
+    const m = String(minutes % 60).padStart(2, '0');
+    return `${h}:${m}:00`;
+}
+
+function formatDisplayTime(time) {
+    if (!time) return "";
+    return time.split(":").slice(0, 2).join(":");
+}
+
+function calculateDurationText(startTime, endTime) {
+    const startTotal = timeToMinutes(startTime);
+    const endTotal = timeToMinutes(endTime);
+    let diffMinutes = endTotal - startTotal;
+    if (diffMinutes < 0) diffMinutes += 1440;
+
+    if (diffMinutes === 0) return "۰ دقیقه";
+    if (diffMinutes < 60) return `${diffMinutes} دقیقه`;
+    const hours = Math.floor(diffMinutes / 60);
+    const minutes = diffMinutes % 60;
+    return minutes === 0 ? `${hours} ساعت` : `${hours} ساعت و ${minutes} دقیقه`;
+}
+
+function getTotalDuration(sessionsList) {
+    let totalMinutes = 0;
+    sessionsList.forEach(session => {
+        const start = timeToMinutes(session.startTime);
+        const end = timeToMinutes(session.endTime);
+        let diff = end - start;
+        if (diff < 0) diff += 1440;
+        totalMinutes += diff;
+    });
+    return totalMinutes;
+}
+
+function formatTotalDuration(minutes) {
+    if (minutes === 0) return "۰۰:۰۰";
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
+}
+
+// ========================================
+// توابع اعتبارسنجی سشن
+// ========================================
+
+function validateSessionTimes(startTime, endTime, excludeSessionId = null) {
+    const startTotal = timeToMinutes(startTime);
+    const endTotal = timeToMinutes(endTime);
+    const nowTotal = timeToMinutes(getCurrentTime());
+
+    // ۱. بررسی زمان شروع و پایان
+    if (startTotal >= endTotal) {
+        return { valid: false, message: "زمان پایان باید بعد از زمان شروع باشد." };
+    }
+
+    // ۲. بررسی اینکه زمان پایان از زمان حال جلوتر نباشد
+    if (endTotal > nowTotal) {
+        return { valid: false, message: "امکان ثبت سشن در آینده وجود ندارد. زمان پایان باید برابر یا قبل از زمان حال باشد." };
+    }
+
+    // ۳. بررسی اینکه زمان شروع از زمان حال جلوتر نباشد
+    if (startTotal > nowTotal) {
+        return { valid: false, message: "امکان ثبت سشن در آینده وجود ندارد. زمان شروع باید برابر یا قبل از زمان حال باشد." };
+    }
+
+    // ۴. بررسی تداخل با سشن‌های دیگر
+    const todaySessions = sessions.filter(s => s.id !== excludeSessionId);
+    
+    for (const session of todaySessions) {
+        const sessionStart = timeToMinutes(session.startTime);
+        const sessionEnd = timeToMinutes(session.endTime);
+        
+        if (startTotal < sessionEnd && endTotal > sessionStart) {
+            return { 
+                valid: false, 
+                message: `این بازه زمانی با سشن "${session.title}" (${formatDisplayTime(session.startTime)} تا ${formatDisplayTime(session.endTime)}) تداخل دارد.` 
+            };
+        }
+    }
+
+    return { valid: true };
+}
+
+// ========================================
+// تابع بروزرسانی سلکت فعالیت‌ها
+// ========================================
+
+function updateActivitySelect() {
+    const select = document.getElementById('sessionActivity');
+    if (!select) return;
+
+    // گرفتن مقدار انتخاب شده فعلی
+    const currentValue = select.value;
+
+    // ساخت options جدید
+    const options = timedActivities
+        .filter(activity => !activity.archived)
+        .map(activity => `
+            <option 
+                value="${activity.id}" 
+                style="background-color: ${activity.color}22; color: ${activity.color}; font-weight: 600; padding: 6px 12px; border-radius: 4px;"
+                data-color="${activity.color}"
+            >
+                ${activity.title}
+            </option>
+        `)
+        .join('');
+
+    select.innerHTML = `
+        <option value="" style="background-color: transparent; color: var(--color-text-secondary);">انتخاب فعالیت</option>
+        ${options}
+    `;
+
+    // بازگرداندن مقدار قبلی اگر هنوز معتبر است
+    if (currentValue && timedActivities.some(a => a.id === parseInt(currentValue))) {
+        select.value = currentValue;
+    }
+}
+
+// ========================================
 // Main Component
 // ========================================
+
 export function Sessions() {
     setupSessionEvents();
     return `
@@ -73,12 +220,14 @@ export function Sessions() {
         ${SessionFormModal()}
         ${DeleteSessionModal()}
         ${SessionNoteModal()}
+        ${ErrorModal()}
     `;
 }
 
 // ========================================
 // Session Card
 // ========================================
+
 export function createSessionHTML(session) {
     const hasNote = Boolean(session.note);
     return `
@@ -107,7 +256,11 @@ export function createSessionHTML(session) {
 // ========================================
 // Render Sessions List
 // ========================================
+
 export function renderSessionsList() {
+    if (sessions.length === 0) {
+        return `<div class="recent-activities__empty">هیچ سشنی برای امروز ثبت نشده است.</div>`;
+    }
     return sessions.map(createSessionHTML).join("");
 }
 
@@ -115,18 +268,79 @@ export function renderSessionListToDOM() {
     const list = document.querySelector(".recent-activities__list");
     if (!list) return;
     list.innerHTML = renderSessionsList();
+    updateTotalDuration();
 }
 
 export function renderSessionsModalListToDOM() {
     const list = document.querySelector(".sessions-modal__list");
     if (!list) return;
-    list.innerHTML = renderSessionsList();
+    list.innerHTML = sessions.map(createSessionHTML).join("");
+    updateTotalDuration();
+}
+
+// ========================================
+// به‌روزرسانی زمان مفید
+// ========================================
+
+function updateTotalDuration() {
+    const totalMinutes = getTotalDuration(sessions);
+    const formatted = formatTotalDuration(totalMinutes);
+    
+    const summaryItems = document.querySelectorAll('.sessions-modal__summary-item strong');
+    summaryItems.forEach(item => {
+        if (item.closest('.sessions-modal__summary-item').querySelector('span')?.textContent === 'زمان مفید') {
+            item.textContent = formatted;
+        }
+    });
+    
+    const footerText = document.querySelector('.sessions-modal__footer-text');
+    if (footerText) {
+        footerText.textContent = `${sessions.length} سشن در این روز ثبت شده است`;
+    }
+}
+
+// ========================================
+// Error Modal
+// ========================================
+
+function ErrorModal() {
+    return `
+        <div class="error-modal" id="errorModal" aria-hidden="true">
+            <div class="error-modal__overlay"></div>
+            <div class="error-modal__box">
+                <div class="error-modal__icon">⚠️</div>
+                <h2 class="error-modal__title">خطا</h2>
+                <p class="error-modal__message" id="errorModalMessage">خطا رخ داده است.</p>
+                <button type="button" class="error-modal__button" id="errorModalButton">متوجه شدم</button>
+            </div>
+        </div>
+    `;
+}
+
+function showError(message) {
+    const modal = document.querySelector("#errorModal");
+    const messageEl = document.querySelector("#errorModalMessage");
+    if (!modal || !messageEl) return;
+    messageEl.textContent = message;
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+}
+
+function closeErrorModal() {
+    const modal = document.querySelector("#errorModal");
+    if (!modal) return;
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
 }
 
 // ========================================
 // All Sessions Modal
 // ========================================
+
 export function AllSessionsModal() {
+    const totalMinutes = getTotalDuration(sessions);
+    const formatted = formatTotalDuration(totalMinutes);
+    
     return `
         <div class="sessions-modal" id="sessionsModal" aria-hidden="true">
             <div class="sessions-modal__overlay"></div>
@@ -135,15 +349,15 @@ export function AllSessionsModal() {
                     <div class="sessions-modal__header-info">
                         <span class="sessions-modal__label">فعالیت‌های امروز</span>
                         <h2 class="sessions-modal__title">سشن‌های امروز</h2>
-                        <span class="sessions-modal__date">دوشنبه، ۱۰ شهریور ۱۴۰۵</span>
+                        <span class="sessions-modal__date">${getPersianDate()}</span>
                     </div>
-                    <button class="sessions-modal__close" type="button" aria-label="بستن">×</button>
+                    <button class="sessions-modal__close" type="button" aria-label="بستن" id="sessionsModalClose">×</button>
                 </header>
 
                 <div class="sessions-modal__summary">
                     <div class="sessions-modal__summary-item">
                         <span>زمان مفید</span>
-                        <strong>04:35</strong>
+                        <strong>${formatted}</strong>
                     </div>
                     <div class="sessions-modal__summary-divider"></div>
                     <div class="sessions-modal__summary-item">
@@ -158,73 +372,64 @@ export function AllSessionsModal() {
 
                 <main class="sessions-modal__content">
                     <div class="sessions-modal__list">
-                        ${renderSessionsList()}
+                        ${sessions.length > 0 ? sessions.map(createSessionHTML).join("") : '<div class="sessions-modal__empty">هیچ سشنی ثبت نشده است.</div>'}
                     </div>
                 </main>
 
                 <footer class="sessions-modal__footer">
                     <span class="sessions-modal__footer-text">${sessions.length} سشن در این روز ثبت شده است</span>
-                    <button class="sessions-modal__footer-close" type="button">بستن</button>
+                    <button class="sessions-modal__footer-close" type="button" id="sessionsModalFooterClose">بستن</button>
                 </footer>
             </div>
         </div>
     `;
 }
 
+function getPersianDate() {
+    const now = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    return now.toLocaleDateString('fa-IR', options);
+}
+
 function openAllSessionsModal() {
     const modal = document.querySelector("#sessionsModal");
     if (!modal) return;
+    updateTotalDuration();
     modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
 }
 
 function closeAllSessionsModal() {
     const modal = document.querySelector("#sessionsModal");
     if (!modal) return;
     modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
 }
 
 // ========================================
-// Session Form Modal (Add/Edit)
+// Session Form Modal (Add/Edit) - بدون تاریخ
 // ========================================
+
 export function SessionFormModal() {
-    // ====== سلکت فعالیت با رنگ هر option ======
+    // ساخت options با رنگ‌بندی
     const activityOptions = timedActivities
+        .filter(activity => !activity.archived)
         .map(activity => `
             <option 
                 value="${activity.id}" 
                 data-color="${activity.color}"
-                style="background-color: ${activity.color}22; color: ${activity.color}; font-weight: 600; padding: 6px 12px;"
+                style="background-color: ${activity.color}22; color: ${activity.color}; font-weight: 600;"
             >
-                ${activity.title}
+                ● ${activity.title}
             </option>
         `)
         .join('');
 
-    // ====== سلکت روز (۱ تا ۳۱) ======
-    const dayOptions = Array.from({ length: 31 }, (_, i) => {
-        const day = String(i + 1).padStart(2, '0');
-        return `<option value="${day}">${day}</option>`;
-    }).join('');
-
-    // ====== سلکت ماه (۱ تا ۱۲) ======
-    const monthOptions = Array.from({ length: 12 }, (_, i) => {
-        const month = String(i + 1).padStart(2, '0');
-        return `<option value="${month}">${month}</option>`;
-    }).join('');
-
-    // ====== سلکت سال (۱۴۰۰ تا ۱۴۱۰) ======
-    const yearOptions = Array.from({ length: 11 }, (_, i) => {
-        const year = 1400 + i;
-        return `<option value="${year}">${year}</option>`;
-    }).join('');
-
-    // ====== سلکت ساعت (۰ تا ۲۳) ======
     const hourOptions = Array.from({ length: 24 }, (_, i) => {
         const hour = String(i).padStart(2, '0');
         return `<option value="${hour}">${hour}</option>`;
     }).join('');
 
-    // ====== سلکت دقیقه (۰ تا ۵۹) ======
     const minuteOptions = Array.from({ length: 60 }, (_, i) => {
         const minute = String(i).padStart(2, '0');
         return `<option value="${minute}">${minute}</option>`;
@@ -234,7 +439,6 @@ export function SessionFormModal() {
         <div class="session-modal" id="sessionFormModal" aria-hidden="true">
             <div class="session-modal__overlay"></div>
             <div class="session-modal__box">
-                <!-- Header -->
                 <header class="session-modal__header">
                     <div class="session-modal__header-info">
                         <span class="session-modal__label">ثبت زمان فعالیت</span>
@@ -244,9 +448,7 @@ export function SessionFormModal() {
                     <button type="button" class="session-modal__close" id="sessionFormModalClose" aria-label="بستن">×</button>
                 </header>
 
-                <!-- Form -->
                 <form class="session-form" id="sessionForm">
-                    <!-- Activity -->
                     <div class="session-form__field">
                         <label for="sessionActivity" class="session-form__label">فعالیت</label>
                         <div class="session-form__select-wrapper">
@@ -258,39 +460,18 @@ export function SessionFormModal() {
                         </div>
                     </div>
 
-                    <!-- Date -->
-                    <div class="session-form__field">
-                        <label class="session-form__label">تاریخ فعالیت</label>
-                        <div class="session-form__date">
-                            <select id="sessionDay" name="day" class="session-form__select" required>
-                                <option value="">روز</option>
-                                ${dayOptions}
-                            </select>
-                            <select id="sessionMonth" name="month" class="session-form__select" required>
-                                <option value="">ماه</option>
-                                ${monthOptions}
-                            </select>
-                            <select id="sessionYear" name="year" class="session-form__select" required>
-                                <option value="">سال</option>
-                                ${yearOptions}
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Time -->
                     <div class="session-form__field">
                         <label class="session-form__label">زمان فعالیت</label>
                         <div class="session-form__time">
-                            <!-- Start -->
                             <div class="session-form__time-group">
                                 <span class="session-form__time-label">شروع</span>
                                 <div class="session-form__time-input">
-                                    <select id="sessionStartHour" name="startHour" required>
+                                    <select id="sessionStartHour" required>
                                         <option value="">ساعت</option>
                                         ${hourOptions}
                                     </select>
                                     <span>:</span>
-                                    <select id="sessionStartMinute" name="startMinute" required>
+                                    <select id="sessionStartMinute" required>
                                         <option value="">دقیقه</option>
                                         ${minuteOptions}
                                     </select>
@@ -299,16 +480,15 @@ export function SessionFormModal() {
 
                             <span class="session-form__time-arrow" aria-hidden="true">←</span>
 
-                            <!-- End -->
                             <div class="session-form__time-group">
                                 <span class="session-form__time-label">پایان</span>
                                 <div class="session-form__time-input">
-                                    <select id="sessionEndHour" name="endHour" required>
+                                    <select id="sessionEndHour" required>
                                         <option value="">ساعت</option>
                                         ${hourOptions}
                                     </select>
                                     <span>:</span>
-                                    <select id="sessionEndMinute" name="endMinute" required>
+                                    <select id="sessionEndMinute" required>
                                         <option value="">دقیقه</option>
                                         ${minuteOptions}
                                     </select>
@@ -317,13 +497,11 @@ export function SessionFormModal() {
                         </div>
                     </div>
 
-                    <!-- Duration -->
                     <div class="session-form__duration">
                         <span class="session-form__duration-label">مدت زمان</span>
                         <strong class="session-form__duration-value" id="sessionDuration">۰ دقیقه</strong>
                     </div>
 
-                    <!-- Actions -->
                     <div class="session-form__actions">
                         <button type="button" class="session-form__cancel" id="sessionFormCancel">انصراف</button>
                         <button type="submit" class="session-form__submit" id="sessionFormSubmit">افزودن سشن</button>
@@ -337,6 +515,7 @@ export function SessionFormModal() {
 // ========================================
 // Session Form Functions
 // ========================================
+
 function calculateDuration() {
     const modal = document.querySelector("#sessionFormModal");
     if (!modal) return;
@@ -376,11 +555,11 @@ function updateSessionModal() {
     const modal = document.querySelector("#sessionFormModal");
     if (!modal) return;
 
+    // اول سلکت فعالیت رو بروزرسانی کن
+    updateActivitySelect();
+
     const title = modal.querySelector("#sessionFormModalTitle");
     const activitySelect = modal.querySelector("#sessionActivity");
-    const daySelect = modal.querySelector("#sessionDay");
-    const monthSelect = modal.querySelector("#sessionMonth");
-    const yearSelect = modal.querySelector("#sessionYear");
     const startHour = modal.querySelector("#sessionStartHour");
     const startMinute = modal.querySelector("#sessionStartMinute");
     const endHour = modal.querySelector("#sessionEndHour");
@@ -388,55 +567,35 @@ function updateSessionModal() {
     const durationDisplay = modal.querySelector("#sessionDuration");
     const submitButton = modal.querySelector("#sessionFormSubmit");
 
-    // ====== حالت افزودن ======
     if (sessionModalMode === "add") {
         title.textContent = "افزودن سشن";
         submitButton.textContent = "افزودن سشن";
         activitySelect.value = "";
-        daySelect.value = "";
-        monthSelect.value = "";
-        yearSelect.value = "";
-        startHour.value = "";
-        startMinute.value = "";
+        
+        const currentHour = getCurrentHour();
+        const currentMinute = getCurrentMinute();
+        startHour.value = currentHour;
+        startMinute.value = currentMinute;
         endHour.value = "";
         endMinute.value = "";
         durationDisplay.textContent = "۰ دقیقه";
-        // ====== رنگ select رو ریست کن ======
-        activitySelect.style.backgroundColor = "";
-        activitySelect.style.color = "";
         return;
     }
 
-    // ====== حالت ویرایش ======
     if (sessionModalMode === "edit" && selectedSession) {
         title.textContent = "ویرایش سشن";
         submitButton.textContent = "ذخیره تغییرات";
 
-        // ====== فقط مقدار سلکت رو تنظیم کن ======
         activitySelect.value = String(selectedSession.activityId);
         
-        // ====== رنگ select رو ریست کن (سفید بمونه) ======
-        activitySelect.style.backgroundColor = "";
-        activitySelect.style.color = "";
-        activitySelect.style.borderColor = "";
-
-        // ====== تنظیم تاریخ ======
-        const now = new Date();
-        daySelect.value = String(now.getDate()).padStart(2, '0');
-        monthSelect.value = String(now.getMonth() + 1).padStart(2, '0');
-        yearSelect.value = "1405";
-
-        // ====== تنظیم زمان شروع ======
         const startParts = selectedSession.startTime.split(':');
         startHour.value = startParts[0] || '';
         startMinute.value = startParts[1] || '';
 
-        // ====== تنظیم زمان پایان ======
         const endParts = selectedSession.endTime.split(':');
         endHour.value = endParts[0] || '';
         endMinute.value = endParts[1] || '';
 
-        // ====== محاسبه و نمایش مدت زمان ======
         calculateDuration();
     }
 }
@@ -463,9 +622,10 @@ function closeSessionModal() {
 // ========================================
 // Delete Session Modal
 // ========================================
+
 function DeleteSessionModal() {
     return `
-        <div class="delete-session-modal" id="deleteSessionModal">
+        <div class="delete-session-modal" id="deleteSessionModal" aria-hidden="true">
             <div class="delete-session-modal__overlay"></div>
             <div class="delete-session-modal__box">
                 <div class="delete-session-modal__icon">!</div>
@@ -518,6 +678,7 @@ function closeDeleteSessionModal() {
 // ========================================
 // Session Note Modal
 // ========================================
+
 function SessionNoteModal() {
     return `
         <div class="session-note-modal" id="sessionNoteModal" aria-hidden="true">
@@ -578,19 +739,17 @@ function closeSessionNoteModal() {
 }
 
 // ========================================
-// Time Helpers
-// ========================================
-function formatDisplayTime(time) {
-    if (!time) return "";
-    return time.split(":").slice(0, 2).join(":");
-}
-
-// ========================================
 // Event Listeners
 // ========================================
+
 function setupSessionEvents() {
     if (eventsInitialized) return;
     eventsInitialized = true;
+
+    // ---- گوش دادن به تغییرات فعالیت‌های زماندار ----
+    document.addEventListener("timed-activities:changed", () => {
+        updateActivitySelect();
+    });
 
     // ---- Add Session ----
     document.addEventListener("click", (event) => {
@@ -627,37 +786,17 @@ function setupSessionEvents() {
     });
 
     // ---- Calculate Duration on Time Change ----
-// ---- Change Activity Select Color ----
-document.addEventListener("change", (event) => {
-    const target = event.target;
-    
-    // ====== تغییر رنگ select بر اساس انتخاب ======
-    // if (target.id === "sessionActivity") {
-    //     const selectedOption = target.querySelector(`option[value="${target.value}"]`);
-    //     if (selectedOption && target.value) {
-    //         const color = selectedOption.dataset.color;
-    //         target.style.backgroundColor = color;
-    //         target.style.color = "#ffffff";
-    //         target.style.fontWeight = "600";
-    //         target.style.borderColor = color;
-    //     } else {
-    //         target.style.backgroundColor = "";
-    //         target.style.color = "";
-    //         target.style.fontWeight = "";
-    //         target.style.borderColor = "";
-    //     }
-    // }
-
-    // ====== محاسبه خودکار duration ======
-    if (
-        target.id === "sessionStartHour" ||
-        target.id === "sessionStartMinute" ||
-        target.id === "sessionEndHour" ||
-        target.id === "sessionEndMinute"
-    ) {
-        calculateDuration();
-    }
-});
+    document.addEventListener("change", (event) => {
+        const target = event.target;
+        if (
+            target.id === "sessionStartHour" ||
+            target.id === "sessionStartMinute" ||
+            target.id === "sessionEndHour" ||
+            target.id === "sessionEndMinute"
+        ) {
+            calculateDuration();
+        }
+    });
 
     // ---- Submit Session Form ----
     document.addEventListener("submit", (event) => {
@@ -666,38 +805,34 @@ document.addEventListener("change", (event) => {
         event.preventDefault();
 
         const activityId = parseInt(form.querySelector("#sessionActivity").value);
-        const day = form.querySelector("#sessionDay").value;
-        const month = form.querySelector("#sessionMonth").value;
-        const year = form.querySelector("#sessionYear").value;
         const startHour = form.querySelector("#sessionStartHour").value;
         const startMinute = form.querySelector("#sessionStartMinute").value;
         const endHour = form.querySelector("#sessionEndHour").value;
         const endMinute = form.querySelector("#sessionEndMinute").value;
 
-        if (!activityId) { alert("لطفاً یک فعالیت انتخاب کنید."); return; }
-        if (!day || !month || !year) { alert("لطفاً تاریخ را کامل وارد کنید."); return; }
-        if (!startHour || !startMinute || !endHour || !endMinute) { alert("لطفاً زمان شروع و پایان را کامل وارد کنید."); return; }
+        if (!activityId) { 
+            showError("لطفاً یک فعالیت انتخاب کنید."); 
+            return; 
+        }
+        if (!startHour || !startMinute || !endHour || !endMinute) { 
+            showError("لطفاً زمان شروع و پایان را کامل وارد کنید."); 
+            return; 
+        }
 
         const activity = timedActivities.find(a => a.id === activityId);
-        if (!activity) { alert("فعالیت مورد نظر پیدا نشد."); return; }
+        if (!activity) { 
+            showError("فعالیت مورد نظر پیدا نشد."); 
+            return; 
+        }
 
         const startTime = `${startHour}:${startMinute}:00`;
         const endTime = `${endHour}:${endMinute}:00`;
+        const durationText = calculateDurationText(startTime, endTime);
 
-        const startTotal = (parseInt(startHour) * 60) + parseInt(startMinute);
-        const endTotal = (parseInt(endHour) * 60) + parseInt(endMinute);
-        let diffMinutes = endTotal - startTotal;
-        if (diffMinutes < 0) diffMinutes += 1440;
-
-        let durationText = "";
-        if (diffMinutes === 0) {
-            durationText = "۰ دقیقه";
-        } else if (diffMinutes < 60) {
-            durationText = `${diffMinutes} دقیقه`;
-        } else {
-            const hours = Math.floor(diffMinutes / 60);
-            const minutes = diffMinutes % 60;
-            durationText = minutes === 0 ? `${hours} ساعت` : `${hours} ساعت و ${minutes} دقیقه`;
+        const validation = validateSessionTimes(startTime, endTime, selectedSession?.id || null);
+        if (!validation.valid) {
+            showError(validation.message);
+            return;
         }
 
         if (sessionModalMode === "add") {
@@ -737,9 +872,9 @@ document.addEventListener("change", (event) => {
 
     document.addEventListener("click", (event) => {
         if (
-            event.target.closest(".sessions-modal__close") ||
-            event.target.closest(".sessions-modal__footer-close") ||
-            event.target.closest(".sessions-modal__overlay")
+            event.target.closest("#sessionsModalClose") ||
+            event.target.closest("#sessionsModalFooterClose") ||
+            event.target.classList.contains("sessions-modal__overlay")
         ) {
             closeAllSessionsModal();
         }
@@ -774,7 +909,7 @@ document.addEventListener("change", (event) => {
     document.addEventListener("click", (event) => {
         if (
             event.target.closest("#deleteSessionCancel") ||
-            event.target.closest(".delete-session-modal__overlay")
+            event.target.classList.contains("delete-session-modal__overlay")
         ) {
             closeDeleteSessionModal();
         }
@@ -822,5 +957,21 @@ document.addEventListener("change", (event) => {
         closeSessionNoteModal();
         renderSessionListToDOM();
         renderSessionsModalListToDOM();
+    });
+
+    // ---- Error Modal Close ----
+    document.addEventListener("click", (event) => {
+        if (
+            event.target.closest("#errorModalButton") ||
+            event.target.classList.contains("error-modal__overlay")
+        ) {
+            closeErrorModal();
+        }
+    });
+
+    document.addEventListener("keyup", (event) => {
+        if (event.key === "Escape") {
+            closeErrorModal();
+        }
     });
 }

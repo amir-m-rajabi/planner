@@ -1,8 +1,53 @@
 import { sessions } from "../sessions/sessions.js";
 
 // ========================================
+// Mapping استان‌های فارسی به انگلیسی برای API
+// ========================================
+
+const provinceMapping = {
+    'البرز': 'Alborz',
+    'اردبیل': 'Ardabil',
+    'آذربایجان شرقی': 'East Azerbaijan',
+    'آذربایجان غربی': 'West Azerbaijan',
+    'بوشهر': 'Bushehr',
+    'تهران': 'Tehran',
+    'چهارمحال و بختیاری': 'Chaharmahal and Bakhtiari',
+    'خراسان جنوبی': 'South Khorasan',
+    'خراسان رضوی': 'Razavi Khorasan',
+    'خراسان شمالی': 'North Khorasan',
+    'خوزستان': 'Khuzestan',
+    'زنجان': 'Zanjan',
+    'سمنان': 'Semnan',
+    'سیستان و بلوچستان': 'Sistan and Baluchestan',
+    'فارس': 'Fars',
+    'قزوین': 'Qazvin',
+    'قم': 'Qom',
+    'کردستان': 'Kurdistan',
+    'کرمان': 'Kerman',
+    'کرمانشاه': 'Kermanshah',
+    'کهگیلویه و بویراحمد': 'Kohgiluyeh and Boyer-Ahmad',
+    'گلستان': 'Golestan',
+    'گیلان': 'Gilan',
+    'لرستان': 'Lorestan',
+    'مازندران': 'Mazandaran',
+    'مرکزی': 'Markazi',
+    'هرمزگان': 'Hormozgan',
+    'همدان': 'Hamedan',
+    'یزد': 'Yazd'
+};
+
+// ========================================
+// تابع تبدیل استان فارسی به انگلیسی
+// ========================================
+
+function getProvinceEnglish(province) {
+    return provinceMapping[province] || province;
+}
+
+// ========================================
 // تابع رندر HTML (برای استفاده در صفحه)
 // ========================================
+
 export function Clock() {
     const now = new Date();
     const hours = now.getHours();
@@ -10,11 +55,14 @@ export function Clock() {
     const seconds = now.getSeconds();
 
     // ====== محاسبه درجه‌ها برای ۲۴ ساعت ======
-    // نکته: صفر درجه = رو به بالا (۱۲/۰۰) چون transform-origin عقربه‌ها bottom است
-    // و اعداد صفحه هم با همین مرجع (بدون آفست) چیده شده‌اند.
     const hourDeg = ((hours % 24) / 24) * 360 + (minutes / 60) * 15 + (seconds / 3600) * 15;
     const minuteDeg = (minutes / 60) * 360 + (seconds / 60) * 6;
     const secondDeg = (seconds / 60) * 360;
+
+    // دریافت استان از localStorage برای نمایش دما
+    const savedProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
+    const province = savedProfile.province || '';
+    const initialTemp = province ? 'در حال دریافت...' : '--°C';
 
     return `
         <section class="clock">
@@ -85,7 +133,7 @@ export function Clock() {
                             <path d="M14 4a2 2 0 1 0-4 0v9.5a4 4 0 1 0 4 0V4Z"></path>
                             <line x1="12" y1="8" x2="12" y2="14"></line>
                         </svg>
-                        <span class="clock__temp" id="clockTemp">۲۲°C</span>
+                        <span class="clock__temp" id="clockTemp">${initialTemp}</span>
                     </div>
                 </div>
             </div>
@@ -94,24 +142,69 @@ export function Clock() {
 }
 
 // ========================================
+// تابع دریافت دما از API
+// ========================================
+
+const API_KEY = 'eee92f52e92fcf64a3bcb6b1c9b73d22';
+const API_URL = 'https://api.openweathermap.org/data/2.5/weather';
+
+export async function fetchWeather(city) {
+    if (!city) {
+        console.log('شهری برای دریافت دما مشخص نشده');
+        return null;
+    }
+
+    try {
+        // تبدیل نام استان به انگلیسی
+        const cityEnglish = getProvinceEnglish(city);
+        console.log(`دریافت دما برای: ${city} -> ${cityEnglish}`);
+        
+        const url = `${API_URL}?q=${encodeURIComponent(cityEnglish)}&appid=${API_KEY}&units=metric&lang=fa`;
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            throw new Error(`خطا در دریافت دما: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const temp = Math.round(data.main.temp);
+        
+        // به‌روزرسانی دما در عنصر
+        const tempElement = document.getElementById('clockTemp');
+        if (tempElement) {
+            tempElement.textContent = `${temp}°C`;
+        }
+        
+        console.log(`دمای ${city}: ${temp}°C`);
+        return temp;
+    } catch (error) {
+        console.error('خطا در دریافت دما:', error.message);
+        const tempElement = document.getElementById('clockTemp');
+        if (tempElement) {
+            tempElement.textContent = '--°C';
+        }
+        return null;
+    }
+}
+
+// ========================================
+// تابع بروزرسانی دما (برای استفاده از بیرون)
+// ========================================
+
+export function updateWeatherForCity(city) {
+    return fetchWeather(city);
+}
+
+// ========================================
 // Clock Logic - Complete
 // ========================================
 
 let clockInterval = null;
-
-// اگه یه روز خاص از تقویم انتخاب شده باشه (برای بعداً)، سشن‌های همون روز اینجا ذخیره می‌شه.
-// وقتی null باشه، یعنی "امروز" و از دیتای زنده‌ی sessions.js استفاده می‌کنیم.
 let sessionsOverride = null;
 
-// همیشه لیست سشنی که باید نمایش داده بشه رو برمی‌گردونه:
-// یا override دستی (روز انتخاب‌شده از تقویم)، یا دیتای زنده‌ی امروز.
 function getActiveSessions() {
     return sessionsOverride !== null ? sessionsOverride : sessions;
 }
-
-// ========================================
-// توابع کمکی
-// ========================================
 
 function getTodaySessions(sessionsList) {
     if (!sessionsList || sessionsList.length === 0) return [];
@@ -125,7 +218,6 @@ function getTodaySessions(sessionsList) {
     });
 }
 
-// درجه‌ی لحظه‌ی الان روی حلقه‌ی ۲۴ ساعته (هم‌مبنا با عقربه‌ی ساعت)
 function getNowDeg() {
     const now = new Date();
     const hours = now.getHours();
@@ -134,14 +226,6 @@ function getNowDeg() {
     return ((hours % 24) / 24) * 360 + (minutes / 60) * 15 + (seconds / 3600) * 15;
 }
 
-// ========================================
-// رندر حلقه سشن‌ها
-// ========================================
-// منطق:
-// ۱) حلقه فقط تا لحظه‌ی الان "شکل می‌گیره" (پیشرفت روز) — از الان تا آخر روز شفافه.
-// ۲) بازه‌هایی از روزِ سپری‌شده که سشنی توش ثبت نشده، رنگ خنثی می‌گیرن.
-// ۳) بازه‌هایی که سشن دارن، با رنگ همون فعالیت نمایش داده می‌شن.
-// ۴) با گذشت نیمه‌شب، nowDeg دوباره از ۰ شروع می‌شه و حلقه به‌طور طبیعی ریست می‌شه.
 function renderSessionRing() {
     const ring = document.getElementById('sessionRing');
     if (!ring) return;
@@ -156,7 +240,7 @@ function renderSessionRing() {
     });
 
     let gradientParts = [];
-    let lastEndDeg = 0; // تا کجای حلقه تا الان "پر" شده (چه رنگی چه خنثی)
+    let lastEndDeg = 0;
 
     for (const session of sorted) {
         const [sH, sM] = session.startTime.split(':').map(Number);
@@ -168,13 +252,10 @@ function renderSessionRing() {
         let startDeg = (startHour / 24) * 360;
         let endDeg = (endHour / 24) * 360;
 
-        // سشن‌هایی که هنوز شروع نشدن (در آینده‌ی روزن) نمایش داده نمی‌شن
         if (startDeg >= nowDeg) break;
 
-        // اگه سشن هنوز در حال اجراست (یا تا بعد از الان ادامه داره)، فقط تا لحظه‌ی الان کشیده بشه
         if (endDeg > nowDeg) endDeg = nowDeg;
 
-        // فاصله‌ی بین آخرین نقطه‌ی پر شده و شروع این سشن = بدون فعالیت (رنگ خنثی)
         if (startDeg > lastEndDeg) {
             gradientParts.push(`#e8edec ${lastEndDeg}deg ${startDeg}deg`);
         }
@@ -183,20 +264,14 @@ function renderSessionRing() {
         lastEndDeg = Math.max(lastEndDeg, endDeg);
     }
 
-    // از آخرین سشن تا لحظه‌ی الان = بدون فعالیت (رنگ خنثی)
     if (lastEndDeg < nowDeg) {
         gradientParts.push(`#e8edec ${lastEndDeg}deg ${nowDeg}deg`);
     }
 
-    // از الان تا آخر روز = هنوز اتفاق نیفتاده، پس شفاف بمونه (حلقه هنوز شکل نگرفته)
     gradientParts.push(`transparent ${nowDeg}deg 360deg`);
 
     ring.style.background = `conic-gradient(from 0deg, ${gradientParts.join(', ')})`;
 }
-
-// ========================================
-// به‌روزرسانی عقربه‌ها و هایلایت‌ها
-// ========================================
 
 function updateClock() {
     const now = new Date();
@@ -204,12 +279,10 @@ function updateClock() {
     const minutes = now.getMinutes();
     const seconds = now.getSeconds();
 
-    // ====== محاسبه درجه‌ها (بدون آفست -90، چون ۱۲/۰۰ = بالا = صفر درجه) ======
     const hourDeg = ((hours % 24) / 24) * 360 + (minutes / 60) * 15 + (seconds / 3600) * 15;
     const minuteDeg = (minutes / 60) * 360 + (seconds / 60) * 6;
     const secondDeg = (seconds / 60) * 360;
 
-    // ====== به‌روزرسانی عقربه‌ها ======
     const hourHand = document.getElementById('hourHand');
     const minuteHand = document.getElementById('minuteHand');
     const secondHand = document.getElementById('secondHand');
@@ -224,7 +297,6 @@ function updateClock() {
         secondHand.style.transform = `translateX(-50%) rotate(${secondDeg}deg)`;
     }
 
-    // ====== هایلایت‌ها ======
     document.querySelectorAll('.clock__number').forEach(el => {
         el.classList.remove('clock__number--active');
         const index = parseInt(el.style.getPropertyValue('--index'));
@@ -242,7 +314,6 @@ function updateClock() {
         }
     });
 
-    // ====== ساعت دیجیتال ======
     const hoursEl = document.getElementById('digitalHours');
     const minutesEl = document.getElementById('digitalMinutes');
     const secondsEl = document.getElementById('digitalSeconds');
@@ -251,16 +322,9 @@ function updateClock() {
     if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0');
     if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
 
-    // ====== پیشرفت حلقه‌ی سشن‌ها با گذر زمان ======
     renderSessionRing();
 }
 
-// ========================================
-// شروع/توقف
-// ========================================
-
-// sessionsForDay: اختیاری — وقتی بعداً از تقویم یه روز خاص انتخاب شد، سشن‌های همون روز رو بده.
-// اگه چیزی ندی، خودکار از دیتای زنده‌ی امروز (sessions.js) استفاده می‌کنه.
 export function startClock(sessionsForDay = null) {
     if (clockInterval) {
         clearInterval(clockInterval);
@@ -270,6 +334,14 @@ export function startClock(sessionsForDay = null) {
     sessionsOverride = sessionsForDay;
     renderSessionRing();
     updateClock();
+
+    // دریافت دما برای استان کاربر
+    const savedProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
+    if (savedProfile.province) {
+        setTimeout(() => {
+            fetchWeather(savedProfile.province);
+        }, 300);
+    }
 
     clockInterval = setInterval(updateClock, 1000);
 }
@@ -281,8 +353,6 @@ export function stopClock() {
     }
 }
 
-// برای تغییر روز نمایش داده‌شده (مثلاً بعد از کلیک روی یه روز توی تقویم).
-// sessionsForDay را null بده تا دوباره برگرده به دیتای زنده‌ی امروز.
 export function updateClockSessions(sessionsForDay) {
     sessionsOverride = sessionsForDay;
     renderSessionRing();
@@ -290,4 +360,14 @@ export function updateClockSessions(sessionsForDay) {
 
 export function initClock(sessionsForDay = null) {
     startClock(sessionsForDay);
+}
+
+// ========================================
+// قرار دادن توابع در دسترس global
+// ========================================
+
+if (typeof window !== 'undefined') {
+    window.updateWeatherForCity = updateWeatherForCity;
+    window.fetchWeather = fetchWeather;
+    window.getProvinceEnglish = getProvinceEnglish;
 }

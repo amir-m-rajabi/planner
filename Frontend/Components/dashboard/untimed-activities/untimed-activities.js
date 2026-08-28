@@ -2,35 +2,39 @@
 // Mock Data - Untimed Activities
 // ========================================
 
-const CURRENT_DATE = "2026-08-25";
+export const CURRENT_DATE = "2026-08-25";
 
-const untimedActivities = [
+export const untimedActivities = [
     {
         id: 1,
         title: "آب خوردن",
         targetCount: 8,
-        isActive: true
+        isActive: true,
+        archived: false
     },
 
     {
         id: 2,
         title: "نماز",
         targetCount: 5,
-        isActive: true
+        isActive: true,
+        archived: false
     },
 
     {
         id: 3,
         title: "مسواک",
         targetCount: 1,
-        isActive: true
+        isActive: true,
+        archived: false
     },
 
     {
         id: 4,
         title: "استراحت کوتاه",
         targetCount: 3,
-        isActive: true
+        isActive: true,
+        archived: false
     }
 ];
 
@@ -39,7 +43,7 @@ const untimedActivities = [
 // Mock Data - Daily Records
 // ========================================
 
-const untimedActivityRecords = [
+export const untimedActivityRecords = [
     {
         id: 1,
 
@@ -90,6 +94,10 @@ const untimedActivityRecords = [
 ];
 
 
+// اگه فرم توی حالت «ویرایش» بازه، فعالیتی که داره ویرایش می‌شه اینجاست.
+let untimedActivityBeingEdited = null;
+
+
 export function UnTimeActivies() {
     return `
         <section class="untimed-activities">
@@ -129,11 +137,15 @@ export function UnTimeActivies() {
             </div>
 
         </section>
+
+        ${UntimedActivityForm()}
     `;
 }
 
 // ========================================
 // Untimed Activity Form Modal
+// دقیقاً مثل ActivityFormModal در timed-activities.js —
+// هم برای «ایجاد» هم برای «ویرایش» استفاده می‌شه.
 // ========================================
 
 export function UntimedActivityForm() {
@@ -141,7 +153,7 @@ export function UntimedActivityForm() {
         <section
             class="activity-form"
             data-activity-type="untimed"
-            aria-labelledby="activity-form-title"
+            aria-labelledby="untimed-activity-form-title"
         >
 
             <div class="activity-form__container">
@@ -157,7 +169,7 @@ export function UntimedActivityForm() {
 
                         <h2
                             class="activity-form__title"
-                            id="activity-form-title"
+                            id="untimed-activity-form-title"
                         >
                             ایجاد فعالیت بدون زمان
                         </h2>
@@ -293,33 +305,10 @@ export function UntimedActivityForm() {
 
 
 // ========================================
-// Render Untimed Activity Form
-// ========================================
-
-function renderUntimedActivityForm() {
-
-    // جلوگیری از ایجاد چند مودال در صفحه
-    if (
-        document.querySelector(
-            '.activity-form[data-activity-type="untimed"]'
-        )
-    ) {
-        return;
-    }
-
-
-    // اضافه کردن مودال به انتهای Body
-    document.body.insertAdjacentHTML(
-        "beforeend",
-        UntimedActivityForm()
-    );
-}
-
-// ========================================
 // Get Activity Record For Date
 // ========================================
 
-function getActivityRecord(activityId, date = CURRENT_DATE) {
+export function getActivityRecord(activityId, date = CURRENT_DATE) {
 
     return untimedActivityRecords.find(
         record =>
@@ -329,13 +318,50 @@ function getActivityRecord(activityId, date = CURRENT_DATE) {
 }
 
 // ========================================
+// Toggle Untimed Check
+// منطق مشترک تیک‌زدن — هم ماژول داشبورد هم صفحه‌ی
+// فعالیت‌ها از همین یکی استفاده می‌کنن.
+// ========================================
+
+export function toggleUntimedCheck(activityId, checkIndex, date = CURRENT_DATE) {
+
+    let record = getActivityRecord(activityId, date);
+
+    if (!record) {
+        record = {
+            id: Date.now(),
+            activityId: activityId,
+            recordDate: date,
+            completedCount: 0,
+            completedChecks: []
+        };
+
+        untimedActivityRecords.push(record);
+    }
+
+    const checkPosition = record.completedChecks.indexOf(checkIndex);
+
+    if (checkPosition === -1) {
+        record.completedChecks.push(checkIndex);
+    } else {
+        record.completedChecks.splice(checkPosition, 1);
+    }
+
+    record.completedCount = record.completedChecks.length;
+
+    record.completedChecks.sort((a, b) => a - b);
+
+    return record;
+}
+
+// ========================================
 // Create Untimed Activity HTML
 // ========================================
 
-function createUntimedActivityHTML(activity,date = CURRENT_DATE) {
+function createUntimedActivityHTML(activity, date = CURRENT_DATE) {
 
     // رکورد مربوط به همین فعالیت در تاریخ انتخاب‌شده
-    const record = getActivityRecord(activity.id,date);
+    const record = getActivityRecord(activity.id, date);
 
     // اگر رکوردی وجود نداشت، یعنی هنوز چیزی ثبت نشده
     const completedCount =
@@ -412,7 +438,7 @@ function renderUntimedActivities(
 
     return untimedActivities
         .filter(
-            activity => activity.isActive
+            activity => activity.isActive && !activity.archived
         )
         .map(activity => {
 
@@ -429,7 +455,7 @@ function renderUntimedActivities(
 // Render Untimed Activities To DOM
 // ========================================
 
-function renderUntimedActivitiesToDOM(
+export function renderUntimedActivitiesToDOM(
     date = CURRENT_DATE
 ) {
 
@@ -456,42 +482,39 @@ export function initUntimedActivities() {
     // Render activities
     renderUntimedActivitiesToDOM();
 
-    // Render the activity form modal
-    renderUntimedActivityForm();
-
     // Handle activity checkboxes
     document.addEventListener(
         "click",
         handleUntimedActivityClick
     );
 
-    // Handle add activity button
-    const addButton =
-        document.querySelector(
-            ".untimed-activities__add"
-        );
-
-    if (!addButton) {
-        return;
-    }
-
-    addButton.addEventListener(
-        "click",
-        openUntimedActivityForm
-    );
-
-        // Handle close and cancel buttons
+    // Handle close and cancel buttons
     document.addEventListener(
         "click",
         handleUntimedActivityFormActions
     );
 
-        // Handle activity form submit
+    // Handle activity form submit
     document.addEventListener(
         "submit",
         handleUntimedActivityFormSubmit
     );
 }
+
+// باز کردن مودال ایجاد فعالیت — هم از دکمه‌ی «+» داشبورد،
+// هم از دکمه‌ی «فعالیت جدید» صفحه‌ی فعالیت‌ها.
+document.addEventListener("click", (event) => {
+
+    const addButton = event.target.closest(
+        '.untimed-activities__add, [data-action="create-untimed"]'
+    );
+
+    if (!addButton) {
+        return;
+    }
+
+    openUntimedActivityForm();
+});
 
 // ========================================
 // Handle Untimed Activity Form Actions
@@ -508,8 +531,24 @@ function handleUntimedActivityFormActions(event) {
         return;
     }
 
+    // فقط اگه این دکمه مال مودال «بدون‌زمان» باشه، ببندش —
+    // وگرنه ممکنه مودال «زمان‌دار» رو اشتباهی ببنده.
+    const form = actionButton.closest(
+        '.activity-form[data-activity-type="untimed"]'
+    );
+
+    if (!form) {
+        return;
+    }
+
     closeUntimedActivityForm();
 }
+
+document.addEventListener('keyup', (event) => {
+    if (event.key === 'Escape') {
+        closeUntimedActivityForm();
+    }
+})
 
 // ========================================
 // Handle Untimed Activity Form Submit
@@ -546,24 +585,25 @@ function handleUntimedActivityFormSubmit(event) {
         return;
     }
 
-    // ========================================
-    // Create New Activity
-    // ========================================
+    if (untimedActivityBeingEdited) {
 
-    const newActivity = {
+        // ====== حالت ویرایش ======
+        untimedActivityBeingEdited.title = title;
+        untimedActivityBeingEdited.targetCount = target;
 
-        id: Date.now(),
+    } else {
 
-        title: title,
+        // ====== حالت ایجاد ======
+        const newActivity = {
+            id: Date.now(),
+            title: title,
+            targetCount: target,
+            isActive: true,
+            archived: false
+        };
 
-        targetCount: target,
-
-        isActive: true
-    };
-
-    untimedActivities.push(
-        newActivity
-    );
+        untimedActivities.push(newActivity);
+    }
 
 
     // ========================================
@@ -571,6 +611,9 @@ function handleUntimedActivityFormSubmit(event) {
     // ========================================
 
     renderUntimedActivitiesToDOM();
+
+    // به هر صفحه‌ی دیگه‌ای که همین لیست رو نشون می‌ده خبر بده
+    document.dispatchEvent(new CustomEvent("untimed-activities:changed"));
 
 
     // ========================================
@@ -590,8 +633,8 @@ function handleUntimedActivityFormSubmit(event) {
 // ========================================
 // Open Untimed Activity Form
 // ========================================
-
-function openUntimedActivityForm() {
+// activity: اختیاری — اگه بدی، مودال توی حالت «ویرایش» باز می‌شه.
+export function openUntimedActivityForm(activity = null) {
 
     const form =
         document.querySelector(
@@ -600,6 +643,28 @@ function openUntimedActivityForm() {
 
     if (!form) {
         return;
+    }
+
+    untimedActivityBeingEdited = activity;
+
+    const titleEl = form.querySelector("#untimed-activity-form-title");
+    const descriptionEl = form.querySelector(".activity-form__description");
+    const submitTextEl = form.querySelector(".activity-form__submit span:last-child");
+    const titleInput = form.querySelector("#untimed-activity-title");
+    const targetInput = form.querySelector("#untimed-activity-target");
+
+    if (activity) {
+        if (titleEl) titleEl.textContent = "ویرایش فعالیت";
+        if (descriptionEl) descriptionEl.textContent = "عنوان یا هدف فعالیت را ویرایش کنید.";
+        if (submitTextEl) submitTextEl.textContent = "ذخیره تغییرات";
+        if (titleInput) titleInput.value = activity.title;
+        if (targetInput) targetInput.value = activity.targetCount;
+    } else {
+        if (titleEl) titleEl.textContent = "ایجاد فعالیت بدون زمان";
+        if (descriptionEl) descriptionEl.textContent = "فعالیت خود را ایجاد کنید تا بتوانید انجام آن را ثبت و پیگیری کنید.";
+        if (submitTextEl) submitTextEl.textContent = "ایجاد فعالیت";
+        if (titleInput) titleInput.value = "";
+        if (targetInput) targetInput.value = "";
     }
 
     form.classList.add("is-open");
@@ -621,6 +686,7 @@ function closeUntimedActivityForm() {
     }
 
     form.classList.remove("is-open");
+    untimedActivityBeingEdited = null;
 }
 
 
@@ -653,10 +719,6 @@ function handleUntimedActivityClick(event) {
     }
 
 
-    // ========================================
-    // Get Activity
-    // ========================================
-
     const activityId =
         Number(
             activityCard.dataset.activityId
@@ -674,95 +736,13 @@ function handleUntimedActivityClick(event) {
     }
 
 
-    // ========================================
-    // Get / Create Record
-    // ========================================
-
-    let record =
-        getActivityRecord(
-            activityId
-        );
-
-
-    if (!record) {
-
-        record = {
-
-            id: Date.now(),
-
-            activityId: activityId,
-
-            recordDate: CURRENT_DATE,
-
-            completedCount: 0,
-
-            completedChecks: []
-        };
-
-
-        untimedActivityRecords.push(
-            record
-        );
-    }
-
-
-    // ========================================
-    // Get Clicked Checkbox Index
-    // ========================================
-
     const checkIndex =
         Number(
             check.dataset.checkIndex
         );
 
 
-    // ========================================
-    // Toggle Checkbox
-    // ========================================
-
-    const checkPosition =
-        record.completedChecks.indexOf(
-            checkIndex
-        );
-
-
-    if (checkPosition === -1) {
-
-        // Checkbox is currently unchecked
-        // Add it to completed checks
-
-        record.completedChecks.push(
-            checkIndex
-        );
-
-    } else {
-
-        // Checkbox is currently checked
-        // Remove it from completed checks
-
-        record.completedChecks.splice(
-            checkPosition,
-            1
-        );
-    }
-
-
-    // ========================================
-    // Update Completed Count
-    // ========================================
-
-    record.completedCount =
-        record.completedChecks.length;
-
-
-    // ========================================
-    // Keep Checkboxes Ordered
-    // ========================================
-
-    record.completedChecks.sort(
-        (a, b) => a - b
-    );
-
+    const record = toggleUntimedCheck(activityId, checkIndex);
 
     console.log(
         "Updated record:",
@@ -777,9 +757,3 @@ function handleUntimedActivityClick(event) {
     renderUntimedActivitiesToDOM();
 
 }
-
-document.addEventListener('keydown',(event)=>{
-    if(event.key === 'Escape'){
-        closeUntimedActivityForm()
-    }    
-})

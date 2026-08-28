@@ -9,6 +9,9 @@ import { initUntimedActivities } from "../Components/dashboard/untimed-activitie
 
 import { initClock } from "../Components/dashboard/clock/clock.js"
 
+import { renderTimedActivities } from '../pages/activities/activities-view.js';
+
+import { initProfilePage } from '../pages/profile/profile-view.js'
 
 export function router() {
 
@@ -31,6 +34,7 @@ export function router() {
         case "/activities":
 
             pageContent.innerHTML = ActivitiesView();
+            renderTimedActivities()
 
             break;
 
@@ -49,6 +53,7 @@ export function router() {
         case "/profile":
 
             pageContent.innerHTML = ProfileView();
+            initProfilePage()
 
             break;
 

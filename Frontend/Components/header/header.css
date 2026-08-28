@@ -1,217 +1,194 @@
 .header {
-        width: 100%;
-        height: var(--header-height);
-
-        background-color: rgba(255, 255, 255, 0.92);
-
-        border-bottom: 1px solid var(--color-border);
-
-        box-shadow: var(--shadow-sm);
-      }
-
-      .header__container {
-        width: 100%;
-        height: 100%;
-
-        padding-inline: var(--page-padding);
-
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-
-      .logo {
-        width: 55px;
-        height: 55px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        flex-shrink: 0;
-
-        text-decoration: none;
-      }
-
-      .logo__image {
-        width: 100%;
-        height: 100%;
-
-        object-fit: contain;
-
-        display: block;
-        transition: all 200ms ease-in-out;
-      }
-
-      .logo__image:hover{
-        transform: scale(1.1);
-      }
-
-      .navigation {
-        padding: 6px;
-
-        background-color: #f3f7f5;
-
-        border: 1px solid var(--color-border);
-
-        border-radius: 16px;
-
-        box-shadow: 0 2px 8px rgba(24, 52, 61, 0.04);
-      }
-
-      .navigation__list {
-        display: flex;
-        align-items: center;
-
-        gap: 40px;
-
-        list-style: none;
-      }
-
-      .navigation__item {
-        height: 100%;
-
-        display: flex;
-        align-items: center;
-      }
-      .navigation__link {
-        min-width: 120px;
-        height: 40px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        padding-inline: 20px;
-
-        border-radius: 11px;
-
-        color: var(--color-text-secondary);
-
-        font-size: var(--font-size-md);
-        font-weight: 500;
-
-        text-decoration: none;
-
-        transition:
-          color 180ms ease,
-          background-color 180ms ease,
-          box-shadow 180ms ease,
-          transform 180ms ease;
-      }
-
-      .navigation__link:hover {
-        color: var(--color-primary);
-
-        background-color: rgba(79, 158, 165, 0.08);
-      }
-
-      .navigation__link--active {
-        color: #ffffff;
-
-        background-color: var(--color-primary);
-
-        font-weight: 600;
-
-        box-shadow: 0 3px 8px rgba(33, 110, 137, 0.22);
-      }
-
-      .navigation__link--active:hover {
-        color: #ffffff;
-
-        background-color: var(--color-primary-light);
-      }
-
-      .profile {
-        width: 55px;
-        height: 55px;
-
-        display: block;
-
-        flex-shrink: 0;
-
-        border-radius: var(--radius-full);
-
-        overflow: hidden;
-
-        border: 2px solid var(--color-border);
-
-        transition:
-          border-color 180ms ease,
-          transform 180ms ease;
-      }
-
-      .profile:hover {
-        border-color: var(--color-primary);
-
-        transform: scale(1.04);
-        box-shadow: 0 4px 12px rgba(33,110,137,0.16);
-      }
-
-      .profile--active{
-        border-color: var(--color-primary);
-
-        transform: scale(1.04);
-        box-shadow: 0 4px 12px rgba(33,110,137,0.16);
-      }
-
-      .profile__image {
-        width: 100%;
-        height: 100%;
-
-        display: block;
-
-        object-fit: cover;
-      }
-
-      /* .auth-actions {
-      isplay: flex;
-        align-items: center;
-        gap: var(--space-3);
-      }
-
-      .auth-actions__login,
-      .auth-actions__register {
-        text-decoration: none;
-
-        font-size: var(--font-size-md);
-        font-weight: 500;
-      }
-
-      .auth-actions__login {
-        color: var(--color-text-secondary);
-      }
-
-      .auth-actions__register {
-        padding: 10px 16px;
-
-        color: var(--color-surface);
-
-        background-color: var(--color-primary);
-
-        border-radius: var(--radius-md);
-
-        transition: background-color 180ms ease;
-      }
-
-      .auth-actions__register:hover {
-        background-color: var(--color-primary-light);
-      } */
-
-/* ========================================
-   Active Timer
-======================================== */
-
-.header {
     position: relative;
+
+    width: 100%;
+    height: var(--header-height);
+
+    background-color: color-mix(in srgb, var(--color-surface) 92%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    box-shadow: var(--shadow-sm);
+}
+
+/* خط نازک گرادیانت پایین هدر — همون امضای بصری که روی
+   کارت‌های داشبورد هم هست، اینجا هم تکرار شده تا کل اپ
+   یه‌دست به‌نظر بیاد (به‌جای یه خط خاکستری ساده). */
+.header::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light), var(--color-accent));
+    opacity: 0.7;
 }
 
 .header__container {
     position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    padding-inline: var(--page-padding);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
+.logo {
+    width: 55px;
+    height: 55px;
 
-/* Timer */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    text-decoration: none;
+}
+
+.logo__image {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    display: block;
+    transition: transform 200ms ease-in-out, filter 200ms ease-in-out;
+}
+
+.logo__image:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 4px 10px rgba(33, 110, 137, 0.25));
+}
+
+.navigation {
+    padding: 6px;
+
+    background-color: var(--color-surface-hover);
+
+    border: 1px solid var(--color-border);
+
+    border-radius: 16px;
+
+    box-shadow: var(--shadow-xs);
+}
+
+.navigation__list {
+    display: flex;
+    align-items: center;
+
+    gap: 40px;
+
+    list-style: none;
+}
+
+.navigation__item {
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+}
+
+.navigation__link {
+    min-width: 120px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding-inline: 20px;
+
+    border-radius: 11px;
+
+    color: var(--color-text-secondary);
+
+    font-size: var(--font-size-md);
+    font-weight: 500;
+
+    text-decoration: none;
+
+    transition:
+        color 180ms ease,
+        background-color 180ms ease,
+        background-image 180ms ease,
+        box-shadow 180ms ease,
+        transform 180ms ease;
+}
+
+.navigation__link:hover {
+    color: var(--color-primary);
+
+    background-color: color-mix(in srgb, var(--color-primary-light) 12%, transparent);
+}
+
+.navigation__link--active {
+    color: #ffffff;
+
+    background-image: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+
+    font-weight: 600;
+
+    box-shadow: 0 3px 10px rgba(33, 110, 137, 0.28);
+}
+
+.navigation__link--active:hover {
+    color: #ffffff;
+
+    background-image: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
+}
+
+.profile {
+    width: 55px;
+    height: 55px;
+
+    display: block;
+
+    flex-shrink: 0;
+
+    border-radius: var(--radius-full);
+
+    overflow: hidden;
+
+    border: 2px solid var(--color-border);
+
+    transition:
+        border-color 180ms ease,
+        transform 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.profile:hover {
+    border-color: var(--color-primary);
+
+    transform: scale(1.04);
+    box-shadow: 0 4px 12px rgba(33, 110, 137, 0.16);
+}
+
+.profile--active {
+    border-color: var(--color-primary);
+
+    transform: scale(1.04);
+    box-shadow: 0 4px 12px rgba(33, 110, 137, 0.16);
+}
+
+.profile__image {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+/* ========================================
+   Active Timer
+======================================== */
 
 .header-timer {
     position: absolute;
@@ -230,28 +207,29 @@
 
     padding: 5px 7px 5px 14px;
 
-    background-color: rgba(255, 255, 255, 0.96);
+    background-color: color-mix(in srgb, var(--color-surface) 96%, transparent);
 
     border: 1px solid var(--color-border);
 
     border-radius: 14px;
 
     box-shadow:
-        0 4px 14px rgba(24, 52, 61, 0.08),
-        0 1px 3px rgba(24, 52, 61, 0.04);
+        var(--shadow-sm),
+        0 0 0 1px color-mix(in srgb, var(--timer-color, var(--color-primary)) 10%, transparent);
 
     backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 
     z-index: 10;
 
     direction: rtl;
-}
 
+    transition: box-shadow 200ms ease;
+}
 
 .header-timer[hidden] {
     display: none;
 }
-
 
 /* Activity */
 
@@ -263,14 +241,13 @@
 
     min-width: 100px;
 
-    color: var(--color-text-primary);
+    color: var(--color-text);
 
     font-size: 12px;
     font-weight: 600;
 
     white-space: nowrap;
 }
-
 
 .header-timer__indicator {
     width: 8px;
@@ -290,7 +267,6 @@
         );
 }
 
-
 /* Time */
 
 .header-timer__time {
@@ -308,8 +284,8 @@
     font-weight: 700;
 
     letter-spacing: 0.5px;
+    font-variant-numeric: tabular-nums;
 }
-
 
 /* Stop Button */
 
@@ -339,17 +315,52 @@
         box-shadow 180ms ease;
 }
 
-
 .header-timer__stop:hover {
     background-color: var(--color-primary-light);
 
-    box-shadow:
-        0 4px 10px rgba(79, 158, 165, 0.22);
+    box-shadow: 0 4px 10px rgba(79, 158, 165, 0.22);
 
     transform: translateY(-1px);
 }
 
-
 .header-timer__stop:active {
     transform: translateY(0);
 }
+
+/* ========================================
+Auth Actions (غیرفعال — دست‌نخورده موند)
+======================================== */
+
+/* .auth-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.auth-actions__login,
+.auth-actions__register {
+    text-decoration: none;
+
+    font-size: var(--font-size-md);
+    font-weight: 500;
+}
+
+.auth-actions__login {
+    color: var(--color-text-secondary);
+}
+
+.auth-actions__register {
+    padding: 10px 16px;
+
+    color: var(--color-surface);
+
+    background-color: var(--color-primary);
+
+    border-radius: var(--radius-md);
+
+    transition: background-color 180ms ease;
+}
+
+.auth-actions__register:hover {
+    background-color: var(--color-primary-light);
+} */

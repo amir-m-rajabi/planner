@@ -7,35 +7,27 @@ export let timedActivities = [
         id: 1,
         title: "مطالعه ریاضی",
         color: "#e6b84c",
-        totalDuration: 4800
+        totalDuration: 4800,
+        createdAt: "2026-08-28",
+        archived: false
     },
 
     {
         id: 2,
         title: "برنامه‌نویسی",
         color: "#4f8fc0",
-        totalDuration: 6300
+        totalDuration: 6300,
+        createdAt: "2026-08-28",
+        archived: false
     },
 
     {
         id: 3,
         title: "زبان انگلیسی",
         color: "#d96b6b",
-        totalDuration: 3000
-    },
-
-    {
-        id: 4,
-        title: "مطالعه کتاب",
-        color: "#7fb86a",
-        totalDuration: 0
-    },
-
-    {
-        id: 5,
-        title: "تمرین پروژه",
-        color: "#9b7acb",
-        totalDuration: 0
+        totalDuration: 3000,
+        createdAt: "2026-08-28",
+        archived: false
     }
 ];
 
@@ -45,6 +37,10 @@ let activeActivity = null;
 let timerInterval = null;
 
 let activityTimerInterval = null;
+
+// اگه فرم توی حالت «ویرایش» بازه، فعالیتی که داره ویرایش می‌شه اینجاست.
+// null یعنی فرم توی حالت «ایجاد فعالیت جدید»ه.
+let activityBeingEdited = null;
 
 
 export function TimeActivies(){
@@ -74,11 +70,16 @@ export function TimeActivies(){
   </div>
 </section>
 
+${ActivityFormModal()}
+${ConcurrentActivityWarningModal()}
+    `;
+}
 
-<!-- ========================================
-     Activity Form
-======================================== -->
-
+// ========================================
+// Activity Form Modal
+// ========================================
+export function ActivityFormModal() {
+    return `
 <section
   class="activity-form"
   data-activity-type="timed"
@@ -176,13 +177,87 @@ export function TimeActivies(){
     </form>
   </div>
 </section>
-
     `;
 }
+
+// ========================================
+// Concurrent Activity Warning Modal
+// ========================================
+export function ConcurrentActivityWarningModal() {
+    return `
+        <div class="activity-warning-modal" id="concurrentActivityWarningModal" aria-hidden="true">
+            <div class="activity-warning-modal__overlay"></div>
+
+            <div
+                class="activity-warning-modal__box"
+                role="alertdialog"
+                aria-modal="true"
+                aria-labelledby="concurrentActivityWarningTitle"
+            >
+                <div class="activity-warning-modal__icon" aria-hidden="true">!</div>
+
+                <div class="activity-warning-modal__content">
+                    <h2 class="activity-warning-modal__title" id="concurrentActivityWarningTitle">
+                        یه فعالیت دیگه در حال اجراست
+                    </h2>
+
+                    <p class="activity-warning-modal__message" id="concurrentActivityWarningMessage">
+                        نمی‌تونید هم‌زمان چند فعالیت رو شروع کنید.
+                    </p>
+                </div>
+
+                <div class="activity-warning-modal__actions">
+                    <button type="button" class="activity-warning-modal__confirm" id="concurrentActivityWarningClose">
+                        متوجه شدم
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function openConcurrentActivityWarning(runningActivity) {
+    const modal = document.querySelector("#concurrentActivityWarningModal");
+    if (!modal) return;
+
+    const messageEl = modal.querySelector("#concurrentActivityWarningMessage");
+    if (messageEl) {
+        messageEl.textContent = runningActivity
+            ? `فعالیت «${runningActivity.title}» در حال اجراست. برای شروع فعالیت جدید، اول اون رو تموم کنید.`
+            : "نمی‌تونید هم‌زمان چند فعالیت رو شروع کنید.";
+    }
+
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+}
+
+function closeConcurrentActivityWarning() {
+    const modal = document.querySelector("#concurrentActivityWarningModal");
+    if (!modal) return;
+
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+}
+
+document.addEventListener("click", (event) => {
+    if (
+        event.target.closest("#concurrentActivityWarningClose") ||
+        event.target.closest(".activity-warning-modal__overlay")
+    ) {
+        closeConcurrentActivityWarning();
+    }
+});
+
+document.addEventListener("keyup", (event) => {
+    if (event.key === "Escape") {
+        closeConcurrentActivityWarning();
+    }
+});
 
 function renderTimedActivities() {
 
     return timedActivities
+        .filter(activity => !activity.archived)
         .map(activity => {
             
             return `
@@ -280,48 +355,7 @@ export function initTimedActivities() {
             return;
         }
 
-
-        // =====================================
-        // اگر همین Activity در حال اجراست
-        // یعنی کاربر روی «پایان» زده
-        // =====================================
-
-        if (
-            activeActivity &&
-            activeActivity.id === activity.id
-        ) {
-
-            finishActivity(
-                activity,
-                startButton
-            );
-
-            return;
-        }
-
-
-        // =====================================
-        // اگر Activity دیگری در حال اجراست
-        // =====================================
-
-        if (activeActivity) {
-
-            console.log(
-                "یک فعالیت دیگر در حال اجراست"
-            );
-
-            return;
-        }
-
-
-        // =====================================
-        // شروع Activity
-        // =====================================
-
-        startActivity(
-            activity,
-            startButton
-        );
+        requestStartActivity(activity, startButton);
     });
 
 
@@ -350,7 +384,7 @@ export function initTimedActivities() {
             return;
         }
         
-        const startButton = activeCard.querySelector(".timed-activity__start");
+        const startButton = activeCard.querySelector(".timed-activity__start, .activity-card__start");
         
         if (!startButton) {
             return;
@@ -362,6 +396,30 @@ export function initTimedActivities() {
 }
 
 initTimedActivities()
+
+// ========================================
+// ورودی مشترک برای دکمه‌ی شروع/پایان
+// ========================================
+export function requestStartActivity(activity, button) {
+
+    if (activeActivity && activeActivity.id === activity.id) {
+        finishActivity(activity, button);
+        return;
+    }
+
+    if (activeActivity) {
+        openConcurrentActivityWarning(activeActivity);
+        return;
+    }
+
+    startActivity(activity, button);
+}
+
+// وضعیت فعالیتِ در حال اجرا رو به هر صفحه‌ای که بخواد
+// (مثلاً برای بازسازی ظاهر دکمه بعد از رندر) می‌ده.
+export function getActiveActivity() {
+    return activeActivity;
+}
 
 /////////////// Start & End Timer ///////
 function startActivity(activity, button) {
@@ -398,9 +456,7 @@ function startActivity(activity, button) {
     }
 
     const icon =
-        button.querySelector(
-            ".timed-activity__start-icon"
-        );
+        button.querySelector("span:first-child");
 
     if (icon) {
         icon.textContent = "■";
@@ -458,7 +514,8 @@ function finishActivity(activity, button) {
     renderSessionListToDOM()
     renderSessionsModalListToDOM()
     
-    
+    // ====== ارسال event برای بروزرسانی سشن ======
+    document.dispatchEvent(new CustomEvent("timed-activities:changed"));
 
     
     activity.totalDuration += durationInSeconds;
@@ -483,12 +540,6 @@ function finishActivity(activity, button) {
     timerInterval = null;
     activityTimerInterval = null;
 
-    // console.log("Activity finished");
-
-    // console.log("Start:", startTime);
-
-    // console.log("End:", endTime);
-
     console.log("Duration:",durationInSeconds);
 
     console.log("New total duration:",activity.totalDuration);
@@ -507,9 +558,7 @@ function finishActivity(activity, button) {
     }
 
     const icon =
-        button.querySelector(
-            ".timed-activity__start-icon"
-        );
+        button.querySelector("span:first-child");
 
     if (icon) {
         icon.textContent = "▶";
@@ -523,9 +572,6 @@ function finishActivity(activity, button) {
     clearInterval(timerInterval);
     timerInterval = null;
 
-    // createSessionHTML(sessions)
-    // renderSessionsList()
-    
     hideHeaderTimer();
 }
 
@@ -560,7 +606,7 @@ function updateActivityTimer() {
 }
 
 // ============================================
-// تابع برای بازگردوندن وضعیت دکمه فعال
+// تابع برای بازگردوندن وضعیت دکمه فعال (ماژول داشبورد)
 // ============================================
 function restoreActiveButton() {
     // اگه هیچ فعالیت فعالی نیست، کاری نکن
@@ -591,7 +637,7 @@ function restoreActiveButton() {
                 }
                 
                 // آیکون دکمه رو به شکل مربع تغییر بده
-                const icon = button.querySelector(".timed-activity__start-icon");
+                const icon = button.querySelector("span:first-child");
                 if (icon) {
                     icon.textContent = "■";
                 }
@@ -714,13 +760,38 @@ function getActivityDuration(activityId) {
 
 
 /////////// Modals //////////////////
-function openActivityForm() {
+
+// activity: اختیاری — اگه بدی، مودال توی حالت «ویرایش» باز می‌شه
+// و فیلدها با اطلاعات همون فعالیت پر می‌شن. اگه ندی، حالت «ایجاد».
+export function openActivityForm(activity = null) {
 
     const form =
         document.querySelector(".activity-form");
 
     if (!form) {
         return;
+    }
+
+    activityBeingEdited = activity;
+
+    const titleEl = form.querySelector("#activity-form-title");
+    const descriptionEl = form.querySelector(".activity-form__description");
+    const submitTextEl = form.querySelector(".activity-form__submit span:last-child");
+    const titleInput = form.querySelector("#activity-title");
+    const colorInput = form.querySelector("#activity-color");
+
+    if (activity) {
+        if (titleEl) titleEl.textContent = "ویرایش فعالیت";
+        if (descriptionEl) descriptionEl.textContent = "عنوان یا رنگ فعالیت را ویرایش کنید.";
+        if (submitTextEl) submitTextEl.textContent = "ذخیره تغییرات";
+        if (titleInput) titleInput.value = activity.title;
+        if (colorInput) colorInput.value = activity.color;
+    } else {
+        if (titleEl) titleEl.textContent = "ایجاد فعالیت زمان‌دار";
+        if (descriptionEl) descriptionEl.textContent = "فعالیت خود را ایجاد کنید تا بتوانید زمان انجام آن را ثبت و پیگیری کنید.";
+        if (submitTextEl) submitTextEl.textContent = "ایجاد فعالیت";
+        if (titleInput) titleInput.value = "";
+        if (colorInput) colorInput.value = "#4f9ea5";
     }
 
     form.classList.add("is-open");
@@ -736,6 +807,7 @@ function closeActivityForm() {
     }
 
     form.classList.remove("is-open");
+    activityBeingEdited = null;
 }
 
 
@@ -826,10 +898,13 @@ function updateHeaderTimer() {
 
 
 /////////// Modals //////////////////
+
+// باز کردن مودال ایجاد فعالیت — هم از دکمه‌ی «+» داشبورد،
+// هم از دکمه‌ی «فعالیت جدید» صفحه‌ی فعالیت‌ها.
 document.addEventListener("click", (event) => {
 
     const addButton =
-        event.target.closest(".timed-activities__add");
+        event.target.closest(".timed-activities__add, [data-action=\"create-timed\"]");
 
     if (!addButton) {
         return;
@@ -872,7 +947,7 @@ document.addEventListener('keyup',(event)=>{
     }
 })
 
-//////////////// Add New Activity //////////////
+//////////////// Add / Edit Activity //////////////
 document.addEventListener("submit", (event) => {
 
     const form =
@@ -890,21 +965,37 @@ document.addEventListener("submit", (event) => {
     const color =
         form.querySelector("#activity-color").value;
 
-    const newActivity = {
-        id: Date.now(),
-        title: title,
-        color: color,
-        totalDuration: 0
-    };
+    if (activityBeingEdited) {
 
-    timedActivities.push(newActivity);
+        // ====== حالت ویرایش: خودِ فعالیت رو آپدیت کن ======
+        activityBeingEdited.title = title;
+        activityBeingEdited.color = color;
 
-    renderTimedActivitiesToDOM();
+        renderTimedActivitiesToDOM();
+        
+        // ====== ارسال event برای بروزرسانی سشن ======
+        document.dispatchEvent(new CustomEvent("timed-activities:changed"));
+
+    } else {
+
+        // ====== حالت ایجاد: یه فعالیت جدید بساز ======
+        const newActivity = {
+            id: Date.now(),
+            title: title,
+            color: color,
+            totalDuration: 0,
+            createdAt: new Date().toISOString(),
+            archived: false
+        };
+
+        timedActivities.push(newActivity);
+
+        renderTimedActivitiesToDOM();
+
+        // ====== ارسال event برای بروزرسانی سشن ======
+        document.dispatchEvent(new CustomEvent("timed-activities:changed"));
+    }
 
     form.reset();
-
     closeActivityForm();
 });
-
-
-
