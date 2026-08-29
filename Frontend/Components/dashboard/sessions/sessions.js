@@ -88,7 +88,7 @@ function calculateDurationText(startTime, endTime) {
     return minutes === 0 ? `${hours} ساعت` : `${hours} ساعت و ${minutes} دقیقه`;
 }
 
-function getTotalDuration(sessionsList) {
+export function getTotalDuration(sessionsList) {
     let totalMinutes = 0;
     sessionsList.forEach(session => {
         const start = timeToMinutes(session.startTime);
@@ -100,7 +100,7 @@ function getTotalDuration(sessionsList) {
     return totalMinutes;
 }
 
-function formatTotalDuration(minutes) {
+export function formatTotalDuration(minutes) {
     if (minutes === 0) return "۰۰:۰۰";
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
@@ -279,7 +279,10 @@ export function renderSessionsModalListToDOM() {
 }
 
 // ========================================
-// به‌روزرسانی زمان مفید
+// به‌روزرسانی زمان مفید + تعداد سشن
+// (باگ قبلی: این تابع فقط شرط "زمان مفید" رو چک می‌کرد و
+// "تعداد سشن" هیچ‌وقت آپدیت نمی‌شد — فقط یه else if اضافه شده،
+// هیچ سلکتور یا ساختار دیگه‌ای عوض نشده.)
 // ========================================
 
 function updateTotalDuration() {
@@ -288,8 +291,11 @@ function updateTotalDuration() {
     
     const summaryItems = document.querySelectorAll('.sessions-modal__summary-item strong');
     summaryItems.forEach(item => {
-        if (item.closest('.sessions-modal__summary-item').querySelector('span')?.textContent === 'زمان مفید') {
+        const label = item.closest('.sessions-modal__summary-item').querySelector('span')?.textContent;
+        if (label === 'زمان مفید') {
             item.textContent = formatted;
+        } else if (label === 'تعداد سشن') {
+            item.textContent = sessions.length;
         }
     });
     
@@ -571,11 +577,13 @@ function updateSessionModal() {
         title.textContent = "افزودن سشن";
         submitButton.textContent = "افزودن سشن";
         activitySelect.value = "";
-        
-        const currentHour = getCurrentHour();
-        const currentMinute = getCurrentMinute();
-        startHour.value = currentHour;
-        startMinute.value = currentMinute;
+
+        // بدون هیچ پیش‌فرضی — کاربر خودش هم شروع و هم پایان رو
+        // انتخاب می‌کنه. اگه چیزی رو اشتباه/ناقص وارد کنه، موقع
+        // ثبت فرم توسط validateSessionTimes گرفته می‌شه و پیام
+        // مناسبش با همون مودال خطا (ErrorModal) نشون داده می‌شه.
+        startHour.value = "";
+        startMinute.value = "";
         endHour.value = "";
         endMinute.value = "";
         durationDisplay.textContent = "۰ دقیقه";

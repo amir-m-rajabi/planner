@@ -203,7 +203,7 @@
 
 
 /* ========================================
-   Days
+   Days - نمایش عمودی
 ======================================== */
 
 .calendar__days {
@@ -230,12 +230,6 @@
     min-height: 62px;
 
     display: grid;
-
-    /*
-       Right  -> Day information
-       Center -> Useful time
-       Left   -> Persian day number
-    */
 
     grid-template-columns:
         1fr
@@ -274,8 +268,7 @@
 
 
 /* ========================================
-   Right Section
-   Day Information
+   Right Section - Day Information
 ======================================== */
 
 .calendar__day-info {
@@ -381,8 +374,7 @@
 
 
 /* ========================================
-   Center
-   Useful Time
+   Center - Useful Time
 ======================================== */
 
 .calendar__day-useful-time {
@@ -411,8 +403,7 @@
 
 
 /* ========================================
-   Left
-   Persian Day Number
+   Left - Persian Day Number
 ======================================== */
 
 .calendar__day-number {
@@ -504,4 +495,104 @@
 
 .calendar__day--today .calendar__day-subinfo span {
     font-weight: 600;
+}
+
+
+/* ========================================
+   ========================================
+   تعطیلات رسمی و جمعه‌ها
+   ========================================
+   ======================================== */
+
+/* جمعه‌ها و تعطیلات رسمی - رنگ قرمز */
+.calendar__day--weekend,
+.calendar__day--holiday {
+    background: #fef2f2 !important;
+    border-color: #fca5a5 !important;
+    border-width: 1.5px !important;
+}
+
+.calendar__day--weekend .calendar__day-week,
+.calendar__day--holiday .calendar__day-week {
+    color: #dc2626 !important;
+    font-weight: 800 !important;
+}
+
+.calendar__day--weekend .calendar__day-number,
+.calendar__day--holiday .calendar__day-number {
+    color: #dc2626 !important;
+}
+
+.calendar__day--weekend .calendar__day-useful-time,
+.calendar__day--holiday .calendar__day-useful-time {
+    color: #dc2626 !important;
+    background-color: rgba(220, 38, 38, 0.08) !important;
+    border-color: rgba(220, 38, 38, 0.14) !important;
+}
+
+/* جمعه‌ها و تعطیلات رسمی - حالت hover */
+.calendar__day--weekend:hover,
+.calendar__day--holiday:hover {
+    background: #fee2e2 !important;
+    border-color: #ef4444 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.12) !important;
+}
+
+/* جمعه‌ها و تعطیلات رسمی - اگر امروز هم باشه */
+.calendar__day--today.calendar__day--weekend,
+.calendar__day--today.calendar__day--holiday {
+    background: linear-gradient(90deg, #fef2f2, #fee2e2) !important;
+    border-color: #dc2626 !important;
+    border-width: 2px !important;
+}
+
+.calendar__day--today.calendar__day--weekend .calendar__day-useful-time,
+.calendar__day--today.calendar__day--holiday .calendar__day-useful-time {
+    background: #dc2626 !important;
+    color: #ffffff !important;
+    border-color: #dc2626 !important;
+}
+
+.calendar__day--today.calendar__day--weekend .calendar__day-week,
+.calendar__day--today.calendar__day--holiday .calendar__day-week {
+    color: #dc2626 !important;
+}
+
+.calendar__day--today.calendar__day--weekend .calendar__day-number,
+.calendar__day--today.calendar__day--holiday .calendar__day-number {
+    color: #dc2626 !important;
+}
+
+/* ========================================
+   تم تاریک - تعطیلات
+======================================== */
+
+:root[data-theme="dark"] .calendar__day--weekend,
+:root[data-theme="dark"] .calendar__day--holiday {
+    background: #1a1a2e !important;
+    border-color: #dc2626 !important;
+}
+
+:root[data-theme="dark"] .calendar__day--weekend .calendar__day-week,
+:root[data-theme="dark"] .calendar__day--holiday .calendar__day-week {
+    color: #f87171 !important;
+}
+
+:root[data-theme="dark"] .calendar__day--weekend .calendar__day-number,
+:root[data-theme="dark"] .calendar__day--holiday .calendar__day-number {
+    color: #f87171 !important;
+}
+
+:root[data-theme="dark"] .calendar__day--weekend .calendar__day-useful-time,
+:root[data-theme="dark"] .calendar__day--holiday .calendar__day-useful-time {
+    color: #f87171 !important;
+    background-color: rgba(248, 113, 113, 0.08) !important;
+    border-color: rgba(248, 113, 113, 0.14) !important;
+}
+
+:root[data-theme="dark"] .calendar__day--weekend:hover,
+:root[data-theme="dark"] .calendar__day--holiday:hover {
+    background: #1f1f3a !important;
+    border-color: #ef4444 !important;
 }

@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@se-oss/jalaali": "^1.2.0"
+  }
+}

@@ -7,7 +7,22 @@ import {
     getActiveActivity
 } from "../../Components/dashboard/timed-activities/timed-activities.js";
 
+import {
+    untimedActivities,
+    untimedActivityRecords,
+    UntimedActivityForm,
+    openUntimedActivityForm,
+    getActivityRecord,
+    toggleUntimedCheck
+} from "../../Components/dashboard/untimed-activities/untimed-activities.js";
+
+// "active" | "archived" — کدوم تب الان نشون داده می‌شه
+let currentStatusFilter = "active";
+
 export function ActivitiesView(){
+    const isActiveTab = currentStatusFilter === "active";
+    const isArchivedTab = currentStatusFilter === "archived";
+
     return `
         <main class="activities-page">
       <div class="activities-page__container">
@@ -23,20 +38,16 @@ export function ActivitiesView(){
 
           <!-- Status Filter -->
           <div class="activities-page__filter">
-            <!--
-                    activity-status-filter.html
-                    اینجا قرار می‌گیرد
-                -->
             <div
               class="activity-status-filter"
               role="tablist"
               aria-label="وضعیت فعالیت‌ها"
             >
               <button
-                class="activity-status-filter__item activity-status-filter__item--active"
+                class="activity-status-filter__item${isActiveTab ? " activity-status-filter__item--active" : ""}"
                 type="button"
                 role="tab"
-                aria-selected="true"
+                aria-selected="${isActiveTab}"
                 data-status="active"
               >
                 <span class="activity-status-filter__indicator"></span>
@@ -45,21 +56,21 @@ export function ActivitiesView(){
                   فعالیت‌های فعال
                 </span>
 
-                <span class="activity-status-filter__count"> 6 </span>
+                <span class="activity-status-filter__count" id="activeFilterCount"> 0 </span>
               </button>
 
               <button
-                class="activity-status-filter__item"
+                class="activity-status-filter__item${isArchivedTab ? " activity-status-filter__item--active" : ""}"
                 type="button"
                 role="tab"
-                aria-selected="false"
+                aria-selected="${isArchivedTab}"
                 data-status="archived"
               >
                 <span class="activity-status-filter__indicator"></span>
 
                 <span class="activity-status-filter__label"> آرشیو شده </span>
 
-                <span class="activity-status-filter__count"> 3 </span>
+                <span class="activity-status-filter__count" id="archivedFilterCount"> 0 </span>
               </button>
             </div>
           </div>
@@ -101,7 +112,7 @@ export function ActivitiesView(){
               <div class="activity-column__heading">
                 <h2 class="activity-column__title">فعالیت‌های بدون زمان</h2>
 
-                <span class="activity-column__count"> 3 </span>
+                <span class="activity-column__count" id="untimedActivitiesCount"> 0 </span>
               </div>
 
               <button
@@ -119,272 +130,66 @@ export function ActivitiesView(){
 
             <div class="activity-column__list">
               <!-- Untimed Activity Cards -->
-              <article
-                class="untimed-activity-card"
-                data-activity-id="4"
-                data-activity-type="untimed"
-              >
-                <!-- Activity Color -->
-                <span
-                  class="untimed-activity-card__color"
-                  aria-hidden="true"
-                ></span>
-
-                <!-- Main Content -->
-                <div class="untimed-activity-card__content">
-                  <!-- Header -->
-                  <div class="untimed-activity-card__header">
-                    <div class="untimed-activity-card__title-wrapper">
-                      <h3 class="untimed-activity-card__title">مطالعه زبان</h3>
-
-                      <span class="untimed-activity-card__type">
-                        بدون زمان
-                      </span>
-                    </div>
-                  </div>
-
-                  <!-- Information -->
-                  <div class="untimed-activity-card__info">
-                    <span class="untimed-activity-card__created">
-                      ایجاد شده: ۱۵ شهریور
-                    </span>
-
-                    <span class="untimed-activity-card__goal">
-                      هدف: ۶ بار
-                    </span>
-                  </div>
-
-                  <!-- Checkboxes -->
-                  <div
-                    class="untimed-activity-card__checks"
-                    role="group"
-                    aria-label="پیشرفت فعالیت"
-                  >
-                    <label class="untimed-activity-card__check">
-                      <input type="checkbox" checked />
-
-                      <span class="untimed-activity-card__checkbox">
-                        <span class="untimed-activity-card__checkmark">
-                          ✓
-                        </span>
-                      </span>
-                    </label>
-
-                    <label class="untimed-activity-card__check">
-                      <input type="checkbox" checked />
-
-                      <span class="untimed-activity-card__checkbox">
-                        <span class="untimed-activity-card__checkmark">
-                          ✓
-                        </span>
-                      </span>
-                    </label>
-
-                    <label class="untimed-activity-card__check">
-                      <input type="checkbox" checked />
-
-                      <span class="untimed-activity-card__checkbox">
-                        <span class="untimed-activity-card__checkmark">
-                          ✓
-                        </span>
-                      </span>
-                    </label>
-
-                    <label class="untimed-activity-card__check">
-                      <input type="checkbox" />
-
-                      <span class="untimed-activity-card__checkbox">
-                        <span class="untimed-activity-card__checkmark">
-                          ✓
-                        </span>
-                      </span>
-                    </label>
-
-                    <label class="untimed-activity-card__check">
-                      <input type="checkbox" />
-
-                      <span class="untimed-activity-card__checkbox">
-                        <span class="untimed-activity-card__checkmark">
-                          ✓
-                        </span>
-                      </span>
-                    </label>
-
-                    <label class="untimed-activity-card__check">
-                      <input type="checkbox" />
-
-                      <span class="untimed-activity-card__checkbox">
-                        <span class="untimed-activity-card__checkmark">
-                          ✓
-                        </span>
-                      </span>
-                    </label>
-                  </div>
-                </div>
-
-                <!-- Actions -->
-                <div class="untimed-activity-card__actions">
-                  <button
-                    class="untimed-activity-card__action-button untimed-activity-card__edit"
-                    type="button"
-                    aria-label="ویرایش فعالیت"
-                    data-action="edit"
-                  >
-                    <span
-                      class="untimed-activity-card__action-icon"
-                      aria-hidden="true"
-                    >
-                      ✎
-                    </span>
-                  </button>
-
-                  <button
-                    class="untimed-activity-card__action-button untimed-activity-card__archive"
-                    type="button"
-                    aria-label="آرشیو فعالیت"
-                    data-action="archive"
-                  >
-                    <span
-                      class="untimed-activity-card__action-icon"
-                      aria-hidden="true"
-                    >
-                      🗑
-                    </span>
-                  </button>
-                </div>
-              </article>
-
-              <!-- archive -->
-              <article
-                class="untimed-activity-card untimed-activity-card--archived"
-                data-activity-id="4"
-                data-activity-type="untimed"
-                data-activity-status="archived"
-              >
-                <!-- Activity Color -->
-                <span
-                  class="untimed-activity-card__color"
-                  aria-hidden="true"
-                ></span>
-
-                <!-- Main Content -->
-                <div class="untimed-activity-card__content">
-                  <div class="untimed-activity-card__header">
-                    <div class="untimed-activity-card__title-wrapper">
-                      <h3 class="untimed-activity-card__title">مطالعه زبان</h3>
-
-                      <span class="untimed-activity-card__type">
-                        بدون زمان
-                      </span>
-                    </div>
-                  </div>
-
-                  <div class="untimed-activity-card__info">
-                    <span class="untimed-activity-card__created">
-                      ایجاد شده: ۱۵ شهریور
-                    </span>
-
-                    <span class="untimed-activity-card__goal">
-                      هدف: ۶ بار
-                    </span>
-                  </div>
-
-                  <!-- Progress -->
-                  <div
-                    class="untimed-activity-card__checks"
-                    aria-label="پیشرفت فعالیت"
-                  >
-                    <span
-                      class="untimed-activity-card__checkbox untimed-activity-card__checkbox--checked"
-                    >
-                      ✓
-                    </span>
-
-                    <span
-                      class="untimed-activity-card__checkbox untimed-activity-card__checkbox--checked"
-                    >
-                      ✓
-                    </span>
-
-                    <span
-                      class="untimed-activity-card__checkbox untimed-activity-card__checkbox--checked"
-                    >
-                      ✓
-                    </span>
-
-                    <span class="untimed-activity-card__checkbox"> </span>
-
-                    <span class="untimed-activity-card__checkbox"> </span>
-
-                    <span class="untimed-activity-card__checkbox"> </span>
-                  </div>
-                </div>
-
-                <!-- Actions -->
-                <div class="untimed-activity-card__actions">
-                  <!-- Edit -->
-                  <button
-                    class="untimed-activity-card__action-button untimed-activity-card__edit"
-                    type="button"
-                    aria-label="ویرایش فعالیت"
-                    data-action="edit"
-                  >
-                    <span
-                      class="untimed-activity-card__action-icon"
-                      aria-hidden="true"
-                    >
-                      ✎
-                    </span>
-                  </button>
-
-                  <!-- Restore -->
-                  <button
-                    class="untimed-activity-card__action-button untimed-activity-card__restore"
-                    type="button"
-                    aria-label="بازگردانی فعالیت"
-                    data-action="restore"
-                  >
-                    <span
-                      class="untimed-activity-card__action-icon"
-                      aria-hidden="true"
-                    >
-                      ↩
-                    </span>
-                  </button>
-
-                  <!-- Delete -->
-                  <button
-                    class="untimed-activity-card__action-button untimed-activity-card__delete"
-                    type="button"
-                    aria-label="حذف کامل فعالیت"
-                    data-action="delete"
-                  >
-                    <span
-                      class="untimed-activity-card__action-icon"
-                      aria-hidden="true"
-                    >
-                      ×
-                    </span>
-                  </button>
-                </div>
-              </article>
             </div>
           </section>
         </section>
       </div>
 
       ${ActivityFormModal()}
-      ${ArchiveConfirmModal()}
+      ${UntimedActivityForm()}
       ${ConcurrentActivityWarningModal()}
+      ${ArchiveConfirmModal()}
+      ${DeleteConfirmModal()}
     `;
 }
 
 
 // ========================================
-// Render Timed Activities
+// Render همه چیز — دوتا ستون + شمارنده‌های تب‌ها
 // ========================================
 
+export function renderActivityColumns() {
+    renderTimedColumn();
+    renderUntimedColumn();
+    updateFilterTabCounts();
+}
+
+// برای سازگاری با کدهایی که قبلاً این اسم رو صدا می‌زدن
 export function renderTimedActivities() {
+    renderActivityColumns();
+}
+
+function updateFilterTabCounts() {
+    const activeCount =
+        timedActivities.filter(a => !a.archived).length +
+        untimedActivities.filter(a => !a.archived).length;
+
+    const archivedCount =
+        timedActivities.filter(a => a.archived).length +
+        untimedActivities.filter(a => a.archived).length;
+
+    const activeCountEl = document.querySelector("#activeFilterCount");
+    const archivedCountEl = document.querySelector("#archivedFilterCount");
+
+    if (activeCountEl) activeCountEl.textContent = activeCount;
+    if (archivedCountEl) archivedCountEl.textContent = archivedCount;
+}
+
+function formatCreatedDate(date) {
+    const createdDate = new Date(date);
+
+    return new Intl.DateTimeFormat("fa-IR", {
+        day: "numeric",
+        month: "long"
+    }).format(createdDate);
+}
+
+
+// ========================================
+// ستون فعالیت‌های زمان‌دار
+// ========================================
+
+function renderTimedColumn() {
 
     const list = document.querySelector(
         ".activity-column--timed .activity-column__list"
@@ -394,123 +199,111 @@ export function renderTimedActivities() {
         return;
     }
 
-    const activeActivities = timedActivities.filter(
-        activity => !activity.archived
+    const items = timedActivities.filter(activity =>
+        currentStatusFilter === "archived" ? activity.archived : !activity.archived
     );
 
-    list.innerHTML = activeActivities
-        .map(activity => {
-
-            return `
-                <article
-                    class="activity-card activity-card--timed"
-                    data-activity-id="${activity.id}"
-                    data-activity-type="timed"
-                    style="--activity-color: ${activity.color};"
-                >
-
-                    <!-- Activity Color -->
-                    <span
-                        class="activity-card__color"
-                        aria-hidden="true"
-                    ></span>
-
-                    <!-- Main Content -->
-                    <div class="activity-card__content">
-
-                        <div class="activity-card__header">
-
-                            <div class="activity-card__title-wrapper">
-
-                                <h3 class="activity-card__title">
-                                    ${activity.title}
-                                </h3>
-
-                            </div>
-
-                        </div>
-
-                        <div class="activity-card__info">
-
-                            <span class="activity-card__created">
-                                ایجاد شده در ${formatCreatedDate(activity.createdAt)}
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <!-- Actions -->
-                    <div class="activity-card__actions">
-
-                        <button
-                            class="activity-card__action-button activity-card__edit"
-                            type="button"
-                            aria-label="ویرایش فعالیت"
-                            data-action="edit"
-                        >
-                            <span
-                                class="activity-card__action-icon"
-                                aria-hidden="true"
-                            >
-                                ✎
-                            </span>
-                        </button>
-
-                        <button
-                            class="activity-card__action-button activity-card__archive"
-                            type="button"
-                            aria-label="آرشیو فعالیت"
-                            data-action="archive"
-                            data-activity-id="${activity.id}"
-                        >
-                            <span
-                                class="activity-card__action-icon"
-                                aria-hidden="true"
-                            >
-                                🗑
-                            </span>
-                        </button>
-
-                        <button
-                            class="activity-card__start"
-                            type="button"
-                            data-action="start"
-                            style="--activity-color: ${activity.color};"
-                        >
-                            <span
-                                class="activity-card__start-icon"
-                                aria-hidden="true"
-                            >
-                                ▶
-                            </span>
-
-                            <span>
-                                شروع
-                            </span>
-
-                        </button>
-
-                    </div>
-
-                </article>
-            `;
-
-        })
+    list.innerHTML = items
+        .map(activity =>
+            currentStatusFilter === "archived"
+                ? createTimedArchivedCardHTML(activity)
+                : createTimedActiveCardHTML(activity)
+        )
         .join("");
 
-    updateTimedActivitiesCount(activeActivities.length);
-    restoreActiveTimedCard();
+    const countEl = document.querySelector("#timedActivitiesCount");
+    if (countEl) countEl.textContent = items.length;
+
+    if (currentStatusFilter === "active") {
+        restoreActiveTimedCard();
+    }
 }
 
-function updateTimedActivitiesCount(count) {
-    const countEl = document.querySelector("#timedActivitiesCount");
-    if (!countEl) return;
-    countEl.textContent = count;
+function createTimedActiveCardHTML(activity) {
+    return `
+        <article
+            class="activity-card activity-card--timed"
+            data-activity-id="${activity.id}"
+            data-activity-type="timed"
+            style="--activity-color: ${activity.color};"
+        >
+            <span class="activity-card__color" aria-hidden="true"></span>
+
+            <div class="activity-card__content">
+                <div class="activity-card__header">
+                    <div class="activity-card__title-wrapper">
+                        <h3 class="activity-card__title">${activity.title}</h3>
+                    </div>
+                </div>
+
+                <div class="activity-card__info">
+                    <span class="activity-card__created">
+                        ایجاد شده در ${formatCreatedDate(activity.createdAt)}
+                    </span>
+                </div>
+            </div>
+
+            <div class="activity-card__actions">
+                <button class="activity-card__action-button activity-card__edit" type="button" aria-label="ویرایش فعالیت" data-action="edit">
+                    <span class="activity-card__action-icon" aria-hidden="true">✎</span>
+                </button>
+
+                <button class="activity-card__action-button activity-card__archive" type="button" aria-label="آرشیو فعالیت" data-action="archive">
+                    <span class="activity-card__action-icon" aria-hidden="true">🗑</span>
+                </button>
+
+                <button class="activity-card__start" type="button" data-action="start" style="--activity-color: ${activity.color};">
+                    <span class="activity-card__start-icon" aria-hidden="true">▶</span>
+                    <span>شروع</span>
+                </button>
+            </div>
+        </article>
+    `;
+}
+
+function createTimedArchivedCardHTML(activity) {
+    return `
+        <article
+            class="activity-card activity-card--timed activity-card--archived"
+            data-activity-id="${activity.id}"
+            data-activity-type="timed"
+            style="--activity-color: ${activity.color};"
+        >
+            <span class="activity-card__color" aria-hidden="true"></span>
+
+            <div class="activity-card__content">
+                <div class="activity-card__header">
+                    <div class="activity-card__title-wrapper">
+                        <h3 class="activity-card__title">${activity.title}</h3>
+                    </div>
+                </div>
+
+                <div class="activity-card__info">
+                    <span class="activity-card__created">
+                        ایجاد شده در ${formatCreatedDate(activity.createdAt)}
+                    </span>
+                </div>
+            </div>
+
+            <div class="activity-card__actions">
+                <button class="activity-card__action-button activity-card__edit" type="button" aria-label="ویرایش فعالیت" data-action="edit">
+                    <span class="activity-card__action-icon" aria-hidden="true">✎</span>
+                </button>
+
+                <button class="activity-card__action-button activity-card__restore" type="button" aria-label="بازگردانی فعالیت" data-action="restore">
+                    <span class="activity-card__action-icon" aria-hidden="true">↩</span>
+                </button>
+
+                <button class="activity-card__action-button activity-card__delete" type="button" aria-label="حذف کامل فعالیت" data-action="delete">
+                    <span class="activity-card__action-icon" aria-hidden="true">×</span>
+                </button>
+            </div>
+        </article>
+    `;
 }
 
 // اگه یه فعالیت (حتی از داشبورد) در حال اجراست، دکمه‌ی همون کارت
-// روی این صفحه هم باید حالت «پایان» رو نشون بده، نه «شروع».
+// روی این صفحه هم باید حالت «پایان» رو نشون بده.
 function restoreActiveTimedCard() {
     const activeActivity = getActiveActivity();
     if (!activeActivity) return;
@@ -532,19 +325,177 @@ function restoreActiveTimedCard() {
     if (text) text.textContent = "پایان";
 }
 
-function formatCreatedDate(date) {
-    const createdDate = new Date(date);
 
-    return new Intl.DateTimeFormat("fa-IR", {
-        day: "numeric",
-        month: "long"
-    }).format(createdDate);
+// ========================================
+// ستون فعالیت‌های بدون‌زمان
+// ========================================
+
+function renderUntimedColumn() {
+
+    const list = document.querySelector(
+        ".activity-column--untimed .activity-column__list"
+    );
+
+    if (!list) {
+        return;
+    }
+
+    const items = untimedActivities.filter(activity =>
+        currentStatusFilter === "archived" ? activity.archived : !activity.archived
+    );
+
+    list.innerHTML = items
+        .map(activity =>
+            currentStatusFilter === "archived"
+                ? createUntimedArchivedCardHTML(activity)
+                : createUntimedActiveCardHTML(activity)
+        )
+        .join("");
+
+    const countEl = document.querySelector("#untimedActivitiesCount");
+    if (countEl) countEl.textContent = items.length;
+}
+
+function createUntimedActiveCardHTML(activity) {
+    const record = getActivityRecord(activity.id);
+    const completedChecks = record?.completedChecks ?? [];
+
+    const checksHTML = Array.from({ length: activity.targetCount }, (_, index) => {
+        const isChecked = completedChecks.includes(index);
+        return `
+            <label class="untimed-activity-card__check">
+                <input type="checkbox" data-check-index="${index}" ${isChecked ? "checked" : ""} />
+                <span class="untimed-activity-card__checkbox">
+                    <span class="untimed-activity-card__checkmark">✓</span>
+                </span>
+            </label>
+        `;
+    }).join("");
+
+    return `
+        <article
+            class="untimed-activity-card"
+            data-activity-id="${activity.id}"
+            data-activity-type="untimed"
+        >
+            <span class="untimed-activity-card__color" aria-hidden="true"></span>
+
+            <div class="untimed-activity-card__content">
+                <div class="untimed-activity-card__header">
+                    <div class="untimed-activity-card__title-wrapper">
+                        <h3 class="untimed-activity-card__title">${activity.title}</h3>
+                        <span class="untimed-activity-card__type">بدون زمان</span>
+                    </div>
+                </div>
+
+                <div class="untimed-activity-card__info">
+                    <span class="untimed-activity-card__goal">
+                        هدف: ${activity.targetCount} بار — ${completedChecks.length}/${activity.targetCount} انجام‌شده
+                    </span>
+                </div>
+
+                <div class="untimed-activity-card__checks" role="group" aria-label="پیشرفت فعالیت">
+                    ${checksHTML}
+                </div>
+            </div>
+
+            <div class="untimed-activity-card__actions">
+                <button class="untimed-activity-card__action-button untimed-activity-card__edit" type="button" aria-label="ویرایش فعالیت" data-action="edit">
+                    <span class="untimed-activity-card__action-icon" aria-hidden="true">✎</span>
+                </button>
+
+                <button class="untimed-activity-card__action-button untimed-activity-card__archive" type="button" aria-label="آرشیو فعالیت" data-action="archive">
+                    <span class="untimed-activity-card__action-icon" aria-hidden="true">🗑</span>
+                </button>
+            </div>
+        </article>
+    `;
+}
+
+function createUntimedArchivedCardHTML(activity) {
+    const record = getActivityRecord(activity.id);
+    const completedChecks = record?.completedChecks ?? [];
+
+    const checksHTML = Array.from({ length: activity.targetCount }, (_, index) => {
+        const isChecked = completedChecks.includes(index);
+        return `
+            <span class="untimed-activity-card__checkbox ${isChecked ? "untimed-activity-card__checkbox--checked" : ""}">
+                ${isChecked ? "✓" : ""}
+            </span>
+        `;
+    }).join("");
+
+    return `
+        <article
+            class="untimed-activity-card untimed-activity-card--archived"
+            data-activity-id="${activity.id}"
+            data-activity-type="untimed"
+            data-activity-status="archived"
+        >
+            <span class="untimed-activity-card__color" aria-hidden="true"></span>
+
+            <div class="untimed-activity-card__content">
+                <div class="untimed-activity-card__header">
+                    <div class="untimed-activity-card__title-wrapper">
+                        <h3 class="untimed-activity-card__title">${activity.title}</h3>
+                        <span class="untimed-activity-card__type">بدون زمان</span>
+                    </div>
+                </div>
+
+                <div class="untimed-activity-card__info">
+                    <span class="untimed-activity-card__goal">هدف: ${activity.targetCount} بار</span>
+                </div>
+
+                <div class="untimed-activity-card__checks" aria-label="پیشرفت فعالیت">
+                    ${checksHTML}
+                </div>
+            </div>
+
+            <div class="untimed-activity-card__actions">
+                <button class="untimed-activity-card__action-button untimed-activity-card__edit" type="button" aria-label="ویرایش فعالیت" data-action="edit">
+                    <span class="untimed-activity-card__action-icon" aria-hidden="true">✎</span>
+                </button>
+
+                <button class="untimed-activity-card__action-button untimed-activity-card__restore" type="button" aria-label="بازگردانی فعالیت" data-action="restore">
+                    <span class="untimed-activity-card__action-icon" aria-hidden="true">↩</span>
+                </button>
+
+                <button class="untimed-activity-card__action-button untimed-activity-card__delete" type="button" aria-label="حذف کامل فعالیت" data-action="delete">
+                    <span class="untimed-activity-card__action-icon" aria-hidden="true">×</span>
+                </button>
+            </div>
+        </article>
+    `;
 }
 
 
 // ========================================
-// دکمه‌ی شروع/پایان — از همون منطق مشترک با داشبورد استفاده می‌کنه
+// تب‌های «فعال / آرشیو شده»
 // ========================================
+
+document.addEventListener("click", (event) => {
+    const tabButton = event.target.closest(".activity-status-filter__item");
+    if (!tabButton) return;
+
+    const status = tabButton.dataset.status;
+    if (!status || status === currentStatusFilter) return;
+
+    currentStatusFilter = status;
+
+    document.querySelectorAll(".activity-status-filter__item").forEach(item => {
+        const isSelected = item === tabButton;
+        item.classList.toggle("activity-status-filter__item--active", isSelected);
+        item.setAttribute("aria-selected", isSelected ? "true" : "false");
+    });
+
+    renderActivityColumns();
+});
+
+
+// ========================================
+// شروع/پایان فعالیت زمان‌دار — از منطق مشترک با داشبورد
+// ========================================
+
 document.addEventListener("click", (event) => {
     const startButton = event.target.closest(
         ".activity-column--timed .activity-card__start"
@@ -564,33 +515,62 @@ document.addEventListener("click", (event) => {
 
 
 // ========================================
-// دکمه‌ی ویرایش — همون مودال ایجاد فعالیت، فقط توی حالت ویرایش
+// چک‌باکس فعالیت بدون‌زمان
 // ========================================
-document.addEventListener("click", (event) => {
-    const editButton = event.target.closest(
-        '.activity-column--timed [data-action="edit"]'
+
+document.addEventListener("change", (event) => {
+    const checkbox = event.target.closest(
+        '.activity-column--untimed .untimed-activity-card__check input[type="checkbox"]'
     );
 
-    if (!editButton) return;
+    if (!checkbox) return;
 
-    const card = editButton.closest(".activity-card");
+    const card = checkbox.closest(".untimed-activity-card");
     if (!card) return;
 
     const activityId = Number(card.dataset.activityId);
-    const activity = timedActivities.find(item => item.id === activityId);
-    if (!activity) return;
+    const checkIndex = Number(checkbox.dataset.checkIndex);
 
-    openActivityForm(activity);
+    toggleUntimedCheck(activityId, checkIndex);
+
+    renderUntimedColumn();
 });
 
 
 // ========================================
-// Archive Confirm Modal
-// ساختارش مثل بقیه‌ی مودال‌های تاییدی اپ (آیکون + پیام +
-// دکمه‌های انصراف/تایید)، فقط برای فعالیت‌های زمان‌دار.
+// ویرایش (هم زمان‌دار هم بدون‌زمان) — همون مودال ایجاد،
+// فقط توی حالت ویرایش
 // ========================================
 
-let activityPendingArchive = null;
+document.addEventListener("click", (event) => {
+    const editButton = event.target.closest('.activity-column [data-action="edit"]');
+    if (!editButton) return;
+
+    const card = editButton.closest(".activity-card, .untimed-activity-card");
+    if (!card) return;
+
+    const activityId = Number(card.dataset.activityId);
+    const isTimed = card.classList.contains("activity-card");
+
+    const activity = isTimed
+        ? timedActivities.find(item => item.id === activityId)
+        : untimedActivities.find(item => item.id === activityId);
+
+    if (!activity) return;
+
+    if (isTimed) {
+        openActivityForm(activity);
+    } else {
+        openUntimedActivityForm(activity);
+    }
+});
+
+
+// ========================================
+// آرشیو کردن (هم زمان‌دار هم بدون‌زمان)
+// ========================================
+
+let itemPendingArchive = null; // { activity, type }
 
 function ArchiveConfirmModal() {
     return `
@@ -620,7 +600,7 @@ function ArchiveConfirmModal() {
                     </div>
 
                     <p class="archive-confirm-modal__note">
-                        فعالیت آرشیوشده از لیست فعالیت‌های فعال خارج می‌شه، ولی سابقه‌ی سشن‌هاش حفظ می‌مونه.
+                        فعالیت آرشیوشده از لیست فعالیت‌های فعال خارج می‌شه، ولی سابقه‌ش حفظ می‌مونه.
                     </p>
                 </div>
 
@@ -638,8 +618,8 @@ function ArchiveConfirmModal() {
     `;
 }
 
-function openArchiveConfirmModal(activity) {
-    activityPendingArchive = activity;
+function openArchiveConfirmModal(activity, type) {
+    itemPendingArchive = { activity, type };
 
     const modal = document.querySelector("#archiveConfirmModal");
     if (!modal) return;
@@ -647,7 +627,7 @@ function openArchiveConfirmModal(activity) {
     const colorEl = modal.querySelector("#archiveConfirmColor");
     const nameEl = modal.querySelector("#archiveConfirmName");
 
-    if (colorEl) colorEl.style.backgroundColor = activity.color;
+    if (colorEl) colorEl.style.backgroundColor = type === "timed" ? activity.color : "var(--color-primary)";
     if (nameEl) nameEl.textContent = activity.title;
 
     modal.classList.add("is-open");
@@ -660,26 +640,28 @@ function closeArchiveConfirmModal() {
 
     modal.classList.remove("is-open");
     modal.setAttribute("aria-hidden", "true");
-    activityPendingArchive = null;
+    itemPendingArchive = null;
 }
 
-// باز کردن مودال آرشیو با کلیک روی دکمه‌ی سطل‌آشغال (فقط ستون زمان‌دار)
 document.addEventListener("click", (event) => {
-    const archiveButton = event.target.closest(
-        '.activity-column--timed [data-action="archive"]'
-    );
-
+    const archiveButton = event.target.closest('.activity-column [data-action="archive"]');
     if (!archiveButton) return;
 
-    const activityId = Number(archiveButton.dataset.activityId);
-    const activity = timedActivities.find(item => item.id === activityId);
+    const card = archiveButton.closest(".activity-card, .untimed-activity-card");
+    if (!card) return;
+
+    const activityId = Number(card.dataset.activityId);
+    const isTimed = card.classList.contains("activity-card");
+
+    const activity = isTimed
+        ? timedActivities.find(item => item.id === activityId)
+        : untimedActivities.find(item => item.id === activityId);
 
     if (!activity) return;
 
-    openArchiveConfirmModal(activity);
+    openArchiveConfirmModal(activity, isTimed ? "timed" : "untimed");
 });
 
-// انصراف / کلیک روی overlay
 document.addEventListener("click", (event) => {
     if (
         event.target.closest("#archiveConfirmCancel") ||
@@ -695,20 +677,189 @@ document.addEventListener("keyup", (event) => {
     }
 });
 
-// تایید نهایی آرشیو
 document.addEventListener("click", (event) => {
     const confirmButton = event.target.closest("#archiveConfirmConfirm");
     if (!confirmButton) return;
-    if (!activityPendingArchive) return;
+    if (!itemPendingArchive) return;
 
-    activityPendingArchive.archived = true;
+    itemPendingArchive.activity.archived = true;
 
     closeArchiveConfirmModal();
-    renderTimedActivities();
+    renderActivityColumns();
 });
 
-// وقتی از هرجای دیگه (مثلاً مودال ایجاد/ویرایش فعالیت که مشترکه)
-// چیزی توی لیست فعالیت‌ها عوض شد، لیست این صفحه هم به‌روز بشه.
-document.addEventListener("timed-activities:changed", () => {
-    renderTimedActivities();
+
+// ========================================
+// بازگردانی (فوری، بدون مودال)
+// ========================================
+
+document.addEventListener("click", (event) => {
+    const restoreButton = event.target.closest('.activity-column [data-action="restore"]');
+    if (!restoreButton) return;
+
+    const card = restoreButton.closest(".activity-card, .untimed-activity-card");
+    if (!card) return;
+
+    const activityId = Number(card.dataset.activityId);
+    const isTimed = card.classList.contains("activity-card");
+
+    const activity = isTimed
+        ? timedActivities.find(item => item.id === activityId)
+        : untimedActivities.find(item => item.id === activityId);
+
+    if (!activity) return;
+
+    activity.archived = false;
+
+    renderActivityColumns();
 });
+
+
+// ========================================
+// حذف کامل (هم زمان‌دار هم بدون‌زمان) — غیرقابل بازگشت
+// ========================================
+
+let itemPendingDelete = null; // { activity, type }
+
+function DeleteConfirmModal() {
+    return `
+        <div class="delete-confirm-modal" id="deleteConfirmModal" aria-hidden="true">
+            <div class="delete-confirm-modal__overlay"></div>
+
+            <div
+                class="delete-confirm-modal__box"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="deleteConfirmTitle"
+            >
+                <div class="delete-confirm-modal__icon" aria-hidden="true">×</div>
+
+                <div class="delete-confirm-modal__content">
+                    <h2 class="delete-confirm-modal__title" id="deleteConfirmTitle">
+                        حذف کامل فعالیت
+                    </h2>
+
+                    <p class="delete-confirm-modal__message">
+                        آیا از حذف کامل این فعالیت مطمئن هستید؟
+                    </p>
+
+                    <div class="delete-confirm-modal__activity">
+                        <span class="delete-confirm-modal__activity-color" id="deleteConfirmColor"></span>
+                        <strong id="deleteConfirmName">—</strong>
+                    </div>
+
+                    <p class="delete-confirm-modal__warning">
+                        این فعالیت و تمام سابقه‌ی ثبت‌شده‌اش به‌طور کامل حذف می‌شه و قابل بازگردانی نیست.
+                    </p>
+                </div>
+
+                <div class="delete-confirm-modal__actions">
+                    <button type="button" class="delete-confirm-modal__cancel" id="deleteConfirmCancel">
+                        انصراف
+                    </button>
+
+                    <button type="button" class="delete-confirm-modal__confirm" id="deleteConfirmConfirm">
+                        حذف کامل
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function openDeleteConfirmModal(activity, type) {
+    itemPendingDelete = { activity, type };
+
+    const modal = document.querySelector("#deleteConfirmModal");
+    if (!modal) return;
+
+    const colorEl = modal.querySelector("#deleteConfirmColor");
+    const nameEl = modal.querySelector("#deleteConfirmName");
+
+    if (colorEl) colorEl.style.backgroundColor = type === "timed" ? activity.color : "var(--color-primary)";
+    if (nameEl) nameEl.textContent = activity.title;
+
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+}
+
+function closeDeleteConfirmModal() {
+    const modal = document.querySelector("#deleteConfirmModal");
+    if (!modal) return;
+
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+    itemPendingDelete = null;
+}
+
+document.addEventListener("click", (event) => {
+    const deleteButton = event.target.closest('.activity-column [data-action="delete"]');
+    if (!deleteButton) return;
+
+    const card = deleteButton.closest(".activity-card, .untimed-activity-card");
+    if (!card) return;
+
+    const activityId = Number(card.dataset.activityId);
+    const isTimed = card.classList.contains("activity-card");
+
+    const activity = isTimed
+        ? timedActivities.find(item => item.id === activityId)
+        : untimedActivities.find(item => item.id === activityId);
+
+    if (!activity) return;
+
+    openDeleteConfirmModal(activity, isTimed ? "timed" : "untimed");
+});
+
+document.addEventListener("click", (event) => {
+    if (
+        event.target.closest("#deleteConfirmCancel") ||
+        event.target.closest(".delete-confirm-modal__overlay")
+    ) {
+        closeDeleteConfirmModal();
+    }
+});
+
+document.addEventListener("keyup", (event) => {
+    if (event.key === "Escape") {
+        closeDeleteConfirmModal();
+    }
+});
+
+document.addEventListener("click", (event) => {
+    const confirmButton = event.target.closest("#deleteConfirmConfirm");
+    if (!confirmButton) return;
+    if (!itemPendingDelete) return;
+
+    const { activity, type } = itemPendingDelete;
+
+    if (type === "timed") {
+        permanentlyRemove(timedActivities, activity.id);
+    } else {
+        permanentlyRemove(untimedActivities, activity.id);
+
+        // رکوردهای روزانه‌ی مربوط به این فعالیت هم دیگه معنی ندارن
+        for (let i = untimedActivityRecords.length - 1; i >= 0; i--) {
+            if (untimedActivityRecords[i].activityId === activity.id) {
+                untimedActivityRecords.splice(i, 1);
+            }
+        }
+    }
+
+    closeDeleteConfirmModal();
+    renderActivityColumns();
+});
+
+function permanentlyRemove(array, id) {
+    const index = array.findIndex(item => item.id === id);
+    if (index !== -1) array.splice(index, 1);
+}
+
+
+// ========================================
+// وقتی از هرجای دیگه (مثلاً مودال‌های ایجاد/ویرایش که مشترکن)
+// چیزی توی لیست فعالیت‌ها عوض شد، این صفحه هم به‌روز بشه.
+// ========================================
+
+document.addEventListener("timed-activities:changed", renderActivityColumns);
+document.addEventListener("untimed-activities:changed", renderActivityColumns);

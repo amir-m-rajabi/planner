@@ -77,6 +77,10 @@ ${ConcurrentActivityWarningModal()}
 
 // ========================================
 // Activity Form Modal
+// یه تابع جدا شده تا هم داشبورد و هم صفحه‌ی فعالیت‌ها
+// دقیقاً از همین یه مودال استفاده کنن (نه یه کپی جدا).
+// همین مودال هم برای «ایجاد» هم برای «ویرایش» استفاده می‌شه —
+// حالتش رو openActivityForm() مشخص می‌کنه.
 // ========================================
 export function ActivityFormModal() {
     return `
@@ -182,6 +186,10 @@ export function ActivityFormModal() {
 
 // ========================================
 // Concurrent Activity Warning Modal
+// وقتی کاربر می‌خواد فعالیت جدیدی رو شروع کنه در حالی که
+// یه فعالیت دیگه در حال اجراست، این مودال بهش نشون داده می‌شه.
+// هم داشبورد هم صفحه‌ی فعالیت‌ها این رو رندر می‌کنن (دقیقاً
+// مثل ActivityFormModal).
 // ========================================
 export function ConcurrentActivityWarningModal() {
     return `
@@ -398,7 +406,11 @@ export function initTimedActivities() {
 initTimedActivities()
 
 // ========================================
-// ورودی مشترک برای دکمه‌ی شروع/پایان
+// ورودی مشترک برای دکمه‌ی شروع/پایان — هم داشبورد هم
+// صفحه‌ی فعالیت‌ها از همین یکی استفاده می‌کنن:
+// - اگه همین فعالیت در حال اجراست → تمومش کن (پایان)
+// - اگه فعالیت دیگه‌ای در حال اجراست → هشدار بده
+// - وگرنه → شروعش کن
 // ========================================
 export function requestStartActivity(activity, button) {
 
@@ -514,8 +526,7 @@ function finishActivity(activity, button) {
     renderSessionListToDOM()
     renderSessionsModalListToDOM()
     
-    // ====== ارسال event برای بروزرسانی سشن ======
-    document.dispatchEvent(new CustomEvent("timed-activities:changed"));
+    
 
     
     activity.totalDuration += durationInSeconds;
@@ -766,7 +777,7 @@ function getActivityDuration(activityId) {
 export function openActivityForm(activity = null) {
 
     const form =
-        document.querySelector(".activity-form");
+        document.querySelector('.activity-form[data-activity-type="timed"]');
 
     if (!form) {
         return;
@@ -800,7 +811,7 @@ export function openActivityForm(activity = null) {
 function closeActivityForm() {
 
     const form =
-        document.querySelector(".activity-form");
+        document.querySelector('.activity-form[data-activity-type="timed"]');
 
     if (!form) {
         return;
@@ -917,24 +928,17 @@ document.addEventListener("click", (event) => {
 
     const closeButton =
         event.target.closest(
-            '[data-action="close-form"]'
+            '[data-action="close-form"], [data-action="cancel"]'
         );
 
     if (!closeButton) {
         return;
     }
 
-    closeActivityForm();
-});
+    // فقط اگه این کلیک واقعاً داخل مودالِ «timed» بوده باشه
+    const form = closeButton.closest('.activity-form[data-activity-type="timed"]');
 
-document.addEventListener("click", (event) => {
-
-    const cancelButton =
-        event.target.closest(
-            '[data-action="cancel"]'
-        );
-
-    if (!cancelButton) {
+    if (!form) {
         return;
     }
 
@@ -972,8 +976,6 @@ document.addEventListener("submit", (event) => {
         activityBeingEdited.color = color;
 
         renderTimedActivitiesToDOM();
-        
-        // ====== ارسال event برای بروزرسانی سشن ======
         document.dispatchEvent(new CustomEvent("timed-activities:changed"));
 
     } else {
@@ -992,7 +994,7 @@ document.addEventListener("submit", (event) => {
 
         renderTimedActivitiesToDOM();
 
-        // ====== ارسال event برای بروزرسانی سشن ======
+        // به هر صفحه‌ی دیگه‌ای که همین لیست رو نشون می‌ده خبر بده
         document.dispatchEvent(new CustomEvent("timed-activities:changed"));
     }
 

@@ -468,6 +468,30 @@
     display: none;
 }
 
+
+/* ========================================
+   Empty State
+   وقتی لیست (فعال یا آرشیو) هیچ آیتمی نداشته باشه، این
+   کلاس رو روی یه <p> داخل .activity-column__list بذار تا
+   به‌جای یه باکس خالی، یه پیام مرتب نشون داده بشه.
+======================================== */
+
+.activity-column__empty {
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px 16px;
+
+    color: var(--color-text-secondary);
+
+    font-size: 12px;
+    text-align: center;
+}
+
+
 /* ========================================
    Archived State
 ======================================== */
@@ -1733,12 +1757,270 @@
     transform: translateY(0);
 }
 
+.archive-confirm-modal__cancel:focus-visible,
+.archive-confirm-modal__confirm:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
 @media (max-width: 520px) {
     .archive-confirm-modal {
         padding: 14px;
     }
 
     .archive-confirm-modal__box {
+        border-radius: 15px;
+        padding: 24px 20px 20px;
+    }
+}
+
+
+/* ========================================
+   Delete Confirm Modal
+   کلاً از فایل CSS جا افتاده بود — دکمه‌ی «حذف کامل» توی
+   JS این مودال رو با کلاس‌های .delete-confirm-modal* باز
+   می‌کرد ولی هیچ استایلی براش تعریف نشده بود (نه حتی
+   display:none پایه‌اش)، برای همین درست نمایش داده نمی‌شد.
+   ساختار دقیقاً مثل archive-confirm-modal است، با رنگ‌بندی
+   قرمزِ پررنگ‌تر چون این عمل برخلاف آرشیو، غیرقابل بازگشته.
+======================================== */
+
+.delete-confirm-modal {
+    display: none;
+
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 24px;
+
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(15, 23, 42, 0.42);
+
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+
+    z-index: 1000;
+
+    direction: rtl;
+}
+
+.delete-confirm-modal.is-open {
+    display: flex;
+}
+
+.delete-confirm-modal__overlay {
+    position: absolute;
+    inset: 0;
+}
+
+.delete-confirm-modal__box {
+    position: relative;
+
+    width: min(100%, 400px);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    text-align: center;
+
+    gap: 14px;
+
+    padding: 28px 26px 24px;
+
+    background: #ffffff;
+
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 18px;
+
+    box-shadow:
+        0 20px 50px rgba(15, 23, 42, 0.16),
+        0 4px 12px rgba(15, 23, 42, 0.06);
+
+    animation: activityFormEnter 180ms ease-out;
+}
+
+.delete-confirm-modal__icon {
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background-color: rgba(155, 12, 12, 0.1);
+
+    color: #9b0c0c;
+
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.delete-confirm-modal__content {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.delete-confirm-modal__title {
+    margin: 0;
+
+    color: #20262d;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.delete-confirm-modal__message {
+    margin: 0;
+
+    color: #5c646c;
+
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.delete-confirm-modal__activity {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    margin-top: 4px;
+
+    padding: 8px 14px;
+
+    background: #f8f9fa;
+
+    border: 1px solid #edf0f2;
+    border-radius: 10px;
+}
+
+.delete-confirm-modal__activity-color {
+    width: 10px;
+    height: 10px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background-color: var(--color-primary);
+}
+
+.delete-confirm-modal__activity strong {
+    color: #20262d;
+
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.delete-confirm-modal__warning {
+    margin: 0;
+
+    padding: 8px 12px;
+
+    background: rgba(155, 12, 12, 0.06);
+
+    border: 1px solid rgba(155, 12, 12, 0.16);
+    border-radius: 9px;
+
+    color: #9b0c0c;
+
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.7;
+}
+
+.delete-confirm-modal__actions {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    margin-top: 6px;
+}
+
+.delete-confirm-modal__cancel,
+.delete-confirm-modal__confirm {
+    flex: 1;
+
+    height: 40px;
+
+    border-radius: 9px;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background-color 160ms ease,
+        border-color 160ms ease,
+        color 160ms ease,
+        box-shadow 160ms ease,
+        transform 160ms ease;
+}
+
+.delete-confirm-modal__cancel {
+    border: 1px solid #e1e5e8;
+
+    background: #ffffff;
+    color: #68717a;
+}
+
+.delete-confirm-modal__cancel:hover {
+    background: #f7f8f9;
+    border-color: #d5dadd;
+    color: #3f474e;
+}
+
+.delete-confirm-modal__confirm {
+    border: 1px solid #9b0c0c;
+
+    background: #9b0c0c;
+    color: #ffffff;
+
+    box-shadow: 0 4px 10px rgba(155, 12, 12, 0.24);
+}
+
+.delete-confirm-modal__confirm:hover {
+    background: #7d0a0a;
+    border-color: #7d0a0a;
+
+    box-shadow: 0 6px 14px rgba(155, 12, 12, 0.3);
+
+    transform: translateY(-1px);
+}
+
+.delete-confirm-modal__confirm:active {
+    transform: translateY(0);
+}
+
+.delete-confirm-modal__cancel:focus-visible,
+.delete-confirm-modal__confirm:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+@media (max-width: 520px) {
+    .delete-confirm-modal {
+        padding: 14px;
+    }
+
+    .delete-confirm-modal__box {
         border-radius: 15px;
         padding: 24px 20px 20px;
     }
@@ -2148,6 +2430,9 @@
 
     color: transparent;
 
+    font-size: 13px;
+    font-weight: 700;
+
     transition:
         background-color 0.2s ease,
         border-color 0.2s ease,
@@ -2172,7 +2457,7 @@
 
 
 /* ========================================
-   Checked
+   Checked (چک‌باکس‌های تعاملی، ستون فعال)
 ======================================== */
 
 .untimed-activity-card__check input:checked
@@ -2193,6 +2478,22 @@
 .untimed-activity-card__checkmark {
 
     transform: scale(1);
+}
+
+
+/* ========================================
+   Checked (نمای فقط‌خواندنی، ستون آرشیو — بدون input،
+   فقط یه span با کلاس --checked)
+======================================== */
+
+.untimed-activity-card__checkbox--checked {
+    background-color: var(--color-primary);
+
+    border-color: var(--color-primary);
+
+    color: var(--color-surface);
+
+    box-shadow: 0 4px 10px rgba(79, 158, 165, 0.18);
 }
 
 
