@@ -166,7 +166,31 @@
     font-weight: 500;
 
     white-space: nowrap;
+
+    transition: all 0.2s ease;
 }
+
+/* ========================================
+   ماه فعال (میلادی/قمری)
+   وقتی روز مرجع در اون ماه هست، این استایل اعمال میشه
+======================================== */
+
+.calendar__gregorian-month--active,
+.calendar__islamic-month--active {
+    color: var(--color-primary) !important;
+
+    font-weight: 700;
+
+    background-color: rgba(79, 158, 165, 0.08);
+
+    padding: 0 6px;
+
+    border-radius: 4px;
+}
+
+/* ========================================
+   سال دوگانه (وقتی ماه بین دو سال تقسیم شده)
+======================================== */
 
 .calendar__gregorian-year,
 .calendar__islamic-year {
@@ -174,8 +198,28 @@
 
     font-size: 9px;
     font-weight: 600;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 4px;
+
+    transition: all 0.2s ease;
 }
 
+.calendar__gregorian-year--dual,
+.calendar__islamic-year--dual {
+    font-size: 8px;
+    gap: 2px;
+}
+
+.calendar__gregorian-year--dual .calendar__year-separator,
+.calendar__islamic-year--dual .calendar__year-separator {
+    color: var(--color-text-muted);
+    font-weight: 300;
+    font-size: 6px;
+}
 
 /* ========================================
    Days Wrapper
@@ -203,7 +247,7 @@
 
 
 /* ========================================
-   Days - نمایش عمودی
+   Days
 ======================================== */
 
 .calendar__days {
@@ -215,6 +259,16 @@
     gap: 7px;
 
     padding: 2px 3px 8px;
+}
+
+.calendar__loading {
+    padding: 24px 8px;
+
+    color: var(--color-text-secondary);
+
+    font-size: 12px;
+
+    text-align: center;
 }
 
 
@@ -230,6 +284,12 @@
     min-height: 62px;
 
     display: grid;
+
+    /*
+       Right  -> Day information
+       Center -> Useful time
+       Left   -> Persian day number
+    */
 
     grid-template-columns:
         1fr
@@ -268,7 +328,8 @@
 
 
 /* ========================================
-   Right Section - Day Information
+   Right Section
+   Day Information
 ======================================== */
 
 .calendar__day-info {
@@ -374,7 +435,8 @@
 
 
 /* ========================================
-   Center - Useful Time
+   Center
+   Useful Time
 ======================================== */
 
 .calendar__day-useful-time {
@@ -403,7 +465,8 @@
 
 
 /* ========================================
-   Left - Persian Day Number
+   Left
+   Persian Day Number
 ======================================== */
 
 .calendar__day-number {
@@ -499,100 +562,245 @@
 
 
 /* ========================================
-   ========================================
-   تعطیلات رسمی و جمعه‌ها
-   ========================================
-   ======================================== */
+   Holiday (تعطیل رسمی)
+======================================== */
 
-/* جمعه‌ها و تعطیلات رسمی - رنگ قرمز */
-.calendar__day--weekend,
 .calendar__day--holiday {
-    background: #fef2f2 !important;
-    border-color: #fca5a5 !important;
-    border-width: 1.5px !important;
+    background: linear-gradient(90deg, rgba(201, 75, 75, 0.06), rgba(201, 75, 75, 0.13));
+
+    border-color: rgba(201, 75, 75, 0.35);
 }
 
-.calendar__day--weekend .calendar__day-week,
-.calendar__day--holiday .calendar__day-week {
-    color: #dc2626 !important;
-    font-weight: 800 !important;
-}
-
-.calendar__day--weekend .calendar__day-number,
-.calendar__day--holiday .calendar__day-number {
-    color: #dc2626 !important;
-}
-
-.calendar__day--weekend .calendar__day-useful-time,
-.calendar__day--holiday .calendar__day-useful-time {
-    color: #dc2626 !important;
-    background-color: rgba(220, 38, 38, 0.08) !important;
-    border-color: rgba(220, 38, 38, 0.14) !important;
-}
-
-/* جمعه‌ها و تعطیلات رسمی - حالت hover */
-.calendar__day--weekend:hover,
 .calendar__day--holiday:hover {
-    background: #fee2e2 !important;
-    border-color: #ef4444 !important;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.12) !important;
+    background: linear-gradient(90deg, rgba(201, 75, 75, 0.09), rgba(201, 75, 75, 0.17));
 }
 
-/* جمعه‌ها و تعطیلات رسمی - اگر امروز هم باشه */
-.calendar__day--today.calendar__day--weekend,
-.calendar__day--today.calendar__day--holiday {
-    background: linear-gradient(90deg, #fef2f2, #fee2e2) !important;
-    border-color: #dc2626 !important;
-    border-width: 2px !important;
+.calendar__day--holiday .calendar__day-week {
+    color: #c94b4b;
 }
 
-.calendar__day--today.calendar__day--weekend .calendar__day-useful-time,
-.calendar__day--today.calendar__day--holiday .calendar__day-useful-time {
-    background: #dc2626 !important;
-    color: #ffffff !important;
-    border-color: #dc2626 !important;
+.calendar__day--holiday .calendar__day-number {
+    color: #c94b4b;
 }
 
-.calendar__day--today.calendar__day--weekend .calendar__day-week,
-.calendar__day--today.calendar__day--holiday .calendar__day-week {
-    color: #dc2626 !important;
-}
-
-.calendar__day--today.calendar__day--weekend .calendar__day-number,
+/* اگه امروز هم تعطیل رسمی باشه */
+.calendar__day--today.calendar__day--holiday .calendar__day-week,
 .calendar__day--today.calendar__day--holiday .calendar__day-number {
-    color: #dc2626 !important;
+    color: #c94b4b;
+}
+
+
+/* ========================================
+   Selected (روزی که کاربر کلیک کرده)
+======================================== */
+
+.calendar__day--selected {
+    border-width: 2px;
+    border-color: var(--color-primary);
+
+    box-shadow:
+        0 0 0 2px rgba(33, 110, 137, 0.15),
+        0 4px 10px rgba(24, 52, 61, 0.07);
+}
+
+.calendar__day--selected .calendar__day-week {
+    color: var(--color-primary);
+}
+
+.calendar__day--selected .calendar__day-number {
+    color: var(--color-primary);
+}
+
+.calendar__day--selected .calendar__day-useful-time {
+    background-color: var(--color-primary);
+    color: #ffffff;
+    border-color: var(--color-primary);
+}
+
+/* اگر روز انتخاب شده تعطیل باشه */
+.calendar__day--selected.calendar__day--holiday .calendar__day-week,
+.calendar__day--selected.calendar__day--holiday .calendar__day-number {
+    color: #c94b4b;
+}
+
+.calendar__day--selected.calendar__day--holiday .calendar__day-useful-time {
+    background-color: #c94b4b;
+    border-color: #c94b4b;
+}
+
+
+/* ========================================
+   Responsive
+======================================== */
+
+@media (max-width: 768px) {
+    .calendar {
+        padding: 12px;
+    }
+
+    .calendar__header {
+        grid-template-columns: 28px 1fr 1fr 1fr 28px;
+        gap: 4px;
+        padding: 6px 4px;
+        min-height: 48px;
+    }
+
+    .calendar__day {
+        height: 54px;
+        min-height: 54px;
+        padding: 4px 8px;
+        grid-template-columns: 1fr 80px 40px;
+    }
+
+    .calendar__day-number {
+        font-size: 16px;
+    }
+
+    .calendar__day-useful-time {
+        font-size: 10px;
+        padding: 4px 8px;
+    }
+
+    .calendar__day-week {
+        font-size: 11px;
+    }
+
+    .calendar__day-subinfo {
+        width: 40px;
+        gap: 2px;
+    }
+
+    .calendar__day-islamic,
+    .calendar__day-week-en,
+    .calendar__day-gregorian {
+        font-size: 7px;
+    }
+
+    .calendar__year {
+        font-size: 11px;
+    }
+
+    .calendar__month {
+        font-size: 9px;
+    }
+
+    .calendar__gregorian-month,
+    .calendar__islamic-month {
+        font-size: 7px;
+    }
+
+    .calendar__gregorian-year,
+    .calendar__islamic-year {
+        font-size: 8px;
+    }
+
+    .calendar__navigation {
+        width: 26px;
+        height: 26px;
+        font-size: 18px;
+    }
+
+    /* استایل‌های اکتیو در موبایل */
+    .calendar__gregorian-month--active,
+    .calendar__islamic-month--active {
+        font-size: 8px;
+        padding: 0 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .calendar {
+        padding: 8px;
+    }
+
+    .calendar__day {
+        height: 48px;
+        min-height: 48px;
+        padding: 3px 6px;
+        grid-template-columns: 1fr 60px 32px;
+        gap: 4px;
+    }
+
+    .calendar__day-number {
+        font-size: 14px;
+    }
+
+    .calendar__day-useful-time {
+        font-size: 9px;
+        padding: 3px 6px;
+    }
+
+    .calendar__day-week {
+        font-size: 10px;
+    }
+
+    .calendar__day-subinfo {
+        width: 32px;
+    }
+
+    .calendar__day-islamic,
+    .calendar__day-week-en,
+    .calendar__day-gregorian {
+        font-size: 6px;
+    }
+
+    .calendar__header {
+        grid-template-columns: 24px 1fr 1fr 1fr 24px;
+        gap: 2px;
+        padding: 4px 2px;
+        min-height: 40px;
+    }
+
+    .calendar__navigation {
+        width: 22px;
+        height: 22px;
+        font-size: 15px;
+    }
+
+    /* استایل‌های اکتیو در موبایل کوچک */
+    .calendar__gregorian-month--active,
+    .calendar__islamic-month--active {
+        font-size: 7px;
+        padding: 0 3px;
+    }
+
+    .calendar__gregorian-year--dual,
+    .calendar__islamic-year--dual {
+        font-size: 7px;
+    }
 }
 
 /* ========================================
-   تم تاریک - تعطیلات
+   تم تاریک
 ======================================== */
 
-:root[data-theme="dark"] .calendar__day--weekend,
+:root[data-theme="dark"] .calendar__header {
+    background-color: #1a2629;
+}
+
+:root[data-theme="dark"] .calendar__day {
+    background-color: #1a2629;
+}
+
+:root[data-theme="dark"] .calendar__day:hover {
+    background-color: #203035;
+}
+
+:root[data-theme="dark"] .calendar__day--today {
+    background: linear-gradient(90deg, rgba(79, 158, 165, 0.1), rgba(79, 158, 165, 0.2));
+}
+
 :root[data-theme="dark"] .calendar__day--holiday {
-    background: #1a1a2e !important;
-    border-color: #dc2626 !important;
+    background: linear-gradient(90deg, rgba(201, 75, 75, 0.08), rgba(201, 75, 75, 0.15));
 }
 
-:root[data-theme="dark"] .calendar__day--weekend .calendar__day-week,
-:root[data-theme="dark"] .calendar__day--holiday .calendar__day-week {
-    color: #f87171 !important;
-}
-
-:root[data-theme="dark"] .calendar__day--weekend .calendar__day-number,
+:root[data-theme="dark"] .calendar__day--holiday .calendar__day-week,
 :root[data-theme="dark"] .calendar__day--holiday .calendar__day-number {
-    color: #f87171 !important;
+    color: #f87171;
 }
 
-:root[data-theme="dark"] .calendar__day--weekend .calendar__day-useful-time,
-:root[data-theme="dark"] .calendar__day--holiday .calendar__day-useful-time {
-    color: #f87171 !important;
-    background-color: rgba(248, 113, 113, 0.08) !important;
-    border-color: rgba(248, 113, 113, 0.14) !important;
-}
-
-:root[data-theme="dark"] .calendar__day--weekend:hover,
-:root[data-theme="dark"] .calendar__day--holiday:hover {
-    background: #1f1f3a !important;
-    border-color: #ef4444 !important;
+:root[data-theme="dark"] .calendar__gregorian-month--active,
+:root[data-theme="dark"] .calendar__islamic-month--active {
+    color: #5fb3cc !important;
+    background-color: rgba(79, 158, 165, 0.15);
 }

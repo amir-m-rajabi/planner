@@ -1,3 +1,5 @@
+import { logout } from "../login_register/auth.js";
+
 export function ProfileView() {
     // بارگذاری داده‌های ذخیره‌شده از localStorage
     const savedProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
@@ -15,6 +17,9 @@ export function ProfileView() {
     if (!avatar || avatar === defaultMale || avatar === defaultFemale) {
         avatar = defaultAvatar;
     }
+    
+    // بررسی وضعیت ایمیل
+    const hasEmail = Boolean(savedProfile.email);
     
     return `
         <main class="profile-page">
@@ -312,6 +317,31 @@ export function ProfileView() {
 
                 <div class="settings-list">
 
+                    <!-- Username -->
+                    <div class="setting-item">
+
+                        <div class="setting-item__content">
+
+                            <span class="setting-item__title">
+                                نام کاربری
+                            </span>
+
+                            <span class="setting-item__value" id="userUsername">
+                                ${savedProfile.username || 'amirrajabi'}
+                            </span>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="setting-item__action"
+                            id="changeUsernameBtn"
+                        >
+                            تغییر
+                        </button>
+
+                    </div>
+
                     <!-- Email -->
                     <div class="setting-item">
 
@@ -321,9 +351,12 @@ export function ProfileView() {
                                 ایمیل
                             </span>
 
-                            <span class="setting-item__value" id="userEmail">
-                                ${savedProfile.email || 'amir.m.rajabi@gmail.com'}
-                            </span>
+                            ${hasEmail 
+                                ? `<span class="setting-item__value" id="userEmail">${savedProfile.email}</span>`
+                                : `<span class="setting-item__value setting-item__value--empty" id="userEmail">
+                                       ایمیل ثبت نشده است
+                                   </span>`
+                            }
 
                         </div>
 
@@ -332,7 +365,7 @@ export function ProfileView() {
                             class="setting-item__action"
                             id="changeEmailBtn"
                         >
-                            تغییر
+                            ${hasEmail ? 'تغییر' : 'ثبت'}
                         </button>
 
                     </div>
@@ -570,6 +603,46 @@ export function ProfileView() {
             </div>
 
             <!-- ==================================================
+                 Change Username Modal
+            ================================================== -->
+
+            <div
+                class="profile-modal"
+                aria-hidden="true"
+                id="usernameModal"
+                style="display: none;"
+            >
+                <div class="profile-modal__overlay"></div>
+
+                <div class="profile-modal__box" role="dialog" aria-modal="true">
+                    <div class="profile-modal__header">
+                        <div>
+                            <h2 class="profile-modal__title">تغییر نام کاربری</h2>
+
+                            <p class="profile-modal__subtitle">نام کاربری جدید خود را وارد کنید.</p>
+                        </div>
+
+                        <button type="button" class="profile-modal__close" id="closeUsernameModal">×</button>
+                    </div>
+
+                    <div class="profile-modal__body">
+                        <div class="profile-modal__field">
+                            <label for="new-username"> نام کاربری جدید </label>
+
+                            <input type="text" id="new-username" placeholder="example_user" />
+                        </div>
+                        <p class="profile-modal__error" id="usernameError" role="alert"></p>
+                    </div>
+
+                    <div class="profile-modal__footer">
+                        <button type="button" class="profile-modal__cancel" id="cancelUsernameModal">انصراف</button>
+
+                        <button type="button" class="profile-modal__submit" id="saveUsernameBtn">ذخیره نام کاربری</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================================================
                  Change Email Modal
             ================================================== -->
 
@@ -584,9 +657,9 @@ export function ProfileView() {
                 <div class="profile-modal__box" role="dialog" aria-modal="true">
                     <div class="profile-modal__header">
                         <div>
-                            <h2 class="profile-modal__title">تغییر ایمیل</h2>
+                            <h2 class="profile-modal__title" id="emailModalTitle">ثبت ایمیل</h2>
 
-                            <p class="profile-modal__subtitle">ایمیل جدید خود را وارد کنید.</p>
+                            <p class="profile-modal__subtitle" id="emailModalSubtitle">برای افزایش امنیت حساب، ایمیل خود را ثبت کنید.</p>
                         </div>
 
                         <button type="button" class="profile-modal__close" id="closeEmailModal">×</button>
@@ -594,7 +667,7 @@ export function ProfileView() {
 
                     <div class="profile-modal__body">
                         <div class="profile-modal__field">
-                            <label for="new-email"> ایمیل جدید </label>
+                            <label for="new-email"> ایمیل </label>
 
                             <input type="email" id="new-email" placeholder="example@email.com" />
                         </div>
@@ -604,7 +677,7 @@ export function ProfileView() {
                     <div class="profile-modal__footer">
                         <button type="button" class="profile-modal__cancel" id="cancelEmailModal">انصراف</button>
 
-                        <button type="button" class="profile-modal__submit" id="saveEmailBtn">ذخیره ایمیل</button>
+                        <button type="button" class="profile-modal__submit" id="saveEmailBtn">ثبت ایمیل</button>
                     </div>
                 </div>
             </div>
@@ -766,6 +839,10 @@ function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+function isValidUsername(username) {
+    return /^[a-zA-Z0-9_]{3,20}$/.test(username);
+}
+
 // ==================================================
 // تابع بروزرسانی هدر
 // ==================================================
@@ -821,9 +898,7 @@ function closeConfirmLogoutModal() {
 }
 
 function performLogout() {
-    // پاک کردن اطلاعات کاربر (اختیاری)
-    // localStorage.removeItem('userProfile');
-    window.location.href = '/Frontend/index.html';
+    logout();
 }
 
 // ==================================================
@@ -864,7 +939,6 @@ export function initProfilePage() {
                 const newAvatar = getDefaultAvatar(gender);
                 avatarImg.src = newAvatar;
                 
-                // بروزرسانی هدر
                 updateHeaderAvatar(newAvatar);
             }
         });
@@ -883,7 +957,6 @@ export function initProfilePage() {
     if (editAvatarBtn && avatarModal) {
         editAvatarBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            console.log('Edit avatar button clicked');
             resetAvatarModal();
             openModal(avatarModal);
         });
@@ -895,7 +968,64 @@ export function initProfilePage() {
     if (avatarOverlay) avatarOverlay.addEventListener('click', closeAvatar);
     
     // =============================================
-    // ۲. مدیریت مودال تغییر ایمیل
+    // ۲. مدیریت مودال تغییر نام کاربری
+    // =============================================
+    
+    const usernameModal = document.getElementById('usernameModal');
+    const changeUsernameBtn = document.getElementById('changeUsernameBtn');
+    const closeUsernameModal = document.getElementById('closeUsernameModal');
+    const cancelUsernameModal = document.getElementById('cancelUsernameModal');
+    const usernameOverlay = usernameModal?.querySelector('.profile-modal__overlay');
+    
+    if (changeUsernameBtn && usernameModal) {
+        changeUsernameBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const currentUsername = document.getElementById('userUsername')?.textContent || '';
+            const usernameInput = document.getElementById('new-username');
+            if (usernameInput) usernameInput.value = currentUsername;
+            const errorEl = document.getElementById('usernameError');
+            if (errorEl) errorEl.textContent = '';
+            openModal(usernameModal);
+        });
+    }
+    
+    const closeUsername = () => closeModal(usernameModal);
+    if (closeUsernameModal) closeUsernameModal.addEventListener('click', closeUsername);
+    if (cancelUsernameModal) cancelUsernameModal.addEventListener('click', closeUsername);
+    if (usernameOverlay) usernameOverlay.addEventListener('click', closeUsername);
+    
+    const saveUsernameBtn = document.getElementById('saveUsernameBtn');
+    if (saveUsernameBtn) {
+        saveUsernameBtn.addEventListener('click', function() {
+            const newUsername = document.getElementById('new-username')?.value.trim();
+            const errorEl = document.getElementById('usernameError');
+            
+            if (!newUsername) {
+                if (errorEl) errorEl.textContent = 'لطفا نام کاربری را وارد کنید';
+                return;
+            }
+            
+            if (!isValidUsername(newUsername)) {
+                if (errorEl) errorEl.textContent = 'نام کاربری باید بین ۳ تا ۲۰ کاراکتر و شامل حروف انگلیسی، اعداد و _ باشد';
+                return;
+            }
+            
+            if (errorEl) errorEl.textContent = '';
+            
+            const savedProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
+            savedProfile.username = newUsername;
+            localStorage.setItem('userProfile', JSON.stringify(savedProfile));
+            
+            const usernameDisplay = document.getElementById('userUsername');
+            if (usernameDisplay) usernameDisplay.textContent = newUsername;
+            
+            closeModal(usernameModal);
+            showSuccessModal('✅ نام کاربری تغییر کرد', 'نام کاربری شما با موفقیت تغییر یافت.');
+        });
+    }
+    
+    // =============================================
+    // ۳. مدیریت مودال تغییر ایمیل
     // =============================================
     
     const emailModal = document.getElementById('emailModal');
@@ -907,12 +1037,30 @@ export function initProfilePage() {
     if (changeEmailBtn && emailModal) {
         changeEmailBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            console.log('Change email button clicked');
-            const currentEmail = document.getElementById('userEmail')?.textContent || '';
+            
+            const savedProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
+            const currentEmail = savedProfile.email || '';
             const emailInput = document.getElementById('new-email');
+            const modalTitle = document.getElementById('emailModalTitle');
+            const modalSubtitle = document.getElementById('emailModalSubtitle');
+            const saveBtn = document.getElementById('saveEmailBtn');
+            
             if (emailInput) emailInput.value = currentEmail;
+            
             const errorEl = document.getElementById('emailError');
             if (errorEl) errorEl.textContent = '';
+            
+            // تغییر عنوان مودال بر اساس وضعیت
+            if (!currentEmail) {
+                if (modalTitle) modalTitle.textContent = 'ثبت ایمیل';
+                if (modalSubtitle) modalSubtitle.textContent = 'برای افزایش امنیت حساب، ایمیل خود را ثبت کنید.';
+                if (saveBtn) saveBtn.textContent = 'ثبت ایمیل';
+            } else {
+                if (modalTitle) modalTitle.textContent = 'تغییر ایمیل';
+                if (modalSubtitle) modalSubtitle.textContent = 'ایمیل جدید خود را وارد کنید.';
+                if (saveBtn) saveBtn.textContent = 'ذخیره ایمیل';
+            }
+            
             openModal(emailModal);
         });
     }
@@ -940,20 +1088,37 @@ export function initProfilePage() {
             
             if (errorEl) errorEl.textContent = '';
             
+            // TODO: ارسال ایمیل تایید به بک‌اند
+            // فعلا در localStorage ذخیره می‌کنیم
+            
             const savedProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
             savedProfile.email = newEmail;
+            savedProfile.emailVerified = true;
             localStorage.setItem('userProfile', JSON.stringify(savedProfile));
             
+            // به‌روزرسانی auth:user
+            const authUser = JSON.parse(localStorage.getItem('auth:user')) || {};
+            authUser.email = newEmail;
+            authUser.emailVerified = true;
+            localStorage.setItem('auth:user', JSON.stringify(authUser));
+            
+            // به‌روزرسانی نمایش
             const emailDisplay = document.getElementById('userEmail');
-            if (emailDisplay) emailDisplay.textContent = newEmail;
+            if (emailDisplay) {
+                emailDisplay.textContent = newEmail;
+                emailDisplay.classList.remove('setting-item__value--empty');
+            }
+            
+            // تغییر متن دکمه
+            if (changeEmailBtn) changeEmailBtn.textContent = 'تغییر';
             
             closeModal(emailModal);
-            showSuccessModal('✅ ایمیل تغییر کرد', 'ایمیل شما با موفقیت تغییر یافت.');
+            showSuccessModal('✅ ایمیل ثبت شد', 'ایمیل شما با موفقیت ثبت و تایید شد.');
         });
     }
     
     // =============================================
-    // ۳. مدیریت مودال تغییر رمز عبور
+    // ۴. مدیریت مودال تغییر رمز عبور
     // =============================================
     
     const passwordModal = document.getElementById('passwordModal');
@@ -965,7 +1130,6 @@ export function initProfilePage() {
     if (changePasswordBtn && passwordModal) {
         changePasswordBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            console.log('Change password button clicked');
             document.getElementById('current-password').value = '';
             document.getElementById('new-password').value = '';
             document.getElementById('confirm-password').value = '';
@@ -993,8 +1157,8 @@ export function initProfilePage() {
                 return;
             }
             
-            if (!newPassword || newPassword.length < 6) {
-                if (errorEl) errorEl.textContent = 'رمز عبور جدید باید حداقل ۶ کاراکتر باشد';
+            if (!newPassword || newPassword.length < 8) {
+                if (errorEl) errorEl.textContent = 'رمز عبور جدید باید حداقل ۸ کاراکتر باشد';
                 return;
             }
             
@@ -1005,13 +1169,15 @@ export function initProfilePage() {
             
             if (errorEl) errorEl.textContent = '';
             
+            // TODO: ارسال به بک‌اند برای تغییر رمز
+            
             closeModal(passwordModal);
             showSuccessModal('🔒 رمز عبور تغییر کرد', 'رمز عبور شما با موفقیت تغییر یافت.');
         });
     }
     
     // =============================================
-    // ۴. مدیریت ذخیره اطلاعات پروفایل
+    // ۵. مدیریت ذخیره اطلاعات پروفایل
     // =============================================
     
     const saveProfileBtn = document.getElementById('saveProfileBtn');
@@ -1037,7 +1203,8 @@ export function initProfilePage() {
                 lastName,
                 province,
                 gender,
-                email: savedProfile.email || 'amir.m.rajabi@gmail.com',
+                username: savedProfile.username || 'amirrajabi',
+                email: savedProfile.email || '',
                 avatar: avatar,
                 city: province ? `${province}، ایران` : 'قزوین، ایران'
             };
@@ -1052,10 +1219,8 @@ export function initProfilePage() {
             const avatarImg = document.getElementById('profileAvatarImage');
             if (avatarImg) avatarImg.src = avatar;
             
-            // بروزرسانی هدر
             updateHeaderAvatar(avatar);
             
-            // ارسال event برای همگام‌سازی
             document.dispatchEvent(new CustomEvent('profile:avatar-updated', {
                 detail: { src: avatar }
             }));
@@ -1069,7 +1234,7 @@ export function initProfilePage() {
     }
     
     // =============================================
-    // ۵. مدیریت خروج از حساب - با مودال
+    // ۶. مدیریت خروج از حساب
     // =============================================
     
     const logoutBtn = document.getElementById('logoutBtn');
@@ -1079,7 +1244,6 @@ export function initProfilePage() {
         });
     }
     
-    // دکمه‌های مودال خروج
     const closeLogoutModal = document.getElementById('closeLogoutModal');
     const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
     const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
@@ -1091,7 +1255,7 @@ export function initProfilePage() {
     if (confirmLogoutBtn) confirmLogoutBtn.addEventListener('click', performLogout);
     
     // =============================================
-    // ۶. مدیریت تم (روشن/تاریک)
+    // ۷. مدیریت تم
     // =============================================
     
     const themeToggle = document.getElementById('themeToggle');
@@ -1123,13 +1287,13 @@ export function initProfilePage() {
     }
     
     // =============================================
-    // ۷. مدیریت آپلود و حذف تصویر
+    // ۸. مدیریت آپلود تصویر
     // =============================================
     
     setupImageUpload();
     
     // =============================================
-    // ۸. مدیریت مودال موفقیت
+    // ۹. مدیریت مودال موفقیت
     // =============================================
     
     const closeSuccessBtn = document.getElementById('closeSuccessModal');
@@ -1142,7 +1306,7 @@ export function initProfilePage() {
     if (successOverlay) successOverlay.addEventListener('click', closeSuccess);
     
     // =============================================
-    // ۹. بستن مودال‌ها با کلید Escape
+    // ۱۰. بستن مودال‌ها با کلید Escape
     // =============================================
     
     document.addEventListener('keydown', function(e) {
@@ -1191,24 +1355,10 @@ function setupImageUpload() {
     
     let selectedFile = null;
     
-    if (!fileInput) {
-        console.log('fileInput not found');
-        return;
-    }
-    
-    console.log('setupImageUpload initialized');
-    console.log('removeBtn element:', removeBtn);
-    
-    // =============================================
-    // دکمه حذف تصویر
-    // =============================================
+    if (!fileInput) return;
     
     if (removeBtn) {
-        console.log('Remove button event listener attached');
-        
         removeBtn.addEventListener('click', function() {
-            console.log('Remove button clicked');
-            
             const savedProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
             const gender = savedProfile.gender || 'male';
             const defaultAvatar = getDefaultAvatar(gender);
@@ -1218,10 +1368,8 @@ function setupImageUpload() {
             
             if (avatarImg) avatarImg.src = defaultAvatar;
             
-            // بروزرسانی هدر
             updateHeaderAvatar(defaultAvatar);
             
-            // ارسال event برای همگام‌سازی
             document.dispatchEvent(new CustomEvent('profile:avatar-updated', {
                 detail: { src: defaultAvatar }
             }));
@@ -1230,16 +1378,9 @@ function setupImageUpload() {
             closeModal(avatarModal);
             showSuccessModal('🗑 تصویر حذف شد', 'تصویر پروفایل با موفقیت حذف و تصویر پیش‌فرض جایگزین شد.');
         });
-    } else {
-        console.log('Remove button not found!');
     }
     
-    // =============================================
-    // انتخاب فایل
-    // =============================================
-    
     fileInput.addEventListener('change', function(e) {
-        console.log('File selected');
         const file = e.target.files[0];
         if (!file) return;
         
@@ -1267,10 +1408,6 @@ function setupImageUpload() {
         reader.readAsDataURL(file);
     });
     
-    // =============================================
-    // تایید و انتخاب تصویر جدید
-    // =============================================
-    
     if (submitBtn) {
         submitBtn.addEventListener('click', function() {
             if (selectedFile) {
@@ -1284,10 +1421,8 @@ function setupImageUpload() {
                     
                     if (avatarImg) avatarImg.src = avatarUrl;
                     
-                    // بروزرسانی هدر
                     updateHeaderAvatar(avatarUrl);
                     
-                    // ارسال event برای همگام‌سازی
                     document.dispatchEvent(new CustomEvent('profile:avatar-updated', {
                         detail: { src: avatarUrl }
                     }));

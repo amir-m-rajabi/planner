@@ -209,9 +209,6 @@
 
 /* ========================================
    Activities Page
-   ارتفاع صفحه به viewport محدود شده (دقیقاً مثل الگوی
-   dashboard.css) تا اسکرول فقط داخل لیست هر ستون اتفاق
-   بیفته، نه کل صفحه.
 ======================================== */
 
 .activities-page {
@@ -438,9 +435,6 @@
 
 /* ========================================
    Activity List
-   flex:1 + min-height:0 + overflow-y:auto = این باکس دقیقاً
-   ارتفاعِ باقی‌مونده‌ی ستون رو می‌گیره و اگه کارت‌ها بیشتر از
-   جا شدن باشن، فقط خودش اسکرول می‌خوره.
 ======================================== */
 
 .activity-column__list {
@@ -450,9 +444,9 @@
     display: flex;
     flex-direction: column;
 
-    gap: 12px;
+    gap: 10px;
 
-    padding: 16px;
+    padding: 14px;
 
     overflow-y: auto;
 }
@@ -471,9 +465,6 @@
 
 /* ========================================
    Empty State
-   وقتی لیست (فعال یا آرشیو) هیچ آیتمی نداشته باشه، این
-   کلاس رو روی یه <p> داخل .activity-column__list بذار تا
-   به‌جای یه باکس خالی، یه پیام مرتب نشون داده بشه.
 ======================================== */
 
 .activity-column__empty {
@@ -487,8 +478,263 @@
 
     color: var(--color-text-secondary);
 
-    font-size: 12px;
+    font-size: 11px;
     text-align: center;
+}
+
+
+/* ========================================
+   Timed Activity Card
+======================================== */
+
+.activity-card {
+    position: relative;
+
+    width: 100%;
+    min-height: 70px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 12px 14px 12px 15px;
+
+    background-color: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-sm);
+
+    overflow: hidden;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.activity-card:hover {
+    border-color: color-mix(in srgb, var(--activity-color, var(--color-primary)) 35%, transparent);
+
+    box-shadow: var(--shadow-md);
+
+    transform: translateY(-1px);
+}
+
+
+/* ========================================
+   Activity Color
+======================================== */
+
+.activity-card__color {
+    position: absolute;
+
+    top: 0;
+    right: 0;
+
+    width: 14px;
+    height: 100%;
+
+    background-color: var(--activity-color, var(--color-primary));
+
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+
+
+/* ========================================
+   Content
+======================================== */
+
+.activity-card__content {
+    min-width: 0;
+
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+
+    padding-right: 8px;
+}
+
+
+/* ========================================
+   Header
+======================================== */
+
+.activity-card__header {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+}
+
+
+/* ========================================
+   Title
+======================================== */
+
+.activity-card__title {
+    min-width: 0;
+
+    margin: 0;
+
+    overflow: hidden;
+
+    color: var(--color-text);
+
+    font-size: 12px;
+    font-weight: 650;
+
+    line-height: 1.4;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* ========================================
+   Type Badge
+======================================== */
+
+.activity-card__type {
+    flex-shrink: 0;
+
+    padding: 2px 6px;
+
+    border-radius: 999px;
+
+    background-color: rgba(79, 158, 165, 0.08);
+
+    color: var(--color-primary);
+
+    font-size: 8px;
+    font-weight: 500;
+}
+
+
+/* ========================================
+   Dates - در یک ردیف
+======================================== */
+
+.activity-card__dates {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.activity-card__date {
+    color: var(--color-text-secondary);
+    font-size: 9px;
+    font-weight: 400;
+    white-space: nowrap;
+}
+
+.activity-card__date--updated {
+    opacity: 0.7;
+}
+
+
+/* ========================================
+   Actions
+======================================== */
+
+.activity-card__actions {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 4px;
+
+    margin-right: 10px;
+}
+
+
+/* ========================================
+   Action Buttons
+======================================== */
+
+.activity-card__action-button {
+    width: 27px;
+    height: 27px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid var(--color-border);
+    border-radius: 7px;
+
+    background-color: transparent;
+
+    color: var(--color-text-secondary);
+
+    font-family: inherit;
+    font-size: 12px;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* Edit */
+.activity-card__edit:hover {
+    background-color: rgba(186, 206, 87, 0.432);
+
+    border-color: rgba(198, 230, 79, 0.522);
+
+    color: var(--color-primary);
+
+    transform: translateY(-1px);
+}
+
+
+/* Archive */
+.activity-card__archive:hover {
+    background-color: rgba(210, 70, 70, 0.08);
+
+    border-color: rgba(210, 70, 70, 0.25);
+
+    color: #c94b4b;
+
+    transform: translateY(-1px);
+}
+
+
+/* Restore */
+.activity-card__restore:hover {
+    background-color: rgba(79, 158, 165, 0.08);
+
+    border-color: rgba(79, 158, 165, 0.25);
+
+    color: var(--color-primary);
+
+    transform: translateY(-1px);
+}
+
+
+/* Delete */
+.activity-card__delete:hover {
+    background-color: rgba(210, 49, 49, 0.232);
+
+    border-color: rgba(203, 62, 62, 0.642);
+
+    color: #9b0c0c;
+
+    transform: translateY(-1px);
 }
 
 
@@ -512,10 +758,238 @@
 
 
 /* ========================================
-   Restore
+   Untimed Activity Card
 ======================================== */
 
-.activity-card__restore:hover {
+.untimed-activity-card {
+    position: relative;
+
+    width: 100%;
+    min-height: 70px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 12px 14px 12px 15px;
+
+    background-color: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-sm);
+
+    overflow: hidden;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.untimed-activity-card:hover {
+    border-color: rgba(79, 158, 165, 0.25);
+
+    box-shadow: var(--shadow-md);
+
+    transform: translateY(-1px);
+}
+
+
+/* ========================================
+   Activity Color
+======================================== */
+
+.untimed-activity-card__color {
+    position: absolute;
+
+    top: 0;
+    right: 0;
+
+    width: 4px;
+    height: 100%;
+
+    background-color: #4f9ea5;
+
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+
+
+/* ========================================
+   Content
+======================================== */
+
+.untimed-activity-card__content {
+    min-width: 0;
+
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+
+    padding-right: 8px;
+}
+
+
+/* ========================================
+   Header
+======================================== */
+
+.untimed-activity-card__header {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+}
+
+
+/* ========================================
+   Title
+======================================== */
+
+.untimed-activity-card__title {
+    min-width: 0;
+
+    margin: 0;
+
+    overflow: hidden;
+
+    color: var(--color-text);
+
+    font-size: 12px;
+    font-weight: 650;
+
+    line-height: 1.4;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* ========================================
+   Type Badge
+======================================== */
+
+.untimed-activity-card__type {
+    flex-shrink: 0;
+
+    padding: 2px 6px;
+
+    border-radius: 999px;
+
+    background-color: rgba(79, 158, 165, 0.08);
+
+    color: var(--color-primary);
+
+    font-size: 8px;
+    font-weight: 500;
+}
+
+
+/* ========================================
+   Dates - در یک ردیف
+======================================== */
+
+.untimed-activity-card__dates {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    gap: 10px;
+}
+
+.untimed-activity-card__date {
+    color: var(--color-text-secondary);
+    font-size: 9px;
+    font-weight: 400;
+    white-space: nowrap;
+}
+
+.untimed-activity-card__date--updated {
+    opacity: 0.7;
+}
+
+
+/* ========================================
+   Actions
+======================================== */
+
+.untimed-activity-card__actions {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 4px;
+
+    margin-right: 10px;
+}
+
+
+/* ========================================
+   Action Buttons
+======================================== */
+
+.untimed-activity-card__action-button {
+    width: 27px;
+    height: 27px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid var(--color-border);
+    border-radius: 7px;
+
+    background-color: transparent;
+
+    color: var(--color-text-secondary);
+
+    font-family: inherit;
+    font-size: 12px;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* Edit */
+.untimed-activity-card__edit:hover {
+    background-color: rgba(186, 206, 87, 0.432);
+
+    border-color: rgba(198, 230, 79, 0.522);
+
+    color: var(--color-primary);
+
+    transform: translateY(-1px);
+}
+
+
+/* Archive */
+.untimed-activity-card__archive:hover {
+    background-color: rgba(210, 70, 70, 0.08);
+
+    border-color: rgba(210, 70, 70, 0.25);
+
+    color: #c94b4b;
+
+    transform: translateY(-1px);
+}
+
+
+/* Restore */
+.untimed-activity-card__restore:hover {
     background-color: rgba(79, 158, 165, 0.08);
 
     border-color: rgba(79, 158, 165, 0.25);
@@ -526,11 +1000,8 @@
 }
 
 
-/* ========================================
-   Delete
-======================================== */
-
-.activity-card__delete:hover {
+/* Delete */
+.untimed-activity-card__delete:hover {
     background-color: rgba(210, 49, 49, 0.232);
 
     border-color: rgba(203, 62, 62, 0.642);
@@ -538,6 +1009,38 @@
     color: #9b0c0c;
 
     transform: translateY(-1px);
+}
+
+
+/* ========================================
+   Archived State
+======================================== */
+
+.untimed-activity-card--archived {
+    opacity: 0.82;
+}
+
+
+.untimed-activity-card--archived
+.untimed-activity-card__color {
+    opacity: 0.55;
+}
+
+
+.untimed-activity-card--archived:hover {
+    opacity: 1;
+}
+
+
+/* ========================================
+   Focus
+======================================== */
+
+.activity-card__action-button:focus-visible,
+.untimed-activity-card__action-button:focus-visible {
+    outline: 2px solid var(--color-primary);
+
+    outline-offset: 2px;
 }
 
 
@@ -567,8 +1070,6 @@
         display: none;
     }
 
-    /* روی موبایل که ستون‌ها زیر هم میان، خود لیست‌ها دیگه
-       نیازی به اسکرول جدا ندارن — کل ستون‌ها با هم اسکرول می‌خورن. */
     .activity-column {
         min-height: 320px;
     }
@@ -604,464 +1105,25 @@
         padding: 12px;
     }
 
-}
 
-
-/* ========================================
-   Timed Activity Card
-======================================== */
-
-.activity-card {
-    position: relative;
-
-    width: 100%;
-    min-height: 86px;
-
-    display: flex;
-    align-items: center;
-
-    padding: 14px 15px 14px 16px;
-
-    background-color: var(--color-surface);
-
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-
-    box-shadow: var(--shadow-sm);
-
-    overflow: hidden;
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        transform 0.2s ease;
-}
-
-
-/* ========================================
-   Hover
-======================================== */
-
-.activity-card:hover {
-    border-color: color-mix(in srgb, var(--activity-color, var(--color-primary)) 35%, transparent);
-
-    box-shadow: var(--shadow-md);
-
-    transform: translateY(-1px);
-}
-
-
-/* ========================================
-   Activity Color
-   (رنگ هر فعالیت از روی --activity-color که موقع رندر
-   کارت ست می‌شه — دقیقاً مثل ماژول داشبورد)
-======================================== */
-
-.activity-card__color {
-    position: absolute;
-
-    top: 0;
-    right: 0;
-
-    width: 15px;
-    height: 100%;
-
-    background-color: var(--activity-color, var(--color-primary));
-
-    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-}
-
-
-/* ========================================
-   Content
-======================================== */
-
-.activity-card__content {
-    min-width: 0;
-
-    flex: 1;
-
-    display: flex;
-    flex-direction: column;
-
-    gap: 7px;
-
-    padding-right: 9px;
-}
-
-
-/* ========================================
-   Header
-======================================== */
-
-.activity-card__header {
-    min-width: 0;
-
-    display: flex;
-    align-items: center;
-}
-
-
-.activity-card__title-wrapper {
-    min-width: 0;
-
-    display: flex;
-    align-items: center;
-
-    gap: 7px;
-}
-
-
-/* ========================================
-   Title
-======================================== */
-
-.activity-card__title {
-    min-width: 0;
-
-    margin: 0;
-
-    overflow: hidden;
-
-    color: var(--color-text);
-
-    font-size: 13px;
-    font-weight: 650;
-
-    line-height: 1.5;
-
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-
-/* ========================================
-   Type
-======================================== */
-
-.activity-card__type {
-    flex-shrink: 0;
-
-    padding: 2px 6px;
-
-    border-radius: 999px;
-
-    background-color: rgba(79, 158, 165, 0.08);
-
-    color: var(--color-primary);
-
-    font-size: 9px;
-    font-weight: 500;
-}
-
-
-/* ========================================
-   Information
-======================================== */
-
-.activity-card__info {
-    display: flex;
-    align-items: center;
-
-    gap: 13px;
-
-    color: var(--color-text-secondary);
-
-    font-size: 10px;
-}
-
-.activity-card__created {
-    color: var(--color-text-secondary);
-
-    font-size: 10px;
-    font-weight: 400;
-}
-
-
-/* ========================================
-   Actions
-======================================== */
-
-.activity-card__actions {
-    flex-shrink: 0;
-
-    display: flex;
-    align-items: center;
-
-    gap: 5px;
-
-    margin-right: 12px;
-}
-
-
-/* ========================================
-   Edit / Archive Buttons
-======================================== */
-
-.activity-card__action-button {
-    width: 29px;
-    height: 29px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 0;
-
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-
-    background-color: transparent;
-
-    color: var(--color-text-secondary);
-
-    font-family: inherit;
-
-    cursor: pointer;
-
-    transition:
-        background-color 0.2s ease,
-        color 0.2s ease,
-        border-color 0.2s ease,
-        transform 0.2s ease;
-}
-
-
-.activity-card__archive {
-    font-size: 14px;
-
-    line-height: 1;
-}
-
-
-.activity-card__edit:hover {
-    background-color: rgba(186, 206, 87, 0.432);
-
-    border-color: rgba(198, 230, 79, 0.522);
-
-    color: var(--color-primary);
-
-    transform: translateY(-1px);
-}
-
-
-.activity-card__archive:hover {
-    background-color: rgba(210, 70, 70, 0.08);
-
-    border-color: rgba(210, 70, 70, 0.25);
-
-    color: #c94b4b;
-
-    transform: translateY(-1px);
-}
-
-
-
-
-/* ========================================
-   Start Button
-   (رنگش از --activity-color میاد — همون فعالیتی که
-   این دکمه بهش تعلق داره)
-======================================== */
-
-.activity-card__start {
-    min-width: 68px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    gap: 5px;
-
-    padding: 7px 9px;
-
-    border: 1px solid var(--activity-color, var(--color-primary));
-    border-radius: 8px;
-
-    background-color: color-mix(in srgb, var(--activity-color, var(--color-primary)) 8%, transparent);
-
-    color: var(--activity-color, var(--color-primary));
-
-    font-family: inherit;
-    font-size: 10px;
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition:
-        background-color 0.2s ease,
-        color 0.2s ease,
-        border-color 0.2s ease,
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-
-.activity-card__start-icon {
-    font-size: 8px;
-}
-
-
-.activity-card__start:hover {
-    background-color: var(--activity-color, var(--color-primary));
-
-    border-color: var(--activity-color, var(--color-primary));
-
-    color: #ffffff;
-
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--activity-color, var(--color-primary)) 25%, transparent);
-
-    transform: translateY(-1px);
-}
-
-
-/* حالت «در حال اجرا» */
-.activity-card__start.is-active {
-    background-color: var(--activity-color, var(--color-primary));
-
-    border-color: var(--activity-color, var(--color-primary));
-
-    color: #ffffff;
-
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--activity-color, var(--color-primary)) 25%, transparent);
-}
-
-
-/* ========================================
-   Active State
-======================================== */
-
-.activity-card--active {
-    border-color: color-mix(in srgb, var(--activity-color, var(--color-primary)) 45%, transparent);
-
-    box-shadow: var(--shadow-md);
-}
-
-
-.activity-card--active .activity-card__color {
-    width: 15px;
-}
-
-
-.activity-card__status {
-    display: inline-flex;
-    align-items: center;
-
-    gap: 5px;
-
-    color: var(--color-primary);
-
-    font-weight: 600;
-}
-
-
-.activity-card__status::before {
-    content: "";
-
-    width: 5px;
-    height: 5px;
-
-    border-radius: 50%;
-
-    background-color: var(--color-primary);
-
-    animation: activity-pulse 1.5s ease-in-out infinite;
-}
-
-
-.activity-card__elapsed {
-    direction: ltr;
-
-    font-variant-numeric: tabular-nums;
-
-    color: var(--color-text);
-
-    font-weight: 600;
-}
-
-
-/* ========================================
-   Stop Button
-======================================== */
-
-.activity-card__start--stop {
-    background-color: var(--activity-color, var(--color-primary));
-
-    border-color: var(--activity-color, var(--color-primary));
-
-    color: #ffffff;
-}
-
-
-.activity-card__start--stop:hover {
-    background-color: transparent;
-
-    color: var(--activity-color, var(--color-primary));
-
-    box-shadow: none;
-}
-
-
-/* ========================================
-   Animation
-======================================== */
-
-@keyframes activity-pulse {
-
-    0%,
-    100% {
-        opacity: 1;
-        transform: scale(1);
+    .activity-card,
+    .untimed-activity-card {
+        padding: 11px 12px;
     }
 
-    50% {
-        opacity: 0.45;
-        transform: scale(0.75);
-    }
-}
 
-
-/* ========================================
-   Focus
-======================================== */
-
-.activity-card__action-button:focus-visible,
-.activity-card__start:focus-visible {
-    outline: 2px solid var(--color-primary);
-
-    outline-offset: 2px;
-}
-
-
-/* ========================================
-   Small Screens
-======================================== */
-
-@media (max-width: 500px) {
-
-    .activity-card {
-        padding: 13px;
-    }
-
-    .activity-card__type {
-        display: none;
-    }
-
-    .activity-card__actions {
+    .activity-card__actions,
+    .untimed-activity-card__actions {
         margin-right: 8px;
 
-        gap: 4px;
+        gap: 3px;
     }
 
-    .activity-card__action-button {
-        width: 27px;
-        height: 27px;
-    }
 
-    .activity-card__start {
-        min-width: 62px;
-
-        padding-inline: 7px;
+    .activity-card__action-button,
+    .untimed-activity-card__action-button {
+        width: 25px;
+        height: 25px;
     }
 
 }
@@ -1538,9 +1600,6 @@
 
 /* ========================================
    Archive Confirm Modal
-   همون زبان بصری مودال فرم (overlay، بلور، کارت گرد و
-   سایه‌دار، همون انیمیشن ورود)، فقط محتوا ساده‌تره:
-   آیکون + پیام تایید + دکمه‌های انصراف/تایید.
 ======================================== */
 
 .archive-confirm-modal {
@@ -1777,12 +1836,6 @@
 
 /* ========================================
    Delete Confirm Modal
-   کلاً از فایل CSS جا افتاده بود — دکمه‌ی «حذف کامل» توی
-   JS این مودال رو با کلاس‌های .delete-confirm-modal* باز
-   می‌کرد ولی هیچ استایلی براش تعریف نشده بود (نه حتی
-   display:none پایه‌اش)، برای همین درست نمایش داده نمی‌شد.
-   ساختار دقیقاً مثل archive-confirm-modal است، با رنگ‌بندی
-   قرمزِ پررنگ‌تر چون این عمل برخلاف آرشیو، غیرقابل بازگشته.
 ======================================== */
 
 .delete-confirm-modal {
@@ -2029,8 +2082,6 @@
 
 /* ========================================
    Concurrent Activity Warning Modal
-   همون زبان بصری بقیه‌ی مودال‌ها، رنگش کهربایی/هشداره
-   (نه قرمزِ مخرب مثل آرشیو، چون این یه اقدام مخرب نیست).
 ======================================== */
 
 .activity-warning-modal {
@@ -2187,499 +2238,4 @@
         border-radius: 15px;
         padding: 24px 20px 20px;
     }
-}
-
-
-/* ========================================
-   Untimed Activity Card
-======================================== */
-
-.untimed-activity-card {
-    position: relative;
-
-    width: 100%;
-    min-height: 120px;
-
-    display: flex;
-    align-items: stretch;
-
-    padding: 14px 15px 14px 16px;
-
-    background-color: var(--color-surface);
-
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-
-    box-shadow: var(--shadow-sm);
-
-    overflow: hidden;
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        transform 0.2s ease;
-}
-
-
-/* ========================================
-   Hover
-======================================== */
-
-.untimed-activity-card:hover {
-    border-color: rgba(79, 158, 165, 0.25);
-
-    box-shadow: var(--shadow-md);
-
-    transform: translateY(-1px);
-}
-
-
-/* ========================================
-   Activity Color
-======================================== */
-
-.untimed-activity-card__color {
-    position: absolute;
-
-    top: 0;
-    right: 0;
-
-    width: 4px;
-    height: 100%;
-
-    background-color: #4f9ea5;
-
-    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-}
-
-
-/* ========================================
-   Content
-======================================== */
-
-.untimed-activity-card__content {
-    min-width: 0;
-
-    flex: 1;
-
-    display: flex;
-    flex-direction: column;
-
-    gap: 8px;
-
-    padding-right: 9px;
-}
-
-
-/* ========================================
-   Header
-======================================== */
-
-.untimed-activity-card__header {
-    min-width: 0;
-
-    display: flex;
-    align-items: center;
-}
-
-
-.untimed-activity-card__title-wrapper {
-    min-width: 0;
-
-    display: flex;
-    align-items: center;
-
-    gap: 7px;
-}
-
-
-/* ========================================
-   Title
-======================================== */
-
-.untimed-activity-card__title {
-    min-width: 0;
-
-    margin: 0;
-
-    overflow: hidden;
-
-    color: var(--color-text);
-
-    font-size: 13px;
-    font-weight: 650;
-
-    line-height: 1.5;
-
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-
-/* ========================================
-   Type
-======================================== */
-
-.untimed-activity-card__type {
-    flex-shrink: 0;
-
-    padding: 2px 6px;
-
-    border-radius: 999px;
-
-    background-color: rgba(79, 158, 165, 0.08);
-
-    color: var(--color-primary);
-
-    font-size: 9px;
-    font-weight: 500;
-}
-
-
-/* ========================================
-   Information
-======================================== */
-
-.untimed-activity-card__info {
-    display: flex;
-    align-items: center;
-
-    gap: 13px;
-
-    color: var(--color-text-secondary);
-
-    font-size: 10px;
-}
-
-
-/* ========================================
-   Checkboxes Container
-======================================== */
-
-.untimed-activity-card__checks {
-    min-width: 0;
-
-    display: flex;
-    align-items: center;
-
-    gap: 8px;
-
-    direction: rtl;
-
-    overflow-x: auto;
-    overflow-y: hidden;
-
-    padding: 2px 1px 5px;
-}
-
-
-/* Hide Scrollbar */
-
-.untimed-activity-card__checks {
-    scrollbar-width: none;
-}
-
-.untimed-activity-card__checks::-webkit-scrollbar {
-    display: none;
-}
-
-
-/* ========================================
-   Checkbox
-======================================== */
-
-.untimed-activity-card__check {
-    flex: 0 0 auto;
-
-    position: relative;
-
-    display: flex;
-
-    cursor: pointer;
-}
-
-
-.untimed-activity-card__check input {
-    position: absolute;
-
-    width: 1px;
-    height: 1px;
-
-    opacity: 0;
-
-    pointer-events: none;
-}
-
-
-/* ========================================
-   Checkbox Visual
-======================================== */
-
-.untimed-activity-card__checkbox {
-    width: 24px;
-    height: 24px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border: 1px solid var(--color-border);
-    border-radius: 7px;
-
-    background-color: var(--color-background);
-
-    color: transparent;
-
-    font-size: 13px;
-    font-weight: 700;
-
-    transition:
-        background-color 0.2s ease,
-        border-color 0.2s ease,
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-
-/* ========================================
-   Checkmark
-======================================== */
-
-.untimed-activity-card__checkmark {
-    font-size: 13px;
-    font-weight: 700;
-
-    transform: scale(0);
-
-    transition:
-        transform 0.2s ease;
-}
-
-
-/* ========================================
-   Checked (چک‌باکس‌های تعاملی، ستون فعال)
-======================================== */
-
-.untimed-activity-card__check input:checked
-+ .untimed-activity-card__checkbox {
-
-    background-color: var(--color-primary);
-
-    border-color: var(--color-primary);
-
-    color: var(--color-surface);
-
-    box-shadow: 0 4px 10px rgba(79, 158, 165, 0.18);
-}
-
-
-.untimed-activity-card__check input:checked
-+ .untimed-activity-card__checkbox
-.untimed-activity-card__checkmark {
-
-    transform: scale(1);
-}
-
-
-/* ========================================
-   Checked (نمای فقط‌خواندنی، ستون آرشیو — بدون input،
-   فقط یه span با کلاس --checked)
-======================================== */
-
-.untimed-activity-card__checkbox--checked {
-    background-color: var(--color-primary);
-
-    border-color: var(--color-primary);
-
-    color: var(--color-surface);
-
-    box-shadow: 0 4px 10px rgba(79, 158, 165, 0.18);
-}
-
-
-/* ========================================
-   Checkbox Hover
-======================================== */
-
-.untimed-activity-card__check:hover
-.untimed-activity-card__checkbox {
-
-    border-color: var(--color-primary);
-
-    transform: translateY(-1px);
-}
-
-
-/* ========================================
-   Actions
-======================================== */
-
-.untimed-activity-card__actions {
-    flex-shrink: 0;
-
-    display: flex;
-    align-items: flex-start;
-
-    gap: 5px;
-
-    margin-right: 12px;
-}
-
-
-/* ========================================
-   Action Buttons
-======================================== */
-
-.untimed-activity-card__action-button {
-    width: 29px;
-    height: 29px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 0;
-
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-
-    background-color: transparent;
-
-    color: var(--color-text-secondary);
-
-    font-family: inherit;
-
-    cursor: pointer;
-
-    transition:
-        background-color 0.2s ease,
-        color 0.2s ease,
-        border-color 0.2s ease,
-        transform 0.2s ease;
-}
-
-
-.untimed-activity-card__action-icon {
-    font-size: 14px;
-
-    line-height: 1;
-}
-
-
-/* ========================================
-   Edit
-======================================== */
-
-.untimed-activity-card__edit:hover {
-    background-color: rgba(186, 206, 87, 0.432);
-
-    border-color: rgba(198, 230, 79, 0.522);
-
-    color: var(--color-primary);
-
-    transform: translateY(-1px);
-}
-
-
-/* ========================================
-   Archive
-======================================== */
-
-.untimed-activity-card__archive:hover {
-    background-color: rgba(210, 70, 70, 0.08);
-
-    border-color: rgba(210, 70, 70, 0.25);
-
-    color: #c94b4b;
-
-    transform: translateY(-1px);
-}
-
-
-/* ========================================
-   Focus
-======================================== */
-
-.untimed-activity-card__action-button:focus-visible,
-.untimed-activity-card__check input:focus-visible
-+ .untimed-activity-card__checkbox {
-
-    outline: 2px solid var(--color-primary);
-
-    outline-offset: 2px;
-}
-
-
-/* ========================================
-   Archived State
-======================================== */
-
-.untimed-activity-card--archived {
-    opacity: 0.82;
-}
-
-
-.untimed-activity-card--archived
-.untimed-activity-card__color {
-    opacity: 0.55;
-}
-
-
-.untimed-activity-card--archived:hover {
-    opacity: 1;
-}
-
-
-/* ========================================
-   Restore
-======================================== */
-
-.untimed-activity-card__restore:hover {
-    background-color: rgba(79, 158, 165, 0.08);
-
-    border-color: rgba(79, 158, 165, 0.25);
-
-    color: var(--color-primary);
-
-    transform: translateY(-1px);
-}
-
-
-/* ========================================
-   Delete
-======================================== */
-
-.untimed-activity-card__delete:hover {
-    background-color: rgba(210, 49, 49, 0.232);
-
-    border-color: rgba(203, 62, 62, 0.642);
-
-    color: #9b0c0c;
-
-    transform: translateY(-1px);
-}
-
-/* ========================================
-   Responsive
-======================================== */
-
-@media (max-width: 500px) {
-
-    .untimed-activity-card {
-        padding: 13px;
-    }
-
-    .untimed-activity-card__type {
-        display: none;
-    }
-
-    .untimed-activity-card__actions {
-        margin-right: 8px;
-    }
-
-    .untimed-activity-card__action-button {
-        width: 27px;
-        height: 27px;
-    }
-
 }

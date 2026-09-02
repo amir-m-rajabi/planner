@@ -1,5 +1,5 @@
 /* ========================================
-   Statistics
+   Statistics (Dashboard Module)
 ======================================== */
 
 .statistics {
@@ -41,21 +41,6 @@
     font-weight: 600;
 }
 
-.statistics__more {
-    color: var(--color-primary);
-
-    font-size: 11px;
-    font-weight: 500;
-
-    text-decoration: none;
-
-    transition: color 180ms ease;
-}
-
-.statistics__more:hover {
-    color: var(--color-primary-light);
-}
-
 
 /* ========================================
    Period Selector
@@ -72,7 +57,7 @@
     
     margin-bottom: 16px;
     
-    background-color: #f3f7f5;
+    background-color: var(--color-surface-hover);
     
     border: 1px solid var(--color-border);
     
@@ -99,6 +84,11 @@
 
     cursor: pointer;
 
+    overflow: hidden;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
     transition:
         color 180ms ease,
         background-color 180ms ease,
@@ -107,9 +97,9 @@
 }
 
 .statistics__period:hover {
-    color: var(--color-primary);
+    color: var(--color-primary-light);
 
-    background-color: rgba(79, 158, 165, 0.08);
+    background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
 }
 
 .statistics__period--active {
@@ -120,7 +110,7 @@
     font-weight: 600;
 
     box-shadow:
-        0 3px 7px rgba(33, 110, 137, 0.18);
+        0 3px 7px color-mix(in srgb, var(--color-primary) 25%, transparent);
 }
 
 .statistics__period--active:hover {
@@ -151,7 +141,7 @@
 
 
 /* ========================================
-   Donut Chart
+   Donut Chart (Chart.js)
 ======================================== */
 
 .statistics__chart {
@@ -177,34 +167,15 @@
 
     border-radius: 50%;
 
-    background:
-        conic-gradient(
-            #4F9EA5 0% 47%,
-            #7FB86A 47% 78%,
-            #E6A23C 78% 100%
-        );
-
-    box-shadow:
-        0 7px 16px rgba(24, 52, 61, 0.10);
+    box-shadow: var(--shadow-md);
 }
 
-
-/* Hole */
-
-.statistics__donut::before {
-    content: "";
-
-    width: 66%;
-    height: 66%;
-
+.statistics__donut canvas {
     position: absolute;
+    inset: 0;
 
-    border-radius: 50%;
-
-    background-color: var(--color-surface);
-
-    box-shadow:
-        inset 0 0 0 1px rgba(221, 231, 228, 0.7);
+    width: 100% !important;
+    height: 100% !important;
 }
 
 
@@ -219,6 +190,8 @@
     align-items: center;
 
     gap: 3px;
+
+    pointer-events: none;
 }
 
 .statistics__donut-label {
@@ -242,7 +215,6 @@
 ======================================== */
 
 .statistics__details {
-
     width: 100%;
     min-width: 0;
     min-height: 0;
@@ -306,6 +278,19 @@
     display: none;
 }
 
+.statistics__empty {
+    margin: auto;
+
+    padding: 12px;
+
+    color: var(--color-text-secondary);
+
+    font-size: 11px;
+    text-align: center;
+
+    line-height: 1.7;
+}
+
 
 /* ========================================
    Activity
@@ -324,7 +309,7 @@
 
     border-radius: 8px;
 
-    background-color: rgba(248, 247, 242, 0.65);
+    background-color: color-mix(in srgb, var(--color-surface) 65%, transparent);
 
     transition:
         background-color 180ms ease,
@@ -332,7 +317,7 @@
 }
 
 .statistics__activity:hover {
-    background-color: #f3f7f5;
+    background-color: var(--color-surface-hover);
 
     transform: translateX(-2px);
 }

@@ -1,3 +1,5 @@
+// فایل: Components/dashboard/sessions/sessions.js
+
 import { timedActivities } from "../timed-activities/timed-activities.js";
 
 export let sessions = [
@@ -9,7 +11,8 @@ export let sessions = [
         startTime: "10:30:00",
         endTime: "12:15:00",
         duration: "1 ساعت و 45 دقیقه",
-        hasNote: false
+        hasNote: false,
+        date: new Date().toISOString()
     },
     {
         id: 102,
@@ -19,7 +22,8 @@ export let sessions = [
         startTime: "14:00:00",
         endTime: "15:20:00",
         duration: "1 ساعت و 20 دقیقه",
-        hasNote: true
+        hasNote: true,
+        date: new Date().toISOString()
     },
     {
         id: 103,
@@ -29,7 +33,8 @@ export let sessions = [
         startTime: "17:10:00",
         endTime: "18:00:00",
         duration: "50 دقیقه",
-        hasNote: false
+        hasNote: false,
+        date: new Date().toISOString()
     }
 ];
 
@@ -38,6 +43,96 @@ let sessionModalMode = "add";
 let selectedSession = null;
 let sessionToDelete = null;
 let sessionForNote = null;
+
+let currentSelectedDate = null;
+let currentSessionsDateLabel = "امروز";
+
+// ========================================
+// توابع کمکی تاریخ
+// ========================================
+
+function getDateKey(date) {
+    if (!date) return new Date().toDateString();
+    return date.toDateString();
+}
+
+function isToday(date) {
+    if (!date) return true;
+    const today = new Date();
+    return date.getFullYear() === today.getFullYear() &&
+           date.getMonth() === today.getMonth() &&
+           date.getDate() === today.getDate();
+}
+
+function isDateInFuture(date) {
+    if (!date) return false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const targetDate = new Date(date);
+    targetDate.setHours(0, 0, 0, 0);
+    return targetDate > today;
+}
+
+// ========================================
+// دریافت سشن‌های یک تاریخ خاص
+// ========================================
+
+function getSessionsForDate(date) {
+    if (!date) {
+        // فقط سشن‌های امروز
+        return sessions.filter(session => {
+            if (session.date) {
+                const sessionDate = new Date(session.date);
+                return isToday(sessionDate);
+            }
+            return true;
+        });
+    }
+    
+    const dateStr = date.toDateString();
+    return sessions.filter(session => {
+        if (session.date) {
+            const sessionDate = new Date(session.date);
+            return sessionDate.toDateString() === dateStr;
+        }
+        return new Date().toDateString() === dateStr;
+    });
+}
+
+function getVisibleSessions() {
+    if (!currentSelectedDate) {
+        // فقط سشن‌های امروز
+        return sessions.filter(session => {
+            if (session.date) {
+                const sessionDate = new Date(session.date);
+                return isToday(sessionDate);
+            }
+            return true;
+        });
+    }
+    return getSessionsForDate(currentSelectedDate);
+}
+
+// ========================================
+// مرتب‌سازی سشن‌ها بر اساس زمان شروع
+// ========================================
+
+function sortSessionsByTime(sessionsList) {
+    return [...sessionsList].sort((a, b) => {
+        const aStart = a.startTime.split(':').map(Number);
+        const bStart = b.startTime.split(':').map(Number);
+        const aMinutes = aStart[0] * 60 + aStart[1];
+        const bMinutes = bStart[0] * 60 + bStart[1];
+        
+        if (aMinutes !== bMinutes) {
+            return aMinutes - bMinutes;
+        }
+        
+        const aEnd = a.endTime.split(':').map(Number);
+        const bEnd = b.endTime.split(':').map(Number);
+        return (aEnd[0] * 60 + aEnd[1]) - (bEnd[0] * 60 + bEnd[1]);
+    });
+}
 
 // ========================================
 // توابع کمکی زمان
@@ -51,23 +146,9 @@ function getCurrentTime() {
     return `${hours}:${minutes}:${seconds}`;
 }
 
-function getCurrentHour() {
-    return String(new Date().getHours()).padStart(2, '0');
-}
-
-function getCurrentMinute() {
-    return String(new Date().getMinutes()).padStart(2, '0');
-}
-
 function timeToMinutes(time) {
     const parts = time.split(':');
     return parseInt(parts[0]) * 60 + parseInt(parts[1]);
-}
-
-function minutesToTime(minutes) {
-    const h = String(Math.floor(minutes / 60)).padStart(2, '0');
-    const m = String(minutes % 60).padStart(2, '0');
-    return `${h}:${m}:00`;
 }
 
 function formatDisplayTime(time) {
@@ -101,7 +182,7 @@ export function getTotalDuration(sessionsList) {
 }
 
 export function formatTotalDuration(minutes) {
-    if (minutes === 0) return "۰۰:۰۰";
+    if (minutes === 0) return "00:00";
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
     return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
@@ -111,37 +192,50 @@ export function formatTotalDuration(minutes) {
 // توابع اعتبارسنجی سشن
 // ========================================
 
-function validateSessionTimes(startTime, endTime, excludeSessionId = null) {
+function validateSessionTimes(startTime, endTime, excludeSessionId = null, targetDate = null) {
     const startTotal = timeToMinutes(startTime);
     const endTotal = timeToMinutes(endTime);
     const nowTotal = timeToMinutes(getCurrentTime());
 
-    // ۱. بررسی زمان شروع و پایان
     if (startTotal >= endTotal) {
         return { valid: false, message: "زمان پایان باید بعد از زمان شروع باشد." };
     }
 
-    // ۲. بررسی اینکه زمان پایان از زمان حال جلوتر نباشد
-    if (endTotal > nowTotal) {
-        return { valid: false, message: "امکان ثبت سشن در آینده وجود ندارد. زمان پایان باید برابر یا قبل از زمان حال باشد." };
+    if (targetDate && isDateInFuture(targetDate)) {
+        return { 
+            valid: false, 
+            message: "❌ امکان ثبت سشن در روزهای آینده وجود ندارد. لطفاً روزی از گذشته یا امروز را انتخاب کنید." 
+        };
     }
 
-    // ۳. بررسی اینکه زمان شروع از زمان حال جلوتر نباشد
-    if (startTotal > nowTotal) {
-        return { valid: false, message: "امکان ثبت سشن در آینده وجود ندارد. زمان شروع باید برابر یا قبل از زمان حال باشد." };
+    const isPastDate = targetDate && !isToday(targetDate) && targetDate < new Date();
+    if (!isPastDate) {
+        if (endTotal > nowTotal) {
+            return { valid: false, message: "⏰ امکان ثبت سشن در آینده وجود ندارد. زمان پایان باید برابر یا قبل از زمان حال باشد." };
+        }
+        if (startTotal > nowTotal) {
+            return { valid: false, message: "⏰ امکان ثبت سشن در آینده وجود ندارد. زمان شروع باید برابر یا قبل از زمان حال باشد." };
+        }
     }
 
-    // ۴. بررسی تداخل با سشن‌های دیگر
-    const todaySessions = sessions.filter(s => s.id !== excludeSessionId);
+    const dateToCheck = targetDate || new Date();
+    const daySessions = sessions.filter(s => {
+        if (s.id === excludeSessionId) return false;
+        if (s.date) {
+            const sessionDate = new Date(s.date);
+            return sessionDate.toDateString() === dateToCheck.toDateString();
+        }
+        return new Date().toDateString() === dateToCheck.toDateString();
+    });
     
-    for (const session of todaySessions) {
+    for (const session of daySessions) {
         const sessionStart = timeToMinutes(session.startTime);
         const sessionEnd = timeToMinutes(session.endTime);
         
         if (startTotal < sessionEnd && endTotal > sessionStart) {
             return { 
                 valid: false, 
-                message: `این بازه زمانی با سشن "${session.title}" (${formatDisplayTime(session.startTime)} تا ${formatDisplayTime(session.endTime)}) تداخل دارد.` 
+                message: `⛔ این بازه زمانی با سشن "${session.title}" (${formatDisplayTime(session.startTime)} تا ${formatDisplayTime(session.endTime)}) در این روز تداخل دارد.` 
             };
         }
     }
@@ -157,10 +251,8 @@ function updateActivitySelect() {
     const select = document.getElementById('sessionActivity');
     if (!select) return;
 
-    // گرفتن مقدار انتخاب شده فعلی
     const currentValue = select.value;
 
-    // ساخت options جدید
     const options = timedActivities
         .filter(activity => !activity.archived)
         .map(activity => `
@@ -179,129 +271,8 @@ function updateActivitySelect() {
         ${options}
     `;
 
-    // بازگرداندن مقدار قبلی اگر هنوز معتبر است
     if (currentValue && timedActivities.some(a => a.id === parseInt(currentValue))) {
         select.value = currentValue;
-    }
-}
-
-// ========================================
-// Main Component
-// ========================================
-
-export function Sessions() {
-    setupSessionEvents();
-    return `
-        <section class="recent-activities">
-            <header class="recent-activities__header">
-                <div class="recent-activities__heading">
-                    <span class="recent-activities__eyebrow"> امروز </span>
-                    <h2 class="recent-activities__title">سشن‌های امروز</h2>
-                </div>
-                <button type="button" class="recent-activities__view-all" data-action="view-all-sessions">
-                    <span>مشاهده همه</span>
-                    <span class="recent-activities__view-all-icon" aria-hidden="true">↗</span>
-                </button>
-            </header>
-
-            <div class="recent-activities__content">
-                <div class="recent-activities__list">
-                    ${renderSessionsList()}
-                </div>
-            </div>
-
-            <button type="button" class="recent-activities__add" data-action="add-session">
-                <span class="recent-activities__add-icon" aria-hidden="true">+</span>
-                <span>افزودن سشن</span>
-            </button>
-        </section>
-
-        ${AllSessionsModal()}
-        ${SessionFormModal()}
-        ${DeleteSessionModal()}
-        ${SessionNoteModal()}
-        ${ErrorModal()}
-    `;
-}
-
-// ========================================
-// Session Card
-// ========================================
-
-export function createSessionHTML(session) {
-    const hasNote = Boolean(session.note);
-    return `
-        <article class="recent-activity" data-activity-id="${session.activityId}" data-session-id="${session.id}" style="--activity-color: ${session.color}">
-            <span class="recent-activity__color" aria-hidden="true"></span>
-            <div class="recent-activity__main">
-                <div class="recent-activity__info">
-                    <h3 class="recent-activity__title">${session.title}</h3>
-                    <div class="recent-activity__time">
-                        <span class="recent-activity__start">${formatDisplayTime(session.startTime)}</span>
-                        <span class="recent-activity__separator" aria-hidden="true">←</span>
-                        <span class="recent-activity__end">${formatDisplayTime(session.endTime)}</span>
-                    </div>
-                </div>
-                <span class="recent-activity__duration">${session.duration}</span>
-                <div class="recent-activity__actions">
-                    <button type="button" class="recent-activity__action recent-activity__edit" data-action="edit-session" data-session-id="${session.id}" aria-label="ویرایش سشن" title="ویرایش">✎</button>
-                    <button type="button" class="recent-activity__action recent-activity__delete" data-action="delete-session" data-session-id="${session.id}" aria-label="حذف سشن" title="حذف">🗑</button>
-                </div>
-            </div>
-            <button type="button" class="recent-activity__note ${hasNote ? "recent-activity__note--has-note" : ""}" data-action="session-note" data-session-id="${session.id}" aria-label="${hasNote ? "مشاهده یادداشت" : "افزودن یادداشت"}" title="${hasNote ? "مشاهده یادداشت" : "افزودن یادداشت"}">${hasNote ? "📖" : "+"}</button>
-        </article>
-    `;
-}
-
-// ========================================
-// Render Sessions List
-// ========================================
-
-export function renderSessionsList() {
-    if (sessions.length === 0) {
-        return `<div class="recent-activities__empty">هیچ سشنی برای امروز ثبت نشده است.</div>`;
-    }
-    return sessions.map(createSessionHTML).join("");
-}
-
-export function renderSessionListToDOM() {
-    const list = document.querySelector(".recent-activities__list");
-    if (!list) return;
-    list.innerHTML = renderSessionsList();
-    updateTotalDuration();
-}
-
-export function renderSessionsModalListToDOM() {
-    const list = document.querySelector(".sessions-modal__list");
-    if (!list) return;
-    list.innerHTML = sessions.map(createSessionHTML).join("");
-    updateTotalDuration();
-}
-
-// ========================================
-// به‌روزرسانی زمان مفید + تعداد سشن
-// (باگ قبلی: این تابع فقط شرط "زمان مفید" رو چک می‌کرد و
-// "تعداد سشن" هیچ‌وقت آپدیت نمی‌شد — فقط یه else if اضافه شده،
-// هیچ سلکتور یا ساختار دیگه‌ای عوض نشده.)
-// ========================================
-
-function updateTotalDuration() {
-    const totalMinutes = getTotalDuration(sessions);
-    const formatted = formatTotalDuration(totalMinutes);
-    
-    const summaryItems = document.querySelectorAll('.sessions-modal__summary-item strong');
-    summaryItems.forEach(item => {
-        const label = item.closest('.sessions-modal__summary-item').querySelector('span')?.textContent;
-        if (label === 'زمان مفید') {
-            item.textContent = formatted;
-        } else if (label === 'تعداد سشن') {
-            item.textContent = sessions.length;
-        }
-    });
-    
-    const footerText = document.querySelector('.sessions-modal__footer-text');
-    if (footerText) {
-        footerText.textContent = `${sessions.length} سشن در این روز ثبت شده است`;
     }
 }
 
@@ -344,9 +315,11 @@ function closeErrorModal() {
 // ========================================
 
 export function AllSessionsModal() {
-    const totalMinutes = getTotalDuration(sessions);
+    const visibleSessions = getVisibleSessions();
+    const sortedSessions = sortSessionsByTime(visibleSessions);
+    const totalMinutes = getTotalDuration(sortedSessions);
     const formatted = formatTotalDuration(totalMinutes);
-    
+
     return `
         <div class="sessions-modal" id="sessionsModal" aria-hidden="true">
             <div class="sessions-modal__overlay"></div>
@@ -368,7 +341,7 @@ export function AllSessionsModal() {
                     <div class="sessions-modal__summary-divider"></div>
                     <div class="sessions-modal__summary-item">
                         <span>تعداد سشن</span>
-                        <strong>${sessions.length}</strong>
+                        <strong>${sortedSessions.length}</strong>
                     </div>
                     <button class="sessions-modal__add" type="button" data-action="add-session">
                         <span class="sessions-modal__add-icon">+</span>
@@ -378,12 +351,19 @@ export function AllSessionsModal() {
 
                 <main class="sessions-modal__content">
                     <div class="sessions-modal__list">
-                        ${sessions.length > 0 ? sessions.map(createSessionHTML).join("") : '<div class="sessions-modal__empty">هیچ سشنی ثبت نشده است.</div>'}
+                        ${sortedSessions.length > 0
+                            ? sortedSessions.map(createSessionHTML).join("")
+                            : `<div class="sessions-modal__empty">${
+                                isToday(currentSelectedDate)
+                                    ? "هیچ سشنی ثبت نشده است."
+                                    : `برای ${currentSessionsDateLabel} سشنی ثبت نشده است.`
+                              }</div>`
+                        }
                     </div>
                 </main>
 
                 <footer class="sessions-modal__footer">
-                    <span class="sessions-modal__footer-text">${sessions.length} سشن در این روز ثبت شده است</span>
+                    <span class="sessions-modal__footer-text">${sortedSessions.length} سشن در این روز ثبت شده است</span>
                     <button class="sessions-modal__footer-close" type="button" id="sessionsModalFooterClose">بستن</button>
                 </footer>
             </div>
@@ -413,11 +393,10 @@ function closeAllSessionsModal() {
 }
 
 // ========================================
-// Session Form Modal (Add/Edit) - بدون تاریخ
+// Session Form Modal (Add/Edit)
 // ========================================
 
 export function SessionFormModal() {
-    // ساخت options با رنگ‌بندی
     const activityOptions = timedActivities
         .filter(activity => !activity.archived)
         .map(activity => `
@@ -561,7 +540,6 @@ function updateSessionModal() {
     const modal = document.querySelector("#sessionFormModal");
     if (!modal) return;
 
-    // اول سلکت فعالیت رو بروزرسانی کن
     updateActivitySelect();
 
     const title = modal.querySelector("#sessionFormModalTitle");
@@ -577,15 +555,11 @@ function updateSessionModal() {
         title.textContent = "افزودن سشن";
         submitButton.textContent = "افزودن سشن";
         activitySelect.value = "";
-
-        // بدون هیچ پیش‌فرضی — کاربر خودش هم شروع و هم پایان رو
-        // انتخاب می‌کنه. اگه چیزی رو اشتباه/ناقص وارد کنه، موقع
-        // ثبت فرم توسط validateSessionTimes گرفته می‌شه و پیام
-        // مناسبش با همون مودال خطا (ErrorModal) نشون داده می‌شه.
+        
         startHour.value = "";
-        startMinute.value = "";
+        startMinute.value = "00";
         endHour.value = "";
-        endMinute.value = "";
+        endMinute.value = "00";
         durationDisplay.textContent = "۰ دقیقه";
         return;
     }
@@ -608,7 +582,11 @@ function updateSessionModal() {
     }
 }
 
-function openSessionModal(mode, session = null) {
+// ========================================
+// توابع عمومی برای استفاده در سایر ماژول‌ها
+// ========================================
+
+export function openSessionModal(mode, session = null) {
     sessionModalMode = mode;
     selectedSession = session;
     const modal = document.querySelector("#sessionFormModal");
@@ -618,13 +596,38 @@ function openSessionModal(mode, session = null) {
     modal.setAttribute("aria-hidden", "false");
 }
 
-function closeSessionModal() {
+export function closeSessionModal() {
     const modal = document.querySelector("#sessionFormModal");
     if (!modal) return;
     modal.classList.remove("is-open");
     modal.setAttribute("aria-hidden", "true");
     selectedSession = null;
     sessionModalMode = "add";
+}
+
+export function openDeleteSessionModal(session) {
+    sessionToDelete = session;
+    const modal = document.querySelector("#deleteSessionModal");
+    if (!modal) return;
+
+    const color = modal.querySelector("#deleteSessionColor");
+    const title = modal.querySelector("#deleteSessionTitle");
+    const time = modal.querySelector("#deleteSessionTime");
+
+    color.style.backgroundColor = session.color;
+    title.textContent = session.title;
+    time.textContent = `${formatDisplayTime(session.startTime)} ← ${formatDisplayTime(session.endTime)}`;
+
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+}
+
+export function closeDeleteSessionModal() {
+    const modal = document.querySelector("#deleteSessionModal");
+    if (!modal) return;
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+    sessionToDelete = null;
 }
 
 // ========================================
@@ -656,31 +659,6 @@ function DeleteSessionModal() {
             </div>
         </div>
     `;
-}
-
-function openDeleteSessionModal(session) {
-    sessionToDelete = session;
-    const modal = document.querySelector("#deleteSessionModal");
-    if (!modal) return;
-
-    const color = modal.querySelector("#deleteSessionColor");
-    const title = modal.querySelector("#deleteSessionTitle");
-    const time = modal.querySelector("#deleteSessionTime");
-
-    color.style.backgroundColor = session.color;
-    title.textContent = session.title;
-    time.textContent = `${formatDisplayTime(session.startTime)} ← ${formatDisplayTime(session.endTime)}`;
-
-    modal.classList.add("is-open");
-    modal.setAttribute("aria-hidden", "false");
-}
-
-function closeDeleteSessionModal() {
-    const modal = document.querySelector("#deleteSessionModal");
-    if (!modal) return;
-    modal.classList.remove("is-open");
-    modal.setAttribute("aria-hidden", "true");
-    sessionToDelete = null;
 }
 
 // ========================================
@@ -720,7 +698,7 @@ function SessionNoteModal() {
     `;
 }
 
-function openSessionNoteModal(session) {
+export function openSessionNoteModal(session) {
     sessionForNote = session;
     const modal = document.querySelector("#sessionNoteModal");
     if (!modal) return;
@@ -738,12 +716,200 @@ function openSessionNoteModal(session) {
     input.focus();
 }
 
-function closeSessionNoteModal() {
+export function closeSessionNoteModal() {
     const modal = document.querySelector("#sessionNoteModal");
     if (!modal) return;
     modal.classList.remove("is-open");
     modal.setAttribute("aria-hidden", "true");
     sessionForNote = null;
+}
+
+// ========================================
+// Session Card
+// ========================================
+
+export function createSessionHTML(session) {
+    const hasNote = Boolean(session.note);
+    return `
+        <article class="recent-activity" data-activity-id="${session.activityId}" data-session-id="${session.id}" style="--activity-color: ${session.color}">
+            <span class="recent-activity__color" aria-hidden="true"></span>
+            <div class="recent-activity__main">
+                <div class="recent-activity__info">
+                    <h3 class="recent-activity__title">${session.title}</h3>
+                    <div class="recent-activity__time">
+                        <span class="recent-activity__start">${formatDisplayTime(session.startTime)}</span>
+                        <span class="recent-activity__separator" aria-hidden="true">←</span>
+                        <span class="recent-activity__end">${formatDisplayTime(session.endTime)}</span>
+                    </div>
+                </div>
+                <span class="recent-activity__duration">${session.duration}</span>
+                <div class="recent-activity__actions">
+                    <button type="button" class="recent-activity__action recent-activity__edit" data-action="edit-session" data-session-id="${session.id}" aria-label="ویرایش سشن" title="ویرایش">✎</button>
+                    <button type="button" class="recent-activity__action recent-activity__delete" data-action="delete-session" data-session-id="${session.id}" aria-label="حذف سشن" title="حذف">🗑</button>
+                </div>
+            </div>
+            <button type="button" class="recent-activity__note ${hasNote ? "recent-activity__note--has-note" : ""}" data-action="session-note" data-session-id="${session.id}" aria-label="${hasNote ? "مشاهده یادداشت" : "افزودن یادداشت"}" title="${hasNote ? "مشاهده یادداشت" : "افزودن یادداشت"}">${hasNote ? "📖" : "+"}</button>
+        </article>
+    `;
+}
+
+// ========================================
+// Render Sessions List
+// ========================================
+
+export function renderSessionsList() {
+    const visibleSessions = getVisibleSessions();
+    const sortedSessions = sortSessionsByTime(visibleSessions);
+
+    if (sortedSessions.length === 0) {
+        const message = isToday(currentSelectedDate)
+            ? "هیچ سشنی برای امروز ثبت نشده است."
+            : `برای ${currentSessionsDateLabel} سشنی ثبت نشده است.`;
+        return `<div class="recent-activities__empty">${message}</div>`;
+    }
+    return sortedSessions.map(createSessionHTML).join("");
+}
+
+export function renderSessionListToDOM() {
+    const list = document.querySelector("#sessionsList");
+    if (!list) return;
+    list.innerHTML = renderSessionsList();
+    updateTotalDuration();
+}
+
+export function renderSessionsModalListToDOM() {
+    const list = document.querySelector(".sessions-modal__list");
+    if (!list) return;
+
+    const visibleSessions = getVisibleSessions();
+    const sortedSessions = sortSessionsByTime(visibleSessions);
+
+    list.innerHTML = sortedSessions.length > 0
+        ? sortedSessions.map(createSessionHTML).join("")
+        : `<div class="sessions-modal__empty">${
+            isToday(currentSelectedDate)
+                ? "هیچ سشنی ثبت نشده است."
+                : `برای ${currentSessionsDateLabel} سشنی ثبت نشده است.`
+          }</div>`;
+
+    updateTotalDuration();
+}
+
+// ========================================
+// به‌روزرسانی زمان مفید + تعداد سشن
+// ========================================
+
+function updateTotalDuration() {
+    const visibleSessions = getVisibleSessions();
+    const sortedSessions = sortSessionsByTime(visibleSessions);
+    const totalMinutes = getTotalDuration(sortedSessions);
+    const formatted = formatTotalDuration(totalMinutes);
+
+    const summaryItems = document.querySelectorAll('.sessions-modal__summary-item strong');
+    summaryItems.forEach(item => {
+        const label = item.closest('.sessions-modal__summary-item').querySelector('span')?.textContent;
+        if (label === 'زمان مفید') {
+            item.textContent = formatted;
+        } else if (label === 'تعداد سشن') {
+            item.textContent = sortedSessions.length;
+        }
+    });
+
+    const footerText = document.querySelector('.sessions-modal__footer-text');
+    if (footerText) {
+        footerText.textContent = `${sortedSessions.length} سشن در این روز ثبت شده است`;
+    }
+}
+
+// ========================================
+// بروزرسانی عنوان‌ها
+// ========================================
+
+function updateSessionTitles(date, label) {
+    const eyebrowEl = document.getElementById("sessionsEyebrow");
+    const titleEl = document.getElementById("sessionsTitle");
+    const modalLabelEl = document.querySelector(".sessions-modal__label");
+    const modalTitleEl = document.querySelector(".sessions-modal__title");
+    const modalDateEl = document.querySelector(".sessions-modal__date");
+
+    const isTodayDate = isToday(date);
+    const displayLabel = isTodayDate ? "امروز" : label;
+
+    if (eyebrowEl) eyebrowEl.textContent = displayLabel;
+    if (titleEl) titleEl.textContent = isTodayDate ? "سشن‌های امروز" : `سشن‌های ${displayLabel}`;
+    if (modalLabelEl) modalLabelEl.textContent = `فعالیت‌های ${displayLabel}`;
+    if (modalTitleEl) modalTitleEl.textContent = isTodayDate ? "سشن‌های امروز" : `سشن‌های ${displayLabel}`;
+    if (modalDateEl) modalDateEl.textContent = isTodayDate ? getPersianDate() : displayLabel;
+}
+
+// ========================================
+// فیلتر سشن‌ها بر اساس تاریخ انتخاب شده
+// ========================================
+
+export function filterSessionsByDate(date, label) {
+    currentSelectedDate = date;
+    currentSessionsDateLabel = label || "امروز";
+    
+    updateSessionTitles(date, currentSessionsDateLabel);
+    renderSessionListToDOM();
+    renderSessionsModalListToDOM();
+}
+
+// ========================================
+// برگرداندن به حالت امروز
+// ========================================
+
+export function resetToTodaySessions() {
+    currentSelectedDate = null;
+    currentSessionsDateLabel = "امروز";
+    renderSessionListToDOM();
+    renderSessionsModalListToDOM();
+}
+
+// ========================================
+// Main Component
+// ========================================
+
+export function Sessions() {
+    return `
+        <section class="recent-activities">
+            <header class="recent-activities__header">
+                <div class="recent-activities__heading">
+                    <span class="recent-activities__eyebrow" id="sessionsEyebrow">امروز</span>
+                    <h2 class="recent-activities__title" id="sessionsTitle">سشن‌های امروز</h2>
+                </div>
+                <button type="button" class="recent-activities__view-all" data-action="view-all-sessions">
+                    <span>مشاهده همه</span>
+                    <span class="recent-activities__view-all-icon" aria-hidden="true">↗</span>
+                </button>
+            </header>
+
+            <div class="recent-activities__content">
+                <div class="recent-activities__list" id="sessionsList">
+                    ${renderSessionsList()}
+                </div>
+            </div>
+
+            <button type="button" class="recent-activities__add" data-action="add-session">
+                <span class="recent-activities__add-icon" aria-hidden="true">+</span>
+                <span>افزودن سشن</span>
+            </button>
+        </section>
+    `;
+}
+
+// ========================================
+// تزریق مودال‌ها و راه‌اندازی رویدادها
+// ========================================
+
+function initSessions() {
+    if (!document.getElementById("sessionFormModal")) {
+        document.body.insertAdjacentHTML(
+            "beforeend",
+            `${AllSessionsModal()}${SessionFormModal()}${DeleteSessionModal()}${SessionNoteModal()}${ErrorModal()}`
+        );
+    }
+    setupSessionEvents();
 }
 
 // ========================================
@@ -754,9 +920,51 @@ function setupSessionEvents() {
     if (eventsInitialized) return;
     eventsInitialized = true;
 
-    // ---- گوش دادن به تغییرات فعالیت‌های زماندار ----
     document.addEventListener("timed-activities:changed", () => {
         updateActivitySelect();
+    });
+
+    document.addEventListener("day:selected", (event) => {
+        const { gy, gm, gd, isToday, label } = event.detail;
+        
+        let date = null;
+        if (!isToday) {
+            date = new Date(gy, gm - 1, gd);
+        }
+        
+        filterSessionsByDate(date, label);
+    });
+
+    document.addEventListener("calendar:edit-session", (event) => {
+        const { sessionId } = event.detail;
+        const session = sessions.find(s => s.id === sessionId);
+        if (session) {
+            closeSessionModal();
+            closeDeleteSessionModal();
+            setTimeout(() => {
+                openSessionModal('edit', session);
+            }, 150);
+        }
+    });
+
+    document.addEventListener("calendar:delete-session", (event) => {
+        const { sessionId } = event.detail;
+        const session = sessions.find(s => s.id === sessionId);
+        if (session) {
+            closeSessionModal();
+            closeDeleteSessionModal();
+            setTimeout(() => {
+                openDeleteSessionModal(session);
+            }, 150);
+        }
+    });
+
+    document.addEventListener("calendar:session-note", (event) => {
+        const { sessionId } = event.detail;
+        const session = sessions.find(s => s.id === sessionId);
+        if (session) {
+            openSessionNoteModal(session);
+        }
     });
 
     // ---- Add Session ----
@@ -837,7 +1045,12 @@ function setupSessionEvents() {
         const endTime = `${endHour}:${endMinute}:00`;
         const durationText = calculateDurationText(startTime, endTime);
 
-        const validation = validateSessionTimes(startTime, endTime, selectedSession?.id || null);
+        let sessionDate = new Date();
+        if (currentSelectedDate) {
+            sessionDate = new Date(currentSelectedDate);
+        }
+
+        const validation = validateSessionTimes(startTime, endTime, selectedSession?.id || null, sessionDate);
         if (!validation.valid) {
             showError(validation.message);
             return;
@@ -852,7 +1065,8 @@ function setupSessionEvents() {
                 startTime: startTime,
                 endTime: endTime,
                 duration: durationText,
-                hasNote: false
+                hasNote: false,
+                date: sessionDate.toISOString()
             };
             sessions.push(newSession);
         }
@@ -864,11 +1078,14 @@ function setupSessionEvents() {
             selectedSession.startTime = startTime;
             selectedSession.endTime = endTime;
             selectedSession.duration = durationText;
+            selectedSession.date = sessionDate.toISOString();
         }
 
         closeSessionModal();
         renderSessionListToDOM();
         renderSessionsModalListToDOM();
+        
+        document.dispatchEvent(new CustomEvent('sessions:changed'));
     });
 
     // ---- View All Sessions ----
@@ -912,6 +1129,7 @@ function setupSessionEvents() {
         closeDeleteSessionModal();
         renderSessionListToDOM();
         renderSessionsModalListToDOM();
+        document.dispatchEvent(new CustomEvent('sessions:changed'));
     });
 
     document.addEventListener("click", (event) => {
@@ -965,6 +1183,7 @@ function setupSessionEvents() {
         closeSessionNoteModal();
         renderSessionListToDOM();
         renderSessionsModalListToDOM();
+        document.dispatchEvent(new CustomEvent('sessions:changed'));
     });
 
     // ---- Error Modal Close ----
@@ -983,3 +1202,15 @@ function setupSessionEvents() {
         }
     });
 }
+
+export function updateSessionsForDate(date, label) {
+    filterSessionsByDate(date, label);
+}
+
+// ========================================
+// راه‌اندازی اولیه
+// ========================================
+
+setTimeout(() => {
+    initSessions();
+}, 0);

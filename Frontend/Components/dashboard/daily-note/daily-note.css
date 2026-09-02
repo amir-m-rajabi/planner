@@ -1,24 +1,18 @@
 /* ========================================
-   Daily Notes
+   Daily Notes (Dashboard Module)
 ======================================== */
 
 .daily-notes {
     width: 100%;
     height: 100%;
-
     min-width: 0;
     min-height: 0;
-
     display: flex;
     flex-direction: column;
-
     padding: 20px;
-
     position: relative;
-
     overflow: hidden;
 }
-
 
 /* ========================================
    Header
@@ -27,22 +21,16 @@
 .daily-notes__header {
     display: flex;
     align-items: center;
-
     flex-shrink: 0;
-
     margin-bottom: 14px;
 }
 
-
 .daily-notes__title {
     margin: 0;
-
     color: var(--color-text);
-
     font-size: 17px;
     font-weight: 600;
 }
-
 
 /* ========================================
    Content
@@ -51,18 +39,13 @@
 .daily-notes__content {
     min-width: 0;
     min-height: 0;
-
     flex: 1;
-
     position: relative;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     overflow: visible;
 }
-
 
 /* ========================================
    Notebook Button
@@ -71,41 +54,24 @@
 .daily-notebook {
     width: min(78%, 250px);
     height: min(78%, 190px);
-
     position: relative;
-
     display: block;
-
     padding: 0;
-
     border: none;
-
     background: transparent;
-
     font-family: inherit;
-
     cursor: pointer;
-
     perspective: 1000px;
-
-    transition:
-        transform 220ms ease;
+    transition: transform 220ms ease;
 }
-
 
 .daily-notebook:hover {
-    transform:
-        translateY(-5px)
-        rotate(-1deg);
+    transform: translateY(-5px) rotate(-1deg);
 }
-
 
 .daily-notebook:active {
-    transform:
-        translateY(-1px)
-        scale(0.98);
+    transform: translateY(-1px) scale(0.98);
 }
-
 
 /* ========================================
    Notebook Book
@@ -114,42 +80,17 @@
 .daily-notebook__book {
     width: 100%;
     height: 100%;
-
     position: relative;
-
     overflow: hidden;
-
-    background:
-        linear-gradient(
-            135deg,
-            #216e89,
-            #185b70
-        );
-
-    border-radius:
-        5px
-        14px
-        14px
-        5px;
-
-    box-shadow:
-        0 10px 20px rgba(24, 52, 61, 0.18),
-        inset 3px 0 0 rgba(255, 255, 255, 0.12),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-
-    transition:
-        box-shadow 220ms ease,
-        transform 220ms ease;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    border-radius: 5px 14px 14px 5px;
+    box-shadow: var(--shadow-md), inset 3px 0 0 rgba(255, 255, 255, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    transition: box-shadow 220ms ease, transform 220ms ease;
 }
-
 
 .daily-notebook:hover .daily-notebook__book {
-    box-shadow:
-        0 15px 28px rgba(24, 52, 61, 0.22),
-        inset 3px 0 0 rgba(255, 255, 255, 0.15),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.10);
+    box-shadow: var(--shadow-lg), inset 3px 0 0 rgba(255, 255, 255, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.10);
 }
-
 
 /* ========================================
    Notebook Spine
@@ -158,26 +99,12 @@
 .daily-notebook__spine {
     width: 9px;
     height: 100%;
-
     position: absolute;
-
     right: 0;
     top: 0;
-
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(0, 0, 0, 0.15),
-            rgba(0, 0, 0, 0.08)
-        );
-
-    border-radius:
-        0
-        14px
-        14px
-        0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1));
+    border-radius: 0 14px 14px 0;
 }
-
 
 /* ========================================
    Notebook Inner Content
@@ -186,58 +113,37 @@
 .daily-notebook__content {
     width: 100%;
     height: 100%;
-
     display: flex;
     flex-direction: column;
-
     align-items: center;
     justify-content: center;
-
     gap: 9px;
-
     position: relative;
-
     z-index: 2;
-
     color: #ffffff;
 }
 
-
 .daily-notebook__icon {
     display: block;
-
     font-size: 38px;
     line-height: 1;
-
-    filter:
-        drop-shadow(
-            0 3px 5px rgba(0, 0, 0, 0.18)
-        );
-
-    transition:
-        transform 220ms ease;
+    filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.18));
+    transition: transform 220ms ease;
 }
-
 
 .daily-notebook:hover .daily-notebook__icon {
-    transform:
-        rotate(-5deg)
-        scale(1.08);
+    transform: rotate(-5deg) scale(1.08);
 }
-
 
 .daily-notebook__name {
     font-size: 14px;
     font-weight: 600;
 }
 
-
 .daily-notebook__date {
     font-size: 10px;
-
     opacity: 0.72;
 }
-
 
 /* ========================================
    Spiral
@@ -245,38 +151,25 @@
 
 .daily-notebook__spiral {
     position: absolute;
-
     top: -7px;
     right: 22px;
     left: 22px;
-
     height: 24px;
-
     display: flex;
     justify-content: space-between;
-
     z-index: 10;
-
     pointer-events: none;
 }
-
 
 .daily-notebook__spiral span {
     width: 12px;
     height: 25px;
-
     display: block;
-
-    border: 2px solid #7d8587;
-
+    border: 2px solid var(--color-border-strong);
     border-radius: 50%;
-
-    background: #d7dcdd;
-
-    box-shadow:
-        0 2px 3px rgba(0, 0, 0, 0.16);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-xs);
 }
-
 
 /* ========================================
    Status
@@ -284,67 +177,38 @@
 
 .daily-notebook__status {
     position: absolute;
-
     right: 50%;
     bottom: -6px;
-
     transform: translateX(50%);
-
     z-index: 20;
-
     pointer-events: none;
 }
 
-
 .daily-notebook__message {
     display: block;
-
     padding: 5px 10px;
-
     color: var(--color-text-secondary);
-
-    background: rgba(255, 255, 255, 0.94);
-
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
-
     border-radius: 8px;
-
     font-size: 10px;
-
     white-space: nowrap;
-
-    box-shadow:
-        0 3px 8px rgba(24, 52, 61, 0.08);
+    box-shadow: var(--shadow-sm);
 }
-
 
 /* ========================================
    Has Note
 ======================================== */
 
-.daily-notebook[data-note-exists="true"]
-.daily-notebook__book {
-    background:
-        linear-gradient(
-            135deg,
-            #216e89,
-            #155267
-        );
-
-    box-shadow:
-        0 10px 20px rgba(24, 52, 61, 0.20),
-        inset 3px 0 0 rgba(255, 255, 255, 0.14),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.10);
+.daily-notebook[data-note-exists="true"] .daily-notebook__book {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    box-shadow: var(--shadow-md), inset 3px 0 0 rgba(255, 255, 255, 0.14), inset 0 0 0 1px rgba(255, 255, 255, 0.10);
 }
 
-
-.daily-notebook[data-note-exists="true"]
-.daily-notebook__message {
-    color: var(--color-primary);
-
+.daily-notebook[data-note-exists="true"] .daily-notebook__message {
+    color: var(--color-primary-light);
     font-weight: 600;
 }
-
 
 /* ========================================
    Daily Note Modal
@@ -352,38 +216,24 @@
 
 .daily-note-modal {
     position: fixed;
-
     inset: 0;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     padding: 24px;
-
     opacity: 0;
     visibility: hidden;
-
     pointer-events: none;
-
     z-index: 2000;
-
     perspective: 1400px;
-
-    transition:
-        opacity 250ms ease,
-        visibility 250ms ease;
+    transition: opacity 250ms ease, visibility 250ms ease;
 }
-
 
 .daily-note-modal.is-open {
     opacity: 1;
-
     visibility: visible;
-
     pointer-events: auto;
 }
-
 
 /* ========================================
    Modal Overlay
@@ -391,15 +241,10 @@
 
 .daily-note-modal__overlay {
     position: absolute;
-
     inset: 0;
-
-    background:
-        rgba(20, 40, 47, 0.34);
-
+    background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(5px);
 }
-
 
 /* ========================================
    Modal Book
@@ -408,42 +253,21 @@
 .daily-note-modal__book {
     width: min(900px, 100%);
     height: min(620px, calc(100vh - 48px));
-
     display: grid;
-
     grid-template-columns: 0.78fr 1.45fr;
-
     position: relative;
-
     z-index: 2;
-
     overflow: hidden;
-
     border-radius: 8px 18px 18px 8px;
-
-    box-shadow:
-        0 35px 80px rgba(24, 52, 61, 0.25),
-        0 10px 30px rgba(24, 52, 61, 0.14);
-
-    transform:
-        rotateY(-18deg)
-        scale(0.88)
-        translateY(20px);
-
+    box-shadow: var(--shadow-lg), 0 10px 30px rgba(0, 0, 0, 0.2);
+    transform: rotateY(-18deg) scale(0.88) translateY(20px);
     transform-origin: center;
-
-    transition:
-        transform 500ms cubic-bezier(.22, .8, .24, 1);
+    transition: transform 500ms cubic-bezier(.22, .8, .24, 1);
 }
-
 
 .daily-note-modal.is-open .daily-note-modal__book {
-    transform:
-        rotateY(0)
-        scale(1)
-        translateY(0);
+    transform: rotateY(0) scale(1) translateY(0);
 }
-
 
 /* ========================================
    Modal Cover
@@ -451,109 +275,68 @@
 
 .daily-note-modal__cover {
     position: relative;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     padding: 40px;
-
     overflow: hidden;
-
-    background:
-        linear-gradient(
-            145deg,
-            #216e89,
-            #155267
-        );
+    background: linear-gradient(145deg, var(--color-primary), var(--color-primary-dark));
 }
-
 
 .daily-note-modal__cover::after {
     content: "";
-
     position: absolute;
-
     inset: 20px;
-
     border: 1px solid rgba(255, 255, 255, 0.10);
-
     border-radius: 5px;
 }
 
-
 .daily-note-modal__cover-spiral {
     position: absolute;
-
     top: 20px;
     right: -4px;
     bottom: 20px;
-
     width: 22px;
-
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-
     z-index: 3;
 }
-
 
 .daily-note-modal__cover-spiral span {
     width: 22px;
     height: 32px;
-
-    border: 2px solid #8a9294;
-
+    border: 2px solid var(--color-border-strong);
     border-radius: 50%;
-
-    background: #d8ddde;
-
-    box-shadow:
-        0 2px 4px rgba(0, 0, 0, 0.16);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-xs);
 }
-
 
 .daily-note-modal__cover-content {
     display: flex;
     flex-direction: column;
-
     align-items: center;
-
     gap: 14px;
-
     position: relative;
-
     z-index: 2;
-
     color: #ffffff;
-
     text-align: center;
 }
 
-
 .daily-note-modal__cover-icon {
     font-size: 58px;
-
-    filter:
-        drop-shadow(
-            0 5px 8px rgba(0, 0, 0, 0.18)
-        );
+    filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.18));
 }
-
 
 .daily-note-modal__cover-title {
     font-size: 19px;
     font-weight: 700;
 }
 
-
 .daily-note-modal__cover-date {
     font-size: 12px;
-
     opacity: 0.68;
 }
-
 
 /* ========================================
    Modal Page
@@ -562,19 +345,10 @@
 .daily-note-modal__page {
     display: flex;
     flex-direction: column;
-
     min-width: 0;
-
     padding: 30px 34px;
-
-    background:
-        linear-gradient(
-            to bottom,
-            #fffefb,
-            #faf9f4
-        );
+    background: var(--color-surface);
 }
-
 
 /* ========================================
    Modal Header
@@ -584,70 +358,46 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-
     gap: 20px;
-
     flex-shrink: 0;
-
     margin-bottom: 20px;
 }
 
-
 .daily-note-modal__eyebrow {
-    color: var(--color-primary);
-
+    color: var(--color-primary-light);
     font-size: 11px;
     font-weight: 600;
 }
 
-
 .daily-note-modal__title {
     margin: 5px 0 0;
-
     color: var(--color-text);
-
     font-size: 21px;
     font-weight: 700;
 }
 
-
 .daily-note-modal__close {
     width: 36px;
     height: 36px;
-
     flex-shrink: 0;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     border: 1px solid var(--color-border);
     border-radius: 10px;
-
     color: var(--color-text-secondary);
-
-    background: rgba(255, 255, 255, 0.7);
-
+    background: var(--color-surface-elevated);
     font-family: inherit;
     font-size: 22px;
-
     cursor: pointer;
-
-    transition:
-        color 180ms ease,
-        background-color 180ms ease,
-        transform 180ms ease;
+    transition: color 180ms ease, background-color 180ms ease, transform 180ms ease;
 }
-
 
 .daily-note-modal__close:hover {
-    color: var(--color-primary);
-
-    background: #ffffff;
-
+    color: var(--color-primary-light);
+    background: var(--color-surface-hover);
     transform: rotate(5deg);
 }
-
 
 /* ========================================
    Editor
@@ -655,77 +405,48 @@
 
 .daily-note-modal__editor {
     flex: 1;
-
     min-height: 0;
-
     position: relative;
-
     overflow: hidden;
-
-    border:
-        1px solid
-        rgba(24, 52, 61, 0.10);
-
+    border: 1px solid var(--color-border);
     border-radius: 14px;
-
-    background: #fffefa;
-
-    box-shadow:
-        inset 0 2px 8px rgba(24, 52, 61, 0.025);
+    background: var(--color-surface-elevated);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
 }
-
 
 .daily-note-modal__lines {
     position: absolute;
-
     inset: 0;
-
-    background:
-        repeating-linear-gradient(
-            to bottom,
-            transparent 0,
-            transparent 31px,
-            rgba(79, 158, 165, 0.12) 32px
-        );
-
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 31px,
+        color-mix(in srgb, var(--color-primary) 15%, transparent) 32px
+    );
     pointer-events: none;
 }
-
 
 .daily-note-modal__textarea {
     width: 100%;
     height: 100%;
-
     position: relative;
-
     z-index: 2;
-
     resize: none;
-
     padding: 16px 20px;
-
     border: none;
-
     outline: none;
-
     color: var(--color-text);
-
     background: transparent;
-
     font-family: inherit;
     font-size: 14px;
     line-height: 32px;
-
     direction: rtl;
-
     scrollbar-width: thin;
 }
 
-
 .daily-note-modal__textarea::placeholder {
-    color: #a6afb1;
+    color: var(--color-text-muted);
 }
-
 
 /* ========================================
    Modal Footer
@@ -735,177 +456,123 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     gap: 20px;
-
     flex-shrink: 0;
-
     padding-top: 18px;
 }
 
-
 .daily-note-modal__counter {
     color: var(--color-text-secondary);
-
     font-size: 11px;
 }
-
 
 .daily-note-modal__actions {
     display: flex;
     align-items: center;
-
     gap: 9px;
 }
-
 
 .daily-note-modal__cancel,
 .daily-note-modal__save {
     height: 42px;
-
     padding-inline: 18px;
-
     border-radius: 11px;
-
     font-family: inherit;
     font-size: 12px;
     font-weight: 600;
-
     cursor: pointer;
-
-    transition:
-        background-color 180ms ease,
-        color 180ms ease,
-        border-color 180ms ease,
-        transform 180ms ease,
-        box-shadow 180ms ease;
+    transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
-
 
 .daily-note-modal__cancel {
     border: 1px solid var(--color-border);
-
     color: var(--color-text-secondary);
-
-    background: #ffffff;
+    background: var(--color-surface-elevated);
 }
-
 
 .daily-note-modal__cancel:hover {
     color: var(--color-text);
-
-    background: #f7faf9;
+    background: var(--color-surface-hover);
 }
-
 
 .daily-note-modal__save {
     border: none;
-
     color: #ffffff;
-
     background: var(--color-primary);
-
-    box-shadow:
-        0 4px 12px rgba(79, 158, 165, 0.18);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--color-primary) 25%, transparent);
 }
-
 
 .daily-note-modal__save:hover {
     background: var(--color-primary-light);
-
     transform: translateY(-1px);
-
-    box-shadow:
-        0 7px 16px rgba(79, 158, 165, 0.22);
+    box-shadow: 0 7px 16px color-mix(in srgb, var(--color-primary) 35%, transparent);
 }
-
 
 /* ========================================
    Responsive
 ======================================== */
 
 @media (max-width: 760px) {
-
     .daily-note-modal {
         padding: 14px;
     }
 
-
     .daily-note-modal__book {
         height: min(680px, calc(100vh - 28px));
-
         grid-template-columns: 1fr;
-
         grid-template-rows: 180px 1fr;
-
         border-radius: 16px;
     }
-
 
     .daily-note-modal__cover {
         padding: 20px;
     }
 
-
     .daily-note-modal__cover-icon {
         font-size: 40px;
     }
 
-
     .daily-note-modal__cover-title {
         font-size: 16px;
     }
-
 
     .daily-note-modal__cover-spiral {
         top: auto;
         right: 20px;
         left: 20px;
         bottom: -5px;
-
         width: auto;
         height: 22px;
-
         flex-direction: row;
     }
-
 
     .daily-note-modal__cover-spiral span {
         width: 28px;
         height: 20px;
     }
 
-
     .daily-note-modal__page {
         padding: 22px;
     }
-
 }
 
-
 @media (max-width: 480px) {
-
     .daily-notebook {
         width: 78%;
         height: 180px;
     }
 
-
     .daily-note-modal__footer {
         align-items: stretch;
-
         flex-direction: column;
     }
-
 
     .daily-note-modal__actions {
         width: 100%;
     }
 
-
     .daily-note-modal__cancel,
     .daily-note-modal__save {
         flex: 1;
     }
-
 }

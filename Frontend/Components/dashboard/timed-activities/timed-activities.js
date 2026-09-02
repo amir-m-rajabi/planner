@@ -9,6 +9,7 @@ export let timedActivities = [
         color: "#e6b84c",
         totalDuration: 4800,
         createdAt: "2026-08-28",
+        updatedAt: null,
         archived: false
     },
 
@@ -18,6 +19,7 @@ export let timedActivities = [
         color: "#4f8fc0",
         totalDuration: 6300,
         createdAt: "2026-08-28",
+        updatedAt: null,
         archived: false
     },
 
@@ -27,6 +29,7 @@ export let timedActivities = [
         color: "#d96b6b",
         totalDuration: 3000,
         createdAt: "2026-08-28",
+        updatedAt: null,
         archived: false
     }
 ];
@@ -38,9 +41,47 @@ let timerInterval = null;
 
 let activityTimerInterval = null;
 
-// اگه فرم توی حالت «ویرایش» بازه، فعالیتی که داره ویرایش می‌شه اینجاست.
-// null یعنی فرم توی حالت «ایجاد فعالیت جدید»ه.
 let activityBeingEdited = null;
+
+// وضعیت روز انتخاب شده
+let currentSelectedDate = null;
+let currentIsToday = true;
+
+// ========================================
+// توابع کمکی تاریخ
+// ========================================
+
+function isToday(date) {
+    if (!date) return true;
+    const today = new Date();
+    return date.getFullYear() === today.getFullYear() &&
+           date.getMonth() === today.getMonth() &&
+           date.getDate() === today.getDate();
+}
+
+function getSessionsForDate(date) {
+    if (!date) return sessions;
+    
+    const dateStr = date.toDateString();
+    return sessions.filter(session => {
+        if (session.date) {
+            const sessionDate = new Date(session.date);
+            return sessionDate.toDateString() === dateStr;
+        }
+        return new Date().toDateString() === dateStr;
+    });
+}
+
+function getActivityDurationForDate(activityId, date) {
+    const daySessions = getSessionsForDate(date);
+    return daySessions
+        .filter(session => session.activityId === activityId)
+        .reduce((total, session) => {
+            const start = timeToSeconds(session.startTime);
+            const end = timeToSeconds(session.endTime);
+            return total + (end - start);
+        }, 0);
+}
 
 
 export function TimeActivies(){
@@ -77,10 +118,6 @@ ${ConcurrentActivityWarningModal()}
 
 // ========================================
 // Activity Form Modal
-// یه تابع جدا شده تا هم داشبورد و هم صفحه‌ی فعالیت‌ها
-// دقیقاً از همین یه مودال استفاده کنن (نه یه کپی جدا).
-// همین مودال هم برای «ایجاد» هم برای «ویرایش» استفاده می‌شه —
-// حالتش رو openActivityForm() مشخص می‌کنه.
 // ========================================
 export function ActivityFormModal() {
     return `
@@ -186,10 +223,6 @@ export function ActivityFormModal() {
 
 // ========================================
 // Concurrent Activity Warning Modal
-// وقتی کاربر می‌خواد فعالیت جدیدی رو شروع کنه در حالی که
-// یه فعالیت دیگه در حال اجراست، این مودال بهش نشون داده می‌شه.
-// هم داشبورد هم صفحه‌ی فعالیت‌ها این رو رندر می‌کنن (دقیقاً
-// مثل ActivityFormModal).
 // ========================================
 export function ConcurrentActivityWarningModal() {
     return `
@@ -262,12 +295,27 @@ document.addEventListener("keyup", (event) => {
     }
 });
 
+// ========================================
+// رندر فعالیت‌ها
+// ========================================
+
 function renderTimedActivities() {
+    const displayDate = currentSelectedDate || new Date();
+    const isTodayDate = isToday(displayDate);
 
     return timedActivities
         .filter(activity => !activity.archived)
         .map(activity => {
+            let durationSeconds = getActivityDurationForDate(activity.id, displayDate);
             
+            if (activeActivity && activeActivity.id === activity.id && isTodayDate) {
+                const now = new Date();
+                const elapsedSeconds = Math.floor((now - activeActivity.startTime) / 1000);
+                durationSeconds = activeActivity.totalDuration + elapsedSeconds;
+            }
+            
+            const isDisabled = !isTodayDate;
+
             return `
                 <article
                     class="timed-activity"
@@ -287,25 +335,24 @@ function renderTimedActivities() {
                         </h3>
 
                         <span class="timed-activity__duration">
-                            ${formatDuration(
-                                getActivityDuration(activity.id)
-                            )}
+                            ${formatDuration(durationSeconds)}
                         </span>
 
                     </div>
 
                     <button
                         type="button"
-                        class="timed-activity__start"
+                        class="timed-activity__start ${isDisabled ? 'timed-activity__start--disabled' : ''}"
                         id="activity-color"
                         style="--activity-color: ${activity.color}"
+                        ${isDisabled ? 'disabled' : ''}
                     >
                         <span class="timed-activity__start-icon">
-                            ▶
+                            ${isDisabled ? '⛔' : (activeActivity && activeActivity.id === activity.id ? '■' : '▶')}
                         </span>
 
                         <span>
-                            شروع
+                            ${isDisabled ? 'غیرفعال' : (activeActivity && activeActivity.id === activity.id ? 'پایان' : 'شروع')}
                         </span>
                     </button>
 
@@ -340,9 +387,8 @@ export function initTimedActivities() {
         const startButton =
             event.target.closest(".timed-activity__start");
 
-        if (!startButton) {
-            return;
-        }
+        if (!startButton) return;
+        if (startButton.disabled) return;
 
         const activityCard =
             startButton.closest(".timed-activity");
@@ -378,12 +424,10 @@ export function initTimedActivities() {
             return;
         }
         
-        // اگه فعالیت فعالی وجود نداره، کاری نکن
         if (!activeActivity) {
             return;
         }
         
-        // پیدا کردن دکمه شروع مربوط به فعالیت فعال
         const activeCard = document.querySelector(
             `[data-activity-id="${activeActivity.id}"]`
         );
@@ -398,7 +442,6 @@ export function initTimedActivities() {
             return;
         }
         
-        // پایان دادن به فعالیت
         finishActivity(activeActivity, startButton);
     });
 }
@@ -406,11 +449,23 @@ export function initTimedActivities() {
 initTimedActivities()
 
 // ========================================
-// ورودی مشترک برای دکمه‌ی شروع/پایان — هم داشبورد هم
-// صفحه‌ی فعالیت‌ها از همین یکی استفاده می‌کنن:
-// - اگه همین فعالیت در حال اجراست → تمومش کن (پایان)
-// - اگه فعالیت دیگه‌ای در حال اجراست → هشدار بده
-// - وگرنه → شروعش کن
+// گوش دادن به انتخاب روز از تقویم
+// ========================================
+document.addEventListener("day:selected", (event) => {
+    const { gy, gm, gd, isToday } = event.detail;
+    
+    currentIsToday = isToday;
+    if (!isToday) {
+        currentSelectedDate = new Date(gy, gm - 1, gd);
+    } else {
+        currentSelectedDate = null;
+    }
+    
+    renderTimedActivitiesToDOM();
+});
+
+// ========================================
+// ورودی مشترک برای دکمه‌ی شروع/پایان
 // ========================================
 export function requestStartActivity(activity, button) {
 
@@ -427,8 +482,6 @@ export function requestStartActivity(activity, button) {
     startActivity(activity, button);
 }
 
-// وضعیت فعالیتِ در حال اجرا رو به هر صفحه‌ای که بخواد
-// (مثلاً برای بازسازی ظاهر دکمه بعد از رندر) می‌ده.
 export function getActiveActivity() {
     return activeActivity;
 }
@@ -442,7 +495,6 @@ function startActivity(activity, button) {
     };
 
 
-        // پاک کردن تایمرهای قبلی (اگه باشن)
     if (activityTimerInterval) {
         clearInterval(activityTimerInterval);
         activityTimerInterval = null;
@@ -468,7 +520,7 @@ function startActivity(activity, button) {
     }
 
     const icon =
-        button.querySelector("span:first-child");
+        button.querySelector(".timed-activity__start-icon");
 
     if (icon) {
         icon.textContent = "■";
@@ -485,6 +537,8 @@ function startActivity(activity, button) {
 
     timerInterval =
         setInterval(updateHeaderTimer, 1000);
+    
+    document.dispatchEvent(new CustomEvent('sessions:changed'));
 }
 
 function finishActivity(activity, button) {
@@ -516,18 +570,14 @@ function finishActivity(activity, button) {
 
         duration: formatSessionDuration(duration),
 
-        hasNote: false
+        hasNote: false,
+        date: new Date().toISOString()
     };  
     
     sessions.push(newSession);
 
-    console.log(sessions);
-
     renderSessionListToDOM()
     renderSessionsModalListToDOM()
-    
-    
-
     
     activity.totalDuration += durationInSeconds;
 
@@ -545,19 +595,11 @@ function finishActivity(activity, button) {
     }
 
 
-    // ======== پاک کردن تایمرها ========
     clearInterval(timerInterval);
     clearInterval(activityTimerInterval);
     timerInterval = null;
     activityTimerInterval = null;
 
-    console.log("Duration:",durationInSeconds);
-
-    console.log("New total duration:",activity.totalDuration);
-    
-
-
-    // بازگرداندن دکمه به حالت عادی
 
     button.classList.remove("is-active");
 
@@ -569,14 +611,12 @@ function finishActivity(activity, button) {
     }
 
     const icon =
-        button.querySelector("span:first-child");
+        button.querySelector(".timed-activity__start-icon");
 
     if (icon) {
         icon.textContent = "▶";
     }
 
-
-    // در حال حاضر Activity دیگر فعال نیست
 
     activeActivity = null;
 
@@ -584,6 +624,8 @@ function finishActivity(activity, button) {
     timerInterval = null;
 
     hideHeaderTimer();
+    
+    document.dispatchEvent(new CustomEvent('sessions:changed'));
 }
 
 function updateActivityTimer() {
@@ -612,43 +654,39 @@ function updateActivityTimer() {
         return;
     }
 
-    durationElement.textContent =
-        formatDuration(currentDuration);
+    if (currentIsToday) {
+        durationElement.textContent =
+            formatDuration(currentDuration);
+    }
+    
+    document.dispatchEvent(new CustomEvent('sessions:changed'));
 }
 
 // ============================================
-// تابع برای بازگردوندن وضعیت دکمه فعال (ماژول داشبورد)
+// تابع برای بازگردوندن وضعیت دکمه فعال
 // ============================================
 function restoreActiveButton() {
-    // اگه هیچ فعالیت فعالی نیست، کاری نکن
     if (!activeActivity) {
         return;
     }
     
-    // همه کارت‌های فعالیت رو پیدا کن
     const cards = document.querySelectorAll(".timed-activity");
     
     cards.forEach(card => {
-        // آی‌دی فعالیت این کارت رو بگیر
         const id = Number(card.dataset.activityId);
         
-        // اگه این کارت مربوط به فعالیت فعاله
         if (id === activeActivity.id) {
-            // دکمه شروع رو پیدا کن
             const button = card.querySelector(".timed-activity__start");
             
-            if (button) {
-                // کلاس فعال رو به دکمه اضافه کن
+            if (button && !button.disabled) {
                 button.classList.add("is-active");
                 
-                // متن دکمه رو به "پایان" تغییر بده
                 const text = button.querySelector("span:last-child");
                 if (text) {
                     text.textContent = "پایان";
                 }
                 
-                // آیکون دکمه رو به شکل مربع تغییر بده
-                const icon = button.querySelector("span:first-child");
+                const icon = button.querySelector(".timed-activity__start-icon");
                 if (icon) {
                     icon.textContent = "■";
                 }
@@ -656,10 +694,7 @@ function restoreActiveButton() {
         }
     });
     
-    // تایمر هدر رو نشون بده
     showHeaderTimer(activeActivity);
-    
-    // زمان رو آپدیت کن
     updateActivityTimer();
 }
 
@@ -772,8 +807,6 @@ function getActivityDuration(activityId) {
 
 /////////// Modals //////////////////
 
-// activity: اختیاری — اگه بدی، مودال توی حالت «ویرایش» باز می‌شه
-// و فیلدها با اطلاعات همون فعالیت پر می‌شن. اگه ندی، حالت «ایجاد».
 export function openActivityForm(activity = null) {
 
     const form =
@@ -840,20 +873,16 @@ export function showHeaderTimer(activity) {
         activityName.textContent = activity.title;
     }
     
-    // تنظیم رنگ اندیکاتور
     const indicator = document.querySelector("#headerTimerIndicator");
     if (indicator) {
         indicator.style.backgroundColor = activity.color;
     }
     
-    // تنظیم رنگ دکمه پایان
     const stopButton = document.querySelector("#headerTimerStop");
     if (stopButton) {
         stopButton.style.backgroundColor = activity.color;
         stopButton.style.borderColor = activity.color;
     }
-
-    console.log("Timer opened for:", activity.title);
 }
 
 export function hideHeaderTimer() {
@@ -910,8 +939,6 @@ function updateHeaderTimer() {
 
 /////////// Modals //////////////////
 
-// باز کردن مودال ایجاد فعالیت — هم از دکمه‌ی «+» داشبورد،
-// هم از دکمه‌ی «فعالیت جدید» صفحه‌ی فعالیت‌ها.
 document.addEventListener("click", (event) => {
 
     const addButton =
@@ -935,7 +962,6 @@ document.addEventListener("click", (event) => {
         return;
     }
 
-    // فقط اگه این کلیک واقعاً داخل مودالِ «timed» بوده باشه
     const form = closeButton.closest('.activity-form[data-activity-type="timed"]');
 
     if (!form) {
@@ -971,22 +997,24 @@ document.addEventListener("submit", (event) => {
 
     if (activityBeingEdited) {
 
-        // ====== حالت ویرایش: خودِ فعالیت رو آپدیت کن ======
+        // ====== حالت ویرایش ======
         activityBeingEdited.title = title;
         activityBeingEdited.color = color;
+        activityBeingEdited.updatedAt = new Date().toISOString();
 
         renderTimedActivitiesToDOM();
         document.dispatchEvent(new CustomEvent("timed-activities:changed"));
 
     } else {
 
-        // ====== حالت ایجاد: یه فعالیت جدید بساز ======
+        // ====== حالت ایجاد ======
         const newActivity = {
             id: Date.now(),
             title: title,
             color: color,
             totalDuration: 0,
             createdAt: new Date().toISOString(),
+            updatedAt: null,
             archived: false
         };
 
@@ -994,10 +1022,16 @@ document.addEventListener("submit", (event) => {
 
         renderTimedActivitiesToDOM();
 
-        // به هر صفحه‌ی دیگه‌ای که همین لیست رو نشون می‌ده خبر بده
         document.dispatchEvent(new CustomEvent("timed-activities:changed"));
     }
 
     form.reset();
     closeActivityForm();
+});
+
+// ========================================
+// گوش دادن به تغییرات سشن‌ها
+// ========================================
+document.addEventListener('sessions:changed', () => {
+    renderTimedActivitiesToDOM();
 });

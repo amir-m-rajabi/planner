@@ -980,3 +980,14 @@
 :root[data-theme="dark"] #confirmLogoutModal .profile-modal__title {
     color: #f87171;
 }
+
+/* ========================================
+   Setting Item - Empty State
+======================================== */
+
+.setting-item__value--empty {
+    color: #f59e0b;
+    font-size: 10px;
+    font-weight: 600;
+}
+

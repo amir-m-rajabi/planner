@@ -1,24 +1,18 @@
 /* ========================================
-   Untimed Activities
+   Untimed Activities (Dashboard Module)
 ======================================== */
 
 .untimed-activities {
     width: 100%;
     height: 100%;
-
     min-width: 0;
     min-height: 0;
-
     display: flex;
     flex-direction: column;
-
     padding: 20px;
-
     position: relative;
-
     overflow: hidden;
 }
-
 
 /* ========================================
    Header
@@ -28,22 +22,16 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     flex-shrink: 0;
-
     margin-bottom: 16px;
 }
 
-
 .untimed-activities__title {
     margin: 0;
-
     color: var(--color-text);
-
     font-size: 17px;
     font-weight: 600;
 }
-
 
 /* ========================================
    Add Button
@@ -52,52 +40,32 @@
 .untimed-activities__add {
     width: 32px;
     height: 32px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     padding: 0;
-
     border: none;
     border-radius: 50%;
-
     color: #ffffff;
     background-color: var(--color-primary);
-
     font-family: inherit;
     font-size: 21px;
     font-weight: 400;
     line-height: 1;
-
     cursor: pointer;
-
-    box-shadow:
-        0 3px 8px
-        rgba(33, 110, 137, 0.14);
-
-    transition:
-        background-color 180ms ease,
-        transform 180ms ease,
-        box-shadow 180ms ease;
+    box-shadow: 0 3px 8px color-mix(in srgb, var(--color-primary) 20%, transparent);
+    transition: background-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
-
 
 .untimed-activities__add:hover {
     background-color: var(--color-primary-light);
-
     transform: scale(1.07);
-
-    box-shadow:
-        0 5px 12px
-        rgba(33, 110, 137, 0.20);
+    box-shadow: 0 5px 12px color-mix(in srgb, var(--color-primary) 30%, transparent);
 }
-
 
 .untimed-activities__add:active {
     transform: scale(0.93);
 }
-
 
 /* ========================================
    Content
@@ -106,12 +74,9 @@
 .untimed-activities__content {
     min-width: 0;
     min-height: 0;
-
     flex: 1;
-
     overflow: hidden;
 }
-
 
 /* ========================================
    Activities List
@@ -120,27 +85,19 @@
 .untimed-activities__list {
     width: 100%;
     height: 100%;
-
     display: flex;
     flex-direction: column;
-
     gap: 10px;
-
     padding: 2px 2px 10px;
-
     overflow-x: hidden;
     overflow-y: auto;
-
     scrollbar-width: none;
-
     scroll-behavior: smooth;
 }
-
 
 .untimed-activities__list::-webkit-scrollbar {
     display: none;
 }
-
 
 /* ========================================
    Activity Card
@@ -148,47 +105,26 @@
 
 .untimed-activity {
     width: 100%;
-
     min-width: 0;
     min-height: 68px;
-
     display: flex;
     align-items: center;
-
     flex-shrink: 0;
-
     position: relative;
-
     padding: 10px 12px;
-
-    background-color: #fbfcfb;
-
+    background-color: var(--color-surface-elevated);
     border: 1px solid var(--color-border);
     border-radius: 11px;
-
     overflow: hidden;
-
-    transition:
-        background-color 180ms ease,
-        border-color 180ms ease,
-        box-shadow 180ms ease,
-        transform 180ms ease;
+    transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
-
 
 .untimed-activity:hover {
-    background-color: #ffffff;
-
-    border-color:
-        rgba(79, 158, 165, 0.35);
-
-    box-shadow:
-        0 5px 14px
-        rgba(24, 52, 61, 0.07);
-
+    background-color: var(--color-surface);
+    border-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
+    box-shadow: var(--shadow-md);
     transform: translateY(-1px);
 }
-
 
 /* ========================================
    Activity Information
@@ -196,34 +132,23 @@
 
 .untimed-activity__info {
     min-width: 120px;
-
     display: flex;
     align-items: center;
-
     gap: 8px;
-
     flex-shrink: 0;
-
     padding-inline-end: 12px;
 }
 
-
 .untimed-activity__title {
     min-width: 0;
-
     margin: 0;
-
     color: var(--color-text);
-
     font-size: 14px;
     font-weight: 600;
-
     white-space: nowrap;
-
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
 
 /* ========================================
    Progress
@@ -231,25 +156,15 @@
 
 .untimed-activity__progress {
     flex-shrink: 0;
-
     padding: 3px 7px;
-
     color: var(--color-text-secondary);
-
-    background-color:
-        rgba(79, 158, 165, 0.08);
-
-    border: 1px solid
-        rgba(79, 158, 165, 0.12);
-
+    background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-primary) 15%, transparent);
     border-radius: 6px;
-
     font-size: 10px;
     font-weight: 600;
-
     direction: ltr;
 }
-
 
 /* ========================================
    Checks Container
@@ -257,28 +172,17 @@
 
 .untimed-activity__checks {
     min-width: 0;
-
     flex: 1;
-
     display: flex;
     align-items: center;
-
     gap: 7px;
-
     padding: 4px 2px 7px;
-
     overflow-x: auto;
     overflow-y: hidden;
-
     direction: rtl;
-
     scrollbar-width: thin;
-
-    scrollbar-color:
-        var(--color-border)
-        transparent;
+    scrollbar-color: var(--color-border-strong) transparent;
 }
-
 
 /* ========================================
    Checks Scrollbar
@@ -288,24 +192,18 @@
     height: 4px;
 }
 
-
 .untimed-activity__checks::-webkit-scrollbar-track {
     background: transparent;
 }
 
-
 .untimed-activity__checks::-webkit-scrollbar-thumb {
-    background-color: var(--color-border);
-
+    background-color: var(--color-border-strong);
     border-radius: 10px;
 }
 
-
 .untimed-activity__checks::-webkit-scrollbar-thumb:hover {
-    background-color:
-        var(--color-primary-light);
+    background-color: var(--color-primary-light);
 }
-
 
 /* ========================================
    Check
@@ -314,31 +212,18 @@
 .untimed-activity__check {
     width: 24px;
     height: 24px;
-
     flex: 0 0 24px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     position: relative;
-
     padding: 0;
-
-    border: 1.5px solid #c5d2d0;
+    border: 1.5px solid var(--color-border-strong);
     border-radius: 8px;
-
-    background-color: #ffffff;
-
+    background-color: var(--color-surface);
     cursor: pointer;
-
-    transition:
-        transform 180ms ease,
-        background-color 180ms ease,
-        border-color 180ms ease,
-        box-shadow 180ms ease;
+    transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
 }
-
 
 /* ========================================
    Check Hover
@@ -346,23 +231,14 @@
 
 .untimed-activity__check:hover {
     transform: translateY(-2px);
-
-    border-color:
-        var(--color-primary);
-
-    background-color:
-        #f4f9f8;
-
-    box-shadow:
-        0 4px 10px
-        rgba(33, 110, 137, 0.10);
+    border-color: var(--color-primary-light);
+    background-color: var(--color-surface-hover);
+    box-shadow: 0 4px 10px color-mix(in srgb, var(--color-primary) 15%, transparent);
 }
-
 
 .untimed-activity__check:active {
     transform: scale(0.88);
 }
-
 
 /* ========================================
    Check Mark
@@ -370,105 +246,59 @@
 
 .untimed-activity__check::after {
     content: "";
-
     width: 6px;
     height: 11px;
-
     position: absolute;
-
     left: 8px;
     top: 4px;
-
     border-right: 2px solid #ffffff;
     border-bottom: 2px solid #ffffff;
-
-    transform:
-        rotate(45deg)
-        scale(0);
-
+    transform: rotate(45deg) scale(0);
     opacity: 0;
-
-    transition:
-        transform 180ms
-        cubic-bezier(
-            0.34,
-            1.56,
-            0.64,
-            1
-        ),
-        opacity 120ms ease;
+    transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 120ms ease;
 }
-
 
 /* ========================================
    Completed Check
 ======================================== */
 
 .untimed-activity__check--completed {
-    border-color:
-        var(--color-primary);
-
-    background:
-        linear-gradient(
-            135deg,
-            var(--color-primary),
-            var(--color-primary-light)
-        );
-
-    box-shadow:
-        0 4px 10px
-        rgba(33, 110, 137, 0.17);
-
-    animation:
-        untimed-check-pop
-        220ms ease;
+    border-color: var(--color-primary);
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    box-shadow: 0 4px 10px color-mix(in srgb, var(--color-primary) 25%, transparent);
+    animation: untimed-check-pop 220ms ease;
 }
-
 
 .untimed-activity__check--completed::after {
-    transform:
-        rotate(45deg)
-        scale(1);
-
+    transform: rotate(45deg) scale(1);
     opacity: 1;
 }
-
 
 /* ========================================
    Completed Check Hover
 ======================================== */
 
 .untimed-activity__check--completed:hover {
-    border-color:
-        var(--color-primary-light);
-
-    background:
-        var(--color-primary-light);
-
+    border-color: var(--color-primary-light);
+    background: var(--color-primary-light);
     transform: scale(1.06);
 }
-
 
 /* ========================================
    Checkbox Animation
 ======================================== */
 
 @keyframes untimed-check-pop {
-
     0% {
         transform: scale(0.70);
     }
-
     60% {
         transform: scale(1.12);
     }
-
     100% {
         transform: scale(1);
     }
-
 }
-
 
 /* ========================================
    Empty State
@@ -476,40 +306,58 @@
 
 .untimed-activities__empty {
     height: 100%;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     color: var(--color-text-secondary);
-
     font-size: 13px;
 }
 
+/* ========================================
+   Empty Add Button
+======================================== */
+
+.untimed-activities__empty-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    margin-top: 10px;
+    border: 1px solid var(--color-primary);
+    border-radius: 9px;
+    background: transparent;
+    color: var(--color-primary-light);
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.untimed-activities__empty-add:hover {
+    background: var(--color-primary);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
 
 /* ========================================
    Responsive
 ======================================== */
 
 @media (max-width: 700px) {
-
     .untimed-activities {
         padding: 16px;
     }
-
 
     .untimed-activity__info {
         min-width: 105px;
     }
 
-
     .untimed-activity__title {
         font-size: 13px;
     }
 
-
     .untimed-activity__progress {
         display: none;
     }
-
 }

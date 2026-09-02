@@ -1,4 +1,7 @@
+// فایل: Components/dashboard/clock/clock.js
+
 import { sessions } from "../sessions/sessions.js";
+import { getActiveActivity } from "../timed-activities/timed-activities.js";
 
 // ========================================
 // Mapping استان‌های فارسی به انگلیسی برای API
@@ -54,12 +57,10 @@ export function Clock() {
     const minutes = now.getMinutes();
     const seconds = now.getSeconds();
 
-    // ====== محاسبه درجه‌ها برای ۲۴ ساعت ======
     const hourDeg = ((hours % 24) / 24) * 360 + (minutes / 60) * 15 + (seconds / 3600) * 15;
     const minuteDeg = (minutes / 60) * 360 + (seconds / 60) * 6;
     const secondDeg = (seconds / 60) * 360;
 
-    // دریافت استان از localStorage برای نمایش دما
     const savedProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
     const province = savedProfile.province || '';
     const initialTemp = province ? 'در حال دریافت...' : '--°C';
@@ -107,9 +108,9 @@ export function Clock() {
 
                     <!-- Hands -->
                     <div class="clock__hands">
-                        <div class="clock__hand clock__hand--hour" id="hourHand" style="transform: translateX(-50%) rotate(${hourDeg}deg)"></div>
-                        <div class="clock__hand clock__hand--minute" id="minuteHand" style="transform: translateX(-50%) rotate(${minuteDeg}deg)"></div>
-                        <div class="clock__hand clock__hand--second" id="secondHand" style="transform: translateX(-50%) rotate(${secondDeg}deg)"></div>
+                        <div class="clock__hand clock__hand--hour" id="hourHand"></div>
+                        <div class="clock__hand clock__hand--minute" id="minuteHand"></div>
+                        <div class="clock__hand clock__hand--second" id="secondHand"></div>
                     </div>
 
                     <!-- Center -->
@@ -155,26 +156,24 @@ export async function fetchWeather(city) {
     }
 
     try {
-        // تبدیل نام استان به انگلیسی
         const cityEnglish = getProvinceEnglish(city);
         console.log(`دریافت دما برای: ${city} -> ${cityEnglish}`);
-        
+
         const url = `${API_URL}?q=${encodeURIComponent(cityEnglish)}&appid=${API_KEY}&units=metric&lang=fa`;
         const response = await fetch(url);
-        
+
         if (!response.ok) {
             throw new Error(`خطا در دریافت دما: ${response.status}`);
         }
-        
+
         const data = await response.json();
         const temp = Math.round(data.main.temp);
-        
-        // به‌روزرسانی دما در عنصر
+
         const tempElement = document.getElementById('clockTemp');
         if (tempElement) {
             tempElement.textContent = `${temp}°C`;
         }
-        
+
         console.log(`دمای ${city}: ${temp}°C`);
         return temp;
     } catch (error) {
@@ -187,10 +186,6 @@ export async function fetchWeather(city) {
     }
 }
 
-// ========================================
-// تابع بروزرسانی دما (برای استفاده از بیرون)
-// ========================================
-
 export function updateWeatherForCity(city) {
     return fetchWeather(city);
 }
@@ -201,9 +196,24 @@ export function updateWeatherForCity(city) {
 
 let clockInterval = null;
 let sessionsOverride = null;
+let isFrozen = false;
+let currentSelectedDate = null;
 
 function getActiveSessions() {
     return sessionsOverride !== null ? sessionsOverride : sessions;
+}
+
+function getSessionsForDate(date) {
+    if (!date) return getActiveSessions();
+
+    const dateStr = date.toDateString();
+    return sessions.filter(s => {
+        if (s.date) {
+            const sessionDate = new Date(s.date);
+            return sessionDate.toDateString() === dateStr;
+        }
+        return false;
+    });
 }
 
 function getTodaySessions(sessionsList) {
@@ -226,10 +236,51 @@ function getNowDeg() {
     return ((hours % 24) / 24) * 360 + (minutes / 60) * 15 + (seconds / 3600) * 15;
 }
 
+// ========================================
+// رندر حلقه سشن‌ها - با پشتیبانی از تاریخ‌های مختلف
+// ========================================
+
 function renderSessionRing() {
     const ring = document.getElementById('sessionRing');
     if (!ring) return;
 
+    // اگر تاریخ انتخاب شده وجود نداره یا امروز هست، از منطق عادی استفاده کن
+    if (!currentSelectedDate || isToday(currentSelectedDate)) {
+        renderNormalRing(ring);
+    } else {
+        // برای روزهای دیگر، بر اساس تاریخ انتخاب شده رندر کن
+        renderDateRing(ring, currentSelectedDate);
+    }
+}
+
+function isToday(date) {
+    const today = new Date();
+    return date.getFullYear() === today.getFullYear() &&
+           date.getMonth() === today.getMonth() &&
+           date.getDate() === today.getDate();
+}
+
+function isDateInPast(date) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const compareDate = new Date(date);
+    compareDate.setHours(0, 0, 0, 0);
+    return compareDate < today;
+}
+
+function isDateInFuture(date) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const compareDate = new Date(date);
+    compareDate.setHours(0, 0, 0, 0);
+    return compareDate > today;
+}
+
+// ========================================
+// رندر حلقه عادی (امروز)
+// ========================================
+
+function renderNormalRing(ring) {
     const todaySessions = getTodaySessions(getActiveSessions());
     const nowDeg = getNowDeg();
 
@@ -264,6 +315,35 @@ function renderSessionRing() {
         lastEndDeg = Math.max(lastEndDeg, endDeg);
     }
 
+    // ========================================
+    // فعالیتِ در حال اجرا (اگه باشه) — به‌عنوان یه بازه‌ی
+    // «زنده» از لحظه‌ی شروعش تا همین الان، با رنگ خودش.
+    // این‌طوری منتظر ثبت‌شدن سشن (پایان فعالیت) نمی‌مونیم؛
+    // همون لحظه‌ی «شروع» رنگ روی حلقه ظاهر می‌شه و هر ثانیه
+    // (چون timed-activities.js رویداد sessions:changed رو هر
+    // ثانیه پخش می‌کنه) بزرگ‌تر می‌شه.
+    // ========================================
+    const runningActivity = getActiveActivity();
+    if (runningActivity && runningActivity.startTime) {
+        const start = runningActivity.startTime;
+        const startHour = start.getHours() + (start.getMinutes() / 60) + (start.getSeconds() / 3600);
+        let runningStartDeg = (startHour / 24) * 360;
+
+        // اگه به هر دلیلی قبل از آخرین بازه‌ی ثبت‌شده باشه (نباید
+        // پیش بیاد، ولی برای اطمینان)، از همون‌جا ادامه بده تا
+        // تداخل رنگی ایجاد نشه.
+        if (runningStartDeg < lastEndDeg) runningStartDeg = lastEndDeg;
+
+        if (runningStartDeg > lastEndDeg) {
+            gradientParts.push(`#e8edec ${lastEndDeg}deg ${runningStartDeg}deg`);
+        }
+
+        if (nowDeg > runningStartDeg) {
+            gradientParts.push(`${runningActivity.color} ${runningStartDeg}deg ${nowDeg}deg`);
+            lastEndDeg = nowDeg;
+        }
+    }
+
     if (lastEndDeg < nowDeg) {
         gradientParts.push(`#e8edec ${lastEndDeg}deg ${nowDeg}deg`);
     }
@@ -273,12 +353,121 @@ function renderSessionRing() {
     ring.style.background = `conic-gradient(from 0deg, ${gradientParts.join(', ')})`;
 }
 
+// ========================================
+// رندر حلقه برای یک تاریخ خاص
+// ========================================
+
+function renderDateRing(ring, date) {
+    const daySessions = getSessionsForDate(date);
+    const isPast = isDateInPast(date);
+    const isFuture = isDateInFuture(date);
+
+    // اگر روز گذشته است، حلقه کامل پر شده
+    if (isPast) {
+        if (daySessions.length === 0) {
+            ring.style.background = '#e8edec';
+            return;
+        }
+
+        const sorted = [...daySessions].sort((a, b) => {
+            const aStart = parseFloat(a.startTime.split(':')[0]) + (parseFloat(a.startTime.split(':')[1]) / 60);
+            const bStart = parseFloat(b.startTime.split(':')[0]) + (parseFloat(b.startTime.split(':')[1]) / 60);
+            return aStart - bStart;
+        });
+
+        let gradientParts = [];
+        let lastEndDeg = 0;
+
+        for (const session of sorted) {
+            const [sH, sM] = session.startTime.split(':').map(Number);
+            const [eH, eM] = session.endTime.split(':').map(Number);
+            let startHour = sH + (sM / 60);
+            let endHour = eH + (eM / 60);
+            if (endHour < startHour) endHour += 24;
+
+            let startDeg = (startHour / 24) * 360;
+            let endDeg = (endHour / 24) * 360;
+
+            if (startDeg > lastEndDeg) {
+                gradientParts.push(`#e8edec ${lastEndDeg}deg ${startDeg}deg`);
+            }
+
+            gradientParts.push(`${session.color} ${startDeg}deg ${endDeg}deg`);
+            lastEndDeg = Math.max(lastEndDeg, endDeg);
+        }
+
+        if (lastEndDeg < 360) {
+            gradientParts.push(`#e8edec ${lastEndDeg}deg 360deg`);
+        }
+
+        ring.style.background = `conic-gradient(from 0deg, ${gradientParts.join(', ')})`;
+        return;
+    }
+
+    if (isFuture) {
+        ring.style.background = 'transparent';
+        return;
+    }
+}
+
+// ========================================
+// حلقه منجمد
+// ========================================
+
+function renderFrozenRing() {
+    const ring = document.getElementById('sessionRing');
+    if (!ring) return;
+
+    if (currentSelectedDate && isDateInPast(currentSelectedDate)) {
+        ring.style.background = '#e8edec';
+        return;
+    }
+
+    if (currentSelectedDate && isDateInFuture(currentSelectedDate)) {
+        ring.style.background = 'transparent';
+        return;
+    }
+
+    ring.style.background = '#e8edec';
+}
+
+// ========================================
+// بروزرسانی عقربه‌ها و دیجیتال
+// ========================================
+
 function updateClock() {
     const now = new Date();
     const hours = now.getHours();
     const minutes = now.getMinutes();
     const seconds = now.getSeconds();
 
+    // اگر روز انتخاب شده با امروز متفاوت است، عقربه‌ها رو ۰۰:۰۰ نگه دار
+    if (currentSelectedDate && !isToday(currentSelectedDate)) {
+        const hourHand = document.getElementById('hourHand');
+        const minuteHand = document.getElementById('minuteHand');
+        const secondHand = document.getElementById('secondHand');
+
+        if (hourHand) hourHand.style.transform = 'translateX(-50%) rotate(0deg)';
+        if (minuteHand) minuteHand.style.transform = 'translateX(-50%) rotate(0deg)';
+        if (secondHand) secondHand.style.transform = 'translateX(-50%) rotate(0deg)';
+
+        const hoursEl = document.getElementById('digitalHours');
+        const minutesEl = document.getElementById('digitalMinutes');
+        const secondsEl = document.getElementById('digitalSeconds');
+        if (hoursEl) hoursEl.textContent = '-';
+        if (minutesEl) minutesEl.textContent = '-';
+        if (secondsEl) secondsEl.textContent = '-';
+
+        const tempElement = document.getElementById('clockTemp');
+        if (tempElement) {
+            tempElement.textContent = '--°C';
+        }
+
+        renderSessionRing();
+        return;
+    }
+
+    // برای امروز، عادی کار کن
     const hourDeg = ((hours % 24) / 24) * 360 + (minutes / 60) * 15 + (seconds / 3600) * 15;
     const minuteDeg = (minutes / 60) * 360 + (seconds / 60) * 6;
     const secondDeg = (seconds / 60) * 360;
@@ -325,17 +514,24 @@ function updateClock() {
     renderSessionRing();
 }
 
+// ========================================
+// شروع و توقف ساعت
+// ========================================
+
 export function startClock(sessionsForDay = null) {
     if (clockInterval) {
         clearInterval(clockInterval);
         clockInterval = null;
     }
 
+    isFrozen = false;
     sessionsOverride = sessionsForDay;
+    currentSelectedDate = null;
+
+    // بروزرسانی اولیه
     renderSessionRing();
     updateClock();
 
-    // دریافت دما برای استان کاربر
     const savedProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
     if (savedProfile.province) {
         setTimeout(() => {
@@ -361,6 +557,83 @@ export function updateClockSessions(sessionsForDay) {
 export function initClock(sessionsForDay = null) {
     startClock(sessionsForDay);
 }
+
+// ========================================
+// حالت «روز دیگر» - متوقف کردن ساعت
+// ========================================
+
+function freezeClockForDay(date) {
+    stopClock();
+    isFrozen = true;
+    currentSelectedDate = date;
+
+    const hourHand = document.getElementById('hourHand');
+    const minuteHand = document.getElementById('minuteHand');
+    const secondHand = document.getElementById('secondHand');
+
+    if (hourHand) hourHand.style.transform = 'translateX(-50%) rotate(0deg)';
+    if (minuteHand) minuteHand.style.transform = 'translateX(-50%) rotate(0deg)';
+    if (secondHand) secondHand.style.transform = 'translateX(-50%) rotate(0deg)';
+
+    document.querySelectorAll('.clock__number').forEach(el => {
+        el.classList.remove('clock__number--active');
+        const index = parseInt(el.style.getPropertyValue('--index'));
+        if (index === 0) el.classList.add('clock__number--active');
+    });
+
+    document.querySelectorAll('.clock__minute').forEach(el => {
+        el.classList.remove('clock__minute--active');
+        const index = parseInt(el.style.getPropertyValue('--index'));
+        if (index === 0) el.classList.add('clock__minute--active');
+    });
+
+    const hoursEl = document.getElementById('digitalHours');
+    const minutesEl = document.getElementById('digitalMinutes');
+    const secondsEl = document.getElementById('digitalSeconds');
+
+    if (hoursEl) hoursEl.textContent = '-';
+    if (minutesEl) minutesEl.textContent = '-';
+    if (secondsEl) secondsEl.textContent = '-';
+
+    const tempElement = document.getElementById('clockTemp');
+    if (tempElement) {
+        tempElement.textContent = '--°C';
+    }
+
+    renderSessionRing();
+}
+
+// ========================================
+// گوش دادن به انتخاب روز از تقویم
+// ========================================
+
+document.addEventListener('day:selected', (event) => {
+    const { isToday, gy, gm, gd } = event.detail;
+
+    if (isToday) {
+        currentSelectedDate = null;
+        if (isFrozen || !clockInterval) {
+            startClock();
+        }
+    } else {
+        const selectedDate = new Date(gy, gm - 1, gd);
+        freezeClockForDay(selectedDate);
+    }
+});
+
+// ========================================
+// گوش دادن به تغییرات سشن‌ها برای بروزرسانی حلقه
+// ========================================
+
+document.addEventListener('sessions:changed', () => {
+    console.log('🔄 ساعت: تغییرات سشن‌ها دریافت شد، حلقه بروزرسانی میشود');
+    // اگر ساعت فعال هست یا منجمد شده، حلقه رو بروزرسانی کن
+    if (clockInterval) {
+        renderSessionRing();
+    } else if (isFrozen) {
+        renderSessionRing();
+    }
+});
 
 // ========================================
 // قرار دادن توابع در دسترس global

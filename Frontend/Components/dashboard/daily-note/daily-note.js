@@ -223,6 +223,13 @@ export function DailyNote() {
 
 let dailyNoteContent = "";
 
+// روزی که دفترچه الان بهش اشاره می‌کنه (پیش‌فرض: امروز).
+// هر روز دفترچه‌ی خودش رو داره چون کلید localStorage بر
+// اساس همین ساخته می‌شه.
+let currentNoteDate = new Date();
+let currentIsToday = true;
+let currentDateLabel = "امروز";
+
 
 /* ========================================
    Daily Notes
@@ -230,22 +237,20 @@ let dailyNoteContent = "";
 
 
 /* ========================================
-   Get Today's Storage Key
+   کلید ذخیره‌سازی برای یک تاریخ مشخص
 ======================================== */
 
-function getTodayKey() {
-
-    const today = new Date();
+function getNoteKey(date) {
 
     const year =
-        today.getFullYear();
+        date.getFullYear();
 
     const month =
-        String(today.getMonth() + 1)
+        String(date.getMonth() + 1)
             .padStart(2, "0");
 
     const day =
-        String(today.getDate())
+        String(date.getDate())
             .padStart(2, "0");
 
     return `daily-note-${year}-${month}-${day}`;
@@ -253,14 +258,14 @@ function getTodayKey() {
 
 
 /* ========================================
-   Load Today's Note
+   بارگذاری یادداشتِ روزِ فعلاً انتخاب‌شده
 ======================================== */
 
-function loadTodayNote() {
+function loadNoteForCurrentDate() {
 
     dailyNoteContent =
         localStorage.getItem(
-            getTodayKey()
+            getNoteKey(currentNoteDate)
         ) || "";
 }
 
@@ -300,7 +305,7 @@ export function initDailyNotes() {
        Load Saved Note
     ======================================== */
 
-    loadTodayNote();
+    loadNoteForCurrentDate();
 
 
     /* ========================================
@@ -422,6 +427,71 @@ export function initDailyNotes() {
 
 
 /* ========================================
+   گوش‌دادن به انتخاب روز از تقویم
+   دفترچه، یادداشت، و متن‌های «امروز» همه عوض می‌شن.
+======================================== */
+
+document.addEventListener("day:selected", (event) => {
+
+    const { gy, gm, gd, isToday, label } = event.detail;
+
+    currentNoteDate = new Date(gy, gm - 1, gd);
+    currentIsToday = isToday;
+    currentDateLabel = isToday ? "امروز" : label;
+
+    loadNoteForCurrentDate();
+    updateNotebookDateDisplay();
+    updateNotebookStatus();
+});
+
+
+/* ========================================
+   آپدیت متن‌های تاریخ (به‌جای «امروز»)
+======================================== */
+
+function updateNotebookDateDisplay() {
+
+    const dateEl =
+        document.querySelector("#dailyNotebookDate");
+
+    if (dateEl) {
+        dateEl.textContent = currentDateLabel;
+    }
+
+    const coverDateEl =
+        document.querySelector(".daily-note-modal__cover-date");
+
+    if (coverDateEl) {
+        coverDateEl.textContent = currentDateLabel;
+    }
+
+    const coverTitleEl =
+        document.querySelector(".daily-note-modal__cover-title");
+
+    if (coverTitleEl) {
+        coverTitleEl.textContent =
+            currentIsToday ? "دفترچه امروز" : `دفترچه ${currentDateLabel}`;
+    }
+
+    const modalTitleEl =
+        document.querySelector("#dailyNoteModalTitle");
+
+    if (modalTitleEl) {
+        modalTitleEl.textContent =
+            currentIsToday ? "امروز چه گذشت؟" : `${currentDateLabel} چه گذشت؟`;
+    }
+
+    const headerTitleEl =
+        document.querySelector(".daily-notes__title");
+
+    if (headerTitleEl) {
+        headerTitleEl.textContent =
+            currentIsToday ? "دفترچه امروز" : `دفترچه ${currentDateLabel}`;
+    }
+}
+
+
+/* ========================================
    Open Modal
 ======================================== */
 
@@ -522,6 +592,7 @@ function closeDailyNoteModal() {
 
 /* ========================================
    Save Daily Note
+   (روی کلیدِ همون روزی که الان انتخاب شده ذخیره می‌شه)
 ======================================== */
 
 function saveDailyNote() {
@@ -542,10 +613,10 @@ function saveDailyNote() {
         textarea.value.trim();
 
 
-    /* Save Temporarily */
+    /* Save */
 
     localStorage.setItem(
-        getTodayKey(),
+        getNoteKey(currentNoteDate),
         dailyNoteContent
     );
 
@@ -598,18 +669,22 @@ function updateNotebookStatus() {
         String(hasNote);
 
 
+    const dayPhrase =
+        currentIsToday ? "امروز" : currentDateLabel;
+
+
     /* Status Text */
 
     if (hasNote) {
 
         status.textContent =
-            "برای امروز یادداشت دارید";
+            `برای ${dayPhrase} یادداشت دارید`;
             status.style.backgroundColor = 'aquamarine'
 
     } else {
 
         status.textContent =
-            "هنوز یادداشتی برای امروز ثبت نشده";
+            `هنوز یادداشتی برای ${dayPhrase} ثبت نشده`;
             status.style.backgroundColor = 'white'
 
 
@@ -649,4 +724,3 @@ document.addEventListener('keyup',(event)=>{
         closeDailyNoteModal()
     }
 })
-

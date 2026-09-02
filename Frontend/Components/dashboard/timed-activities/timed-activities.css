@@ -1,24 +1,18 @@
 /* ========================================
-   Timed Activities
+   Timed Activities (Dashboard Module)
 ======================================== */
 
 .timed-activities {
     width: 100%;
     height: 100%;
-
     min-width: 0;
     min-height: 0;
-
     display: flex;
     flex-direction: column;
-
     padding: 20px;
-
     position: relative;
-
     overflow: hidden;
 }
-
 
 /* ========================================
    Header
@@ -28,22 +22,16 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     flex-shrink: 0;
-
     margin-bottom: 16px;
 }
 
-
 .timed-activities__title {
     margin: 0;
-
     color: var(--color-text);
-
     font-size: 17px;
     font-weight: 600;
 }
-
 
 /* ========================================
    Add Button
@@ -52,52 +40,32 @@
 .timed-activities__add {
     width: 32px;
     height: 32px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     padding: 0;
-
     border: none;
     border-radius: 50%;
-
     color: #ffffff;
     background-color: var(--color-primary);
-
     font-family: inherit;
     font-size: 22px;
     font-weight: 400;
     line-height: 1;
-
     cursor: pointer;
-
-    box-shadow:
-        0 3px 8px
-        rgba(33, 110, 137, 0.14);
-
-    transition:
-        background-color 180ms ease,
-        transform 180ms ease,
-        box-shadow 180ms ease;
+    box-shadow: 0 3px 8px color-mix(in srgb, var(--color-primary) 20%, transparent);
+    transition: background-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
-
 
 .timed-activities__add:hover {
     background-color: var(--color-primary-light);
-
     transform: scale(1.06);
-
-    box-shadow:
-        0 4px 10px
-        rgba(33, 110, 137, 0.20);
+    box-shadow: 0 4px 10px color-mix(in srgb, var(--color-primary) 30%, transparent);
 }
-
 
 .timed-activities__add:active {
     transform: scale(0.96);
 }
-
 
 /* ========================================
    Content
@@ -106,14 +74,10 @@
 .timed-activities__content {
     min-width: 0;
     min-height: 0;
-
     flex: 1;
-
     position: relative;
-
     overflow: hidden;
 }
-
 
 /* ========================================
    Activities List
@@ -122,27 +86,19 @@
 .timed-activities__list {
     width: 100%;
     height: 100%;
-
     display: flex;
     flex-direction: column;
-
     gap: 10px;
-
     padding: 2px 2px 8px;
-
     overflow-x: hidden;
     overflow-y: auto;
-
     scrollbar-width: none;
-
     scroll-behavior: smooth;
 }
-
 
 .timed-activities__list::-webkit-scrollbar {
     display: none;
 }
-
 
 /* ========================================
    Activity Card
@@ -151,44 +107,24 @@
 .timed-activity {
     min-width: 0;
     min-height: 68px;
-
     display: flex;
     align-items: center;
-
     position: relative;
-
     padding: 10px 10px 10px 12px;
-
-    background-color: #fbfcfb;
-
+    background-color: var(--color-surface-elevated);
     border: 1px solid var(--color-border);
     border-radius: 10px;
-
     overflow: hidden;
-
     flex-shrink: 0;
-
-    transition:
-        background-color 180ms ease,
-        border-color 180ms ease,
-        box-shadow 180ms ease,
-        transform 180ms ease;
+    transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
-
 
 .timed-activity:hover {
-    background-color: #ffffff;
-
-    border-color:
-        rgba(79, 158, 165, 0.35);
-
-    box-shadow:
-        0 4px 12px
-        rgba(24, 52, 61, 0.07);
-
+    background-color: var(--color-surface);
+    border-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
+    box-shadow: var(--shadow-md);
     transform: translateY(-1px);
 }
-
 
 /* ========================================
    Activity Color Indicator
@@ -197,17 +133,12 @@
 .timed-activity__indicator {
     width: 5px;
     height: calc(100% - 14px);
-
     position: absolute;
-
     right: 0;
     top: 7px;
-
     background-color: var(--activity-color);
-
     border-radius: 5px 0 0 5px;
 }
-
 
 /* ========================================
    Activity Information
@@ -215,43 +146,30 @@
 
 .timed-activity__info {
     min-width: 0;
-
     flex: 1;
-
     display: flex;
     flex-direction: column;
-
     gap: 4px;
-
     padding-inline: 10px 8px;
 }
 
-
 .timed-activity__title {
     margin: 0;
-
     overflow: hidden;
-
     color: var(--color-text);
-
     font-size: 14px;
     font-weight: 600;
-
     white-space: nowrap;
     text-overflow: ellipsis;
 }
 
-
 .timed-activity__duration {
     color: var(--color-text-secondary);
-
     font-size: 12px;
     font-weight: 400;
-
     direction: ltr;
     text-align: right;
 }
-
 
 /* ========================================
    Start Button
@@ -260,49 +178,27 @@
 .timed-activity__start {
     min-width: 64px;
     height: 34px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     gap: 5px;
-
     padding: 0 9px;
-
     border: 1px solid var(--activity-color);
     border-radius: 8px;
-
     color: var(--activity-color);
     background-color: transparent;
-
     font-family: inherit;
     font-size: 12px;
     font-weight: 600;
-
     cursor: pointer;
-
-    transition:
-        color 180ms ease,
-        background-color 180ms ease,
-        border-color 180ms ease,
-        box-shadow 180ms ease,
-        transform 180ms ease;
+    transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
 
 .timed-activity__start:hover {
     color: #ffffff;
-
     background-color: var(--activity-color);
     border-color: var(--activity-color);
-
-    box-shadow:
-        0 4px 10px
-        color-mix(
-            in srgb,
-            var(--activity-color) 25%,
-            transparent
-        );
-
+    box-shadow: 0 4px 10px color-mix(in srgb, var(--activity-color) 25%, transparent);
     transform: translateY(-1px);
 }
 
@@ -314,14 +210,7 @@
     color: #ffffff;
     background-color: var(--activity-color);
     border-color: var(--activity-color);
-
-    box-shadow:
-        0 4px 10px
-        color-mix(
-            in srgb,
-            var(--activity-color) 25%,
-            transparent
-        );
+    box-shadow: 0 4px 10px color-mix(in srgb, var(--activity-color) 25%, transparent);
 }
 
 .timed-activity__start.is-active:hover {
@@ -330,6 +219,12 @@
     border-color: var(--activity-color);
 }
 
+/* Disabled State */
+.timed-activity__start--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
 
 /* ========================================
    Start Icon
@@ -337,10 +232,8 @@
 
 .timed-activity__start-icon {
     font-size: 10px;
-
     line-height: 1;
 }
-
 
 /* ========================================
    Scroll Hint
@@ -349,34 +242,470 @@
 .timed-activities__scroll-hint {
     width: 100%;
     height: 22px;
-
     position: absolute;
-
     right: 0;
     bottom: 0;
-
     display: flex;
     align-items: flex-end;
     justify-content: center;
-
     pointer-events: none;
-
-    background: linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, 0),
-        var(--color-surface)
-    );
+    background: linear-gradient(to bottom, transparent, var(--color-surface));
 }
 
 .timed-activities__scroll-hint span {
     width: 26px;
     height: 3px;
-
     margin-bottom: 4px;
-
-    background-color: var(--color-border);
-
+    background-color: var(--color-border-strong);
     border-radius: 10px;
-
     opacity: 0.9;
+}
+
+/* ========================================
+   Activity Form Modal
+======================================== */
+
+.activity-form {
+    display: none;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    padding: 24px;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 1000;
+    direction: rtl;
+}
+
+.activity-form.is-open {
+    display: flex;
+}
+
+/* Container */
+.activity-form__container {
+    width: min(100%, 480px);
+    max-height: calc(100vh - 48px);
+    display: flex;
+    flex-direction: column;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    animation: activityFormEnter 180ms ease-out;
+}
+
+/* Header */
+.activity-form__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 22px 24px 18px;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
+}
+
+.activity-form__heading {
+    min-width: 0;
+}
+
+.activity-form__eyebrow {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--color-text-muted);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.activity-form__title {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.activity-form__description {
+    margin: 6px 0 0;
+    color: var(--color-text-secondary);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+/* Close Button */
+.activity-form__close {
+    flex: 0 0 32px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 9px;
+    background: var(--color-surface);
+    color: var(--color-text-secondary);
+    font-family: inherit;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.activity-form__close:hover {
+    background: var(--color-surface-hover);
+    color: var(--color-text);
+    border-color: var(--color-border-strong);
+    transform: rotate(4deg);
+}
+
+/* Form */
+.activity-form__form {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 22px 24px 24px;
+    overflow-y: auto;
+    background: var(--color-surface);
+}
+
+/* Section */
+.activity-form__section {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.activity-form__section-title {
+    margin-bottom: 18px;
+    color: var(--color-text);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* Fields */
+.activity-form__field {
+    margin-bottom: 18px;
+}
+
+.activity-form__label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--color-text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Text Input */
+.activity-form__input {
+    width: 100%;
+    height: 42px;
+    padding: 0 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 9px;
+    outline: none;
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-family: inherit;
+    font-size: 13px;
+    box-sizing: border-box;
+    transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.activity-form__input::placeholder {
+    color: var(--color-text-muted);
+}
+
+.activity-form__input:hover {
+    border-color: var(--color-border-strong);
+}
+
+.activity-form__input:focus {
+    border-color: var(--color-primary-light);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 15%, transparent);
+}
+
+/* Color Picker */
+.activity-form__color-picker {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 42px;
+    padding: 5px 8px 5px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 9px;
+    background: var(--color-surface);
+    box-sizing: border-box;
+}       
+
+.activity-form__color-input {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.activity-form__color-preview {
+    color: var(--color-text-secondary);
+    font-size: 12px;
+}
+
+/* Target Field */
+.activity-form__target {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.activity-form__target-unit {
+    color: var(--color-text-muted);
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+/* Actions */
+.activity-form__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 9px;
+    margin-top: 8px;
+    padding-top: 18px;
+    border-top: 1px solid var(--color-border);
+}
+
+/* Cancel Button */
+.activity-form__cancel {
+    height: 38px;
+    padding: 0 16px;
+    border: 1px solid var(--color-border);
+    border-radius: 9px;
+    background: var(--color-surface);
+    color: var(--color-text-secondary);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.activity-form__cancel:hover {
+    background: var(--color-surface-hover);
+    border-color: var(--color-border-strong);
+    color: var(--color-text);
+}
+
+/* Submit Button */
+.activity-form__submit {
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 17px;
+    border: 1px solid var(--color-primary);
+    border-radius: 9px;
+    background: var(--color-primary);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px color-mix(in srgb, var(--color-primary) 20%, transparent);
+    transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.activity-form__submit:hover {
+    background: var(--color-primary-light);
+    border-color: var(--color-primary-light);
+    box-shadow: 0 6px 14px color-mix(in srgb, var(--color-primary) 30%, transparent);
+    transform: translateY(-1px);
+}
+
+.activity-form__submit:active {
+    transform: translateY(0);
+}
+
+.activity-form__submit-icon {
+    font-size: 15px;
+    line-height: 1;
+}
+
+/* Hidden Untimed Field */
+.activity-form__field--untimed[hidden] {
+    display: none;
+}
+
+/* Animation */
+@keyframes activityFormEnter {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ========================================
+   Concurrent Activity Warning Modal
+======================================== */
+
+.activity-warning-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    padding: 24px;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 1000;
+    direction: rtl;
+}
+
+.activity-warning-modal.is-open {
+    display: flex;
+}
+
+.activity-warning-modal__overlay {
+    position: absolute;
+    inset: 0;
+}
+
+.activity-warning-modal__box {
+    position: relative;
+    width: min(100%, 380px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+    padding: 28px 26px 24px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    box-shadow: var(--shadow-lg);
+    animation: activityFormEnter 180ms ease-out;
+}
+
+.activity-warning-modal__icon {
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: color-mix(in srgb, #e6b84c 20%, transparent);
+    color: #f0c040;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.activity-warning-modal__content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.activity-warning-modal__title {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.activity-warning-modal__message {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.activity-warning-modal__actions {
+    width: 100%;
+    margin-top: 6px;
+}
+
+.activity-warning-modal__confirm {
+    width: 100%;
+    height: 40px;
+    border: 1px solid var(--color-primary);
+    border-radius: 9px;
+    background: var(--color-primary);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px color-mix(in srgb, var(--color-primary) 20%, transparent);
+    transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.activity-warning-modal__confirm:hover {
+    background: var(--color-primary-light);
+    box-shadow: 0 6px 14px color-mix(in srgb, var(--color-primary) 30%, transparent);
+    transform: translateY(-1px);
+}
+
+.activity-warning-modal__confirm:active {
+    transform: translateY(0);
+}
+
+/* ========================================
+   Responsive
+======================================== */
+
+@media (max-width: 520px) {
+    .activity-form {
+        padding: 14px;
+    }
+
+    .activity-form__container {
+        max-height: calc(100vh - 28px);
+        border-radius: 15px;
+    }
+
+    .activity-form__header {
+        padding: 18px 18px 16px;
+    }
+
+    .activity-form__form {
+        padding: 18px;
+    }
+
+    .activity-form__title {
+        font-size: 16px;
+    }
+
+    .activity-form__actions {
+        flex-direction: row;
+    }
+
+    .activity-form__cancel,
+    .activity-form__submit {
+        flex: 1;
+    }
+
+    .activity-warning-modal {
+        padding: 14px;
+    }
+
+    .activity-warning-modal__box {
+        border-radius: 15px;
+        padding: 24px 20px 20px;
+    }
 }

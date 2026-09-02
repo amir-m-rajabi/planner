@@ -230,7 +230,7 @@
   align-items: center;
   justify-content: center;
 
-  padding: 30px;
+  padding: 20px;
 
   overflow-y: auto;
 
@@ -244,31 +244,49 @@
 
 .auth-card {
   width: 100%;
-  max-width: 430px;
+  max-width: 460px;
 
-  padding: 32px;
+  padding: 24px 28px;
 
   background: #ffffff;
 
   border: 1px solid #e7e9ea;
-  border-radius: 20px;
+  border-radius: 18px;
 
   box-shadow:
     0 15px 45px rgba(25, 45, 48, 0.07);
 
   box-sizing: border-box;
+
+  /* محدود کردن ارتفاع کارت */
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+}
+
+/* اسکرول‌بار مخفی برای کارت */
+.auth-card::-webkit-scrollbar {
+  width: 4px;
+}
+
+.auth-card::-webkit-scrollbar-thumb {
+  background: #d1d5d6;
+  border-radius: 4px;
+}
+
+.auth-card::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 
 .auth-card__header {
-  margin-bottom: 20px;
+  margin-bottom: 14px;
 }
 
 
 .auth-card__title {
   margin: 0;
 
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 800;
 
   color: #222222;
@@ -276,9 +294,9 @@
 
 
 .auth-card__subtitle {
-  margin: 6px 0 0;
+  margin: 4px 0 0;
 
-  font-size: 12px;
+  font-size: 11px;
 
   color: #999999;
 }
@@ -292,15 +310,15 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
 
-  height: 42px;
+  height: 38px;
 
-  padding: 4px;
+  padding: 3px;
 
-  margin-bottom: 22px;
+  margin-bottom: 16px;
 
   background: #f3f5f5;
 
-  border-radius: 11px;
+  border-radius: 10px;
 }
 
 
@@ -313,7 +331,7 @@
   color: #999999;
 
   font-family: inherit;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
 
   cursor: pointer;
@@ -340,7 +358,12 @@
   display: flex;
   flex-direction: column;
 
-  gap: 14px;
+  gap: 10px;
+}
+
+/* مهم: فرم‌ها باید با hidden به درستی مخفی شوند */
+.auth-form[hidden] {
+  display: none !important;
 }
 
 
@@ -348,20 +371,22 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
 
-  gap: 10px;
+  gap: 8px;
 }
 
 
 .auth-field {
+  position: relative;
+
   display: flex;
   flex-direction: column;
 
-  gap: 6px;
+  gap: 4px;
 }
 
 
 .auth-field label {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
 
   color: #333333;
@@ -371,12 +396,12 @@
 .auth-field input,
 .auth-field select {
   width: 100%;
-  height: 41px;
+  height: 36px;
 
-  padding: 0 11px;
+  padding: 0 10px;
 
   border: 1px solid #e0e3e4;
-  border-radius: 9px;
+  border-radius: 8px;
 
   outline: none;
 
@@ -384,7 +409,7 @@
   color: #222222;
 
   font-family: inherit;
-  font-size: 11px;
+  font-size: 10px;
 
   box-sizing: border-box;
 
@@ -394,6 +419,7 @@
 
 .auth-field input::placeholder {
   color: #aaaaaa;
+  font-size: 9px;
 }
 
 
@@ -421,6 +447,17 @@
 
 
 /* ========================================
+   Field Error
+======================================== */
+
+.auth-field__error {
+  font-size: 8px;
+  color: #ef4444;
+  margin-top: 1px;
+}
+
+
+/* ========================================
    Field Label Row
 ======================================== */
 
@@ -441,7 +478,7 @@
   color: #4f9ea5;
 
   font-family: inherit;
-  font-size: 10px;
+  font-size: 9px;
 
   cursor: pointer;
 }
@@ -455,11 +492,11 @@
   display: flex;
   align-items: center;
 
-  gap: 7px;
+  gap: 6px;
 
-  margin-top: 1px;
+  margin-top: 0;
 
-  font-size: 10px;
+  font-size: 9px;
 
   color: #777777;
 
@@ -468,8 +505,8 @@
 
 
 .auth-checkbox input {
-  width: 14px;
-  height: 14px;
+  width: 13px;
+  height: 13px;
 
   accent-color: #4f9ea5;
 
@@ -483,18 +520,18 @@
 
 .auth-submit {
   width: 100%;
-  height: 42px;
+  height: 38px;
 
-  margin-top: 4px;
+  margin-top: 2px;
 
   border: none;
-  border-radius: 10px;
+  border-radius: 9px;
 
   background: #4f9ea5;
   color: #ffffff;
 
   font-family: inherit;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
 
   cursor: pointer;
@@ -515,11 +552,11 @@
 ======================================== */
 
 .auth-card__footer {
-  margin: 18px 0 0;
+  margin: 12px 0 0;
 
   text-align: center;
 
-  font-size: 10px;
+  font-size: 9px;
 
   color: #aaaaaa;
 }
@@ -541,6 +578,11 @@
 
   .auth-panel {
     min-height: 100vh;
+    padding: 16px;
+  }
+
+  .auth-card {
+    max-height: calc(100vh - 32px);
   }
 }
 
@@ -548,15 +590,67 @@
 @media (max-width: 500px) {
 
   .auth-panel {
-    padding: 16px;
+    padding: 10px;
   }
 
   .auth-card {
-    padding: 22px 18px;
-    border-radius: 16px;
+    padding: 18px 14px;
+    border-radius: 14px;
+    max-height: calc(100vh - 20px);
   }
 
   .auth-form__row {
     grid-template-columns: 1fr;
+    gap: 6px;
   }
+
+  .auth-field input,
+  .auth-field select {
+    height: 34px;
+    font-size: 10px;
+  }
+}
+
+/* ========================================
+   Password Wrapper
+======================================== */
+
+.auth-field__password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.auth-field__password-wrapper input {
+    padding-left: 35px !important;
+}
+
+.auth-field__toggle-password {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    
+    width: 24px;
+    height: 24px;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    padding: 0;
+    
+    border: none;
+    background: transparent;
+    
+    font-size: 14px;
+    
+    cursor: pointer;
+    
+    color: #999999;
+    
+    transition: color 0.2s ease;
+}
+
+.auth-field__toggle-password:hover {
+    color: #4f9ea5;
 }

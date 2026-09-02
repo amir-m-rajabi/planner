@@ -1,823 +1,998 @@
-export function CalendarView(){
+import { 
+    sessions, 
+    getTotalDuration, 
+    formatTotalDuration,
+    openSessionModal,
+    openDeleteSessionModal
+} from "../../Components/dashboard/sessions/sessions.js";
+
+import { timedActivities } from "../../Components/dashboard/timed-activities/timed-activities.js";
+import { untimedActivities, getActivityRecord, toggleUntimedCheck } from "../../Components/dashboard/untimed-activities/untimed-activities.js";
+
+// ========================================
+// دیتابیس کامل تعطیلات رسمی ایران (همه سال‌ها)
+// ========================================
+
+const HOLIDAYS_DB = {
+    1400: { 1: [1, 2, 3, 12, 13], 2: [], 3: [14, 15], 4: [4, 5], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [29] },
+    1401: { 1: [1, 2, 3, 12, 13], 2: [], 3: [14, 15], 4: [4, 5], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [29] },
+    1402: { 1: [1, 2, 3, 12, 13], 2: [], 3: [14, 15], 4: [4, 5], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [29] },
+    1403: { 1: [1, 2, 3, 12, 13], 2: [], 3: [14, 15], 4: [4, 5], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [29] },
+    1404: { 1: [1, 2, 3, 12, 13], 2: [], 3: [14, 15], 4: [4, 5], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [29] },
+    1405: { 
+        1: [1, 2, 3, 4, 12, 13, 25],
+        2: [],
+        3: [6, 14, 15],
+        4: [3, 4, 5],
+        5: [13, 21, 22],
+        6: [8],
+        7: [],
+        8: [],
+        9: [],
+        10: [2, 16],
+        11: [4, 22],
+        12: [9, 19, 20, 29]
+    },
+    1406: { 1: [1, 2, 3, 4, 12, 13, 14], 2: [28], 3: [5, 14, 15, 25, 26], 4: [4, 5], 5: [4, 12, 13, 21, 30], 6: [], 7: [], 8: [13], 9: [23], 10: [7], 11: [], 12: [9, 10, 29] },
+    1407: { 1: [1, 2, 3, 12, 13], 2: [], 3: [14, 15], 4: [4, 5], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [29] },
+    1408: { 1: [1, 2, 3, 12, 13], 2: [], 3: [14, 15], 4: [4, 5], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [29] },
+    1409: { 1: [1, 2, 3, 12, 13], 2: [], 3: [14, 15], 4: [4, 5], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [29] },
+    1410: { 1: [1, 2, 3, 12, 13], 2: [], 3: [14, 15], 4: [4, 5], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [29] }
+};
+
+// ========================================
+// Jalali <-> Gregorian Conversion
+// ========================================
+
+function div(a, b) { return ~~(a / b); }
+function mod(a, b) { return a - ~~(a / b) * b; }
+
+const BREAKS = [-61, 9, 38, 199, 426, 686, 756, 818, 1111, 1181, 1210,
+    1635, 2060, 2097, 2192, 2262, 2324, 2394, 2456, 3178];
+
+function jalCal(jy) {
+    const bl = BREAKS.length;
+    const gy = jy + 621;
+    let leapJ = -14;
+    let jp = BREAKS[0];
+    let jm;
+    let jump = 0;
+
+    for (let i = 1; i < bl; i += 1) {
+        jm = BREAKS[i];
+        jump = jm - jp;
+        if (jy < jm) break;
+        leapJ = leapJ + div(jump, 33) * 8 + div(mod(jump, 33), 4);
+        jp = jm;
+    }
+
+    let n = jy - jp;
+    leapJ = leapJ + div(n, 33) * 8 + div(mod(n, 33) + 3, 4);
+    if (mod(jump, 33) === 4 && jump - n === 4) leapJ += 1;
+
+    const leapG = div(gy, 4) - div((div(gy, 100) + 1) * 3, 4) - 150;
+    const march = 20 + leapJ - leapG;
+
+    if (jump - n < 6) n = n - jump + div(jump, 33) * 33;
+
+    let leap = mod(mod(n + 1, 33) - 1, 4);
+    if (leap === -1) leap = 4;
+
+    return { leap, gy, march };
+}
+
+function isLeapJalaaliYear(jy) {
+    return jalCal(jy).leap === 0;
+}
+
+function g2d(gy, gm, gd) {
+    let d = div((gy + div(gm - 8, 6) + 100100) * 1461, 4)
+        + div(153 * mod(gm + 9, 12) + 2, 5)
+        + gd - 34840408;
+    d = d - div(div(gy + 100100 + div(gm - 8, 6), 100) * 3, 4) + 752;
+    return d;
+}
+
+function d2g(jdn) {
+    let j = 4 * jdn + 139361631;
+    j = j + div(div(4 * jdn + 183187720, 146097) * 3, 4) * 4 - 3908;
+    const i = div(mod(j, 1461), 4) * 5 + 308;
+    const gd = div(mod(i, 153), 5) + 1;
+    const gm = mod(div(i, 153), 12) + 1;
+    const gy = div(j, 1461) - 100100 + div(8 - gm, 6);
+    return { gy, gm, gd };
+}
+
+function j2d(jy, jm, jd) {
+    const r = jalCal(jy);
+    return g2d(r.gy, 3, r.march) + (jm - 1) * 31 - div(jm, 7) * (jm - 7) + jd - 1;
+}
+
+function d2j(jdn) {
+    const gy = d2g(jdn).gy;
+    let jy = gy - 621;
+    const r = jalCal(jy);
+    const jdn1f = g2d(gy, 3, r.march);
+    let jd;
+    let jm;
+    let k = jdn - jdn1f;
+
+    if (k >= 0) {
+        if (k <= 185) {
+            jm = 1 + div(k, 31);
+            jd = mod(k, 31) + 1;
+            return { jy, jm, jd };
+        }
+        k -= 186;
+    } else {
+        jy -= 1;
+        k += 179;
+        if (r.leap === 1) k += 1;
+    }
+
+    jm = 7 + div(k, 30);
+    jd = mod(k, 30) + 1;
+    return { jy, jm, jd };
+}
+
+function toJalaali(gy, gm, gd) {
+    return d2j(g2d(gy, gm, gd));
+}
+
+function toGregorian(jy, jm, jd) {
+    return d2g(j2d(jy, jm, jd));
+}
+
+function jalaaliMonthLength(jy, jm) {
+    if (jm <= 6) return 31;
+    if (jm <= 11) return 30;
+    return isLeapJalaaliYear(jy) ? 30 : 29;
+}
+
+// ========================================
+// Gregorian <-> Islamic (Hijri)
+// ========================================
+
+const ISLAMIC_EPOCH = 1948439.5;
+
+function gregorianToJulianDay(gy, gm, gd) {
+    const a = Math.floor((14 - gm) / 12);
+    const y = gy + 4800 - a;
+    const m = gm + 12 * a - 3;
+    return gd
+        + Math.floor((153 * m + 2) / 5)
+        + 365 * y
+        + Math.floor(y / 4)
+        - Math.floor(y / 100)
+        + Math.floor(y / 400)
+        - 32045;
+}
+
+function julianDayToIslamic(jdRaw) {
+    const jd = Math.floor(jdRaw) + 0.5;
+    let l = jd - ISLAMIC_EPOCH + 10632;
+    const n = Math.floor((l - 1) / 10631);
+    l = l - 10631 * n + 354;
+
+    const j = Math.floor((10985 - l) / 5316) * Math.floor((50 * l) / 17719)
+        + Math.floor(l / 5670) * Math.floor((43 * l) / 15238);
+
+    l = l
+        - Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50)
+        - Math.floor(j / 16) * Math.floor((15238 * j) / 43)
+        + 29;
+
+    const month = Math.floor((24 * l) / 709);
+    const day = l - Math.floor((709 * month) / 24);
+    const year = 30 * n + j - 30;
+
+    return { year, month, day };
+}
+
+function gregorianToIslamic(gy, gm, gd) {
+    return julianDayToIslamic(gregorianToJulianDay(gy, gm, gd));
+}
+
+// ========================================
+// نام‌ها و ابزارهای کمکی
+// ========================================
+
+const PERSIAN_MONTHS = [
+    "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
+    "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"
+];
+
+const ISLAMIC_MONTHS = [
+    "محرم", "صفر", "ربیع الاول", "ربیع الثانی", "جمادی الاول", "جمادی الثانی",
+    "رجب", "شعبان", "رمضان", "شوال", "ذوالقعده", "ذوالحجه"
+];
+
+const GREGORIAN_MONTHS_EN = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+];
+
+const GREGORIAN_MONTHS_EN_FULL = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+];
+
+const WEEKDAY_FA = ["یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنجشنبه", "جمعه", "شنبه"];
+
+function toPersianDigits(value) {
+    const digits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+    return String(value).replace(/[0-9]/g, (d) => digits[d]);
+}
+
+function toISODate(gy, gm, gd) {
+    return `${gy}-${String(gm).padStart(2, "0")}-${String(gd).padStart(2, "0")}`;
+}
+
+function saturdayFirstWeekday(jsWeekday) {
+    return (jsWeekday + 1) % 7;
+}
+
+function formatDisplayTime(time) {
+    if (!time) return "";
+    return time.split(":").slice(0, 2).join(":");
+}
+
+// ========================================
+// دیتاست تعطیلات از API
+// ========================================
+
+const HOLIDAYS_API_URL = "https://raw.githubusercontent.com/BaseMax/persian-holidays-api/main/holidays.json";
+
+const shamsiHolidayMap = new Map();
+const gregorianHolidayMap = new Map();
+const hijriHolidayMap = new Map();
+let holidaysReady = false;
+let holidaysPromise = null;
+
+function addToMap(map, key, entry) {
+    if (!map.has(key)) map.set(key, []);
+    map.get(key).push(entry);
+}
+
+function loadHolidaysData() {
+    if (holidaysPromise) return holidaysPromise;
+
+    holidaysPromise = fetch(HOLIDAYS_API_URL)
+        .then((res) => {
+            if (!res.ok) throw new Error(`holidays dataset status ${res.status}`);
+            return res.json();
+        })
+        .then((list) => {
+            if (!Array.isArray(list)) throw new Error("holidays dataset: unexpected shape");
+
+            list.forEach((item) => {
+                const dateInfo = item?.date;
+                const parts = dateInfo?.date;
+                if (!Array.isArray(parts) || parts.length < 2) return;
+
+                const day = Number(parts[0]);
+                const monthName = parts[1];
+                if (!day || !monthName) return;
+
+                const entry = {
+                    is_holiday: Boolean(item.is_holiday),
+                    event_name: item.event_name || "",
+                };
+
+                if (dateInfo.type === "shamsi") {
+                    const monthIndex = PERSIAN_MONTHS.indexOf(monthName);
+                    if (monthIndex === -1) return;
+                    addToMap(shamsiHolidayMap, `${monthIndex + 1}-${day}`, entry);
+                } else if (dateInfo.type === "gregorian") {
+                    const monthIndex = GREGORIAN_MONTHS_EN_FULL.indexOf(monthName);
+                    if (monthIndex === -1) return;
+                    addToMap(gregorianHolidayMap, `${monthIndex + 1}-${day}`, entry);
+                } else if (dateInfo.type === "hijri") {
+                    const monthIndex = ISLAMIC_MONTHS.indexOf(monthName);
+                    if (monthIndex === -1) return;
+                    addToMap(hijriHolidayMap, `${monthIndex + 1}-${day}`, entry);
+                }
+            });
+
+            holidaysReady = true;
+        })
+        .catch((error) => {
+            console.warn("تقویم: دریافت دیتاست تعطیلات ممکن نشد؛ فقط جمعه‌ها تعطیل نشان داده می‌شوند.", error);
+            holidaysReady = false;
+        });
+
+    return holidaysPromise;
+}
+
+// ========================================
+// تشخیص تعطیلی - ترکیب API و دیتابیس
+// ========================================
+
+function getHolidayInfo(jy, jm, jd, gy, gm, gd, weekdayIndex) {
+    const events = [];
+    let isHoliday = weekdayIndex === 5; // جمعه
+
+    const collect = (list) => {
+        list.forEach((entry) => {
+            if (entry.event_name) events.push({ text: entry.event_name, isHoliday: entry.is_holiday });
+            if (entry.is_holiday) isHoliday = true;
+        });
+    };
+
+    collect(shamsiHolidayMap.get(`${jm}-${jd}`) || []);
+    collect(gregorianHolidayMap.get(`${gm}-${gd}`) || []);
+
+    const islamic = gregorianToIslamic(gy, gm, gd);
+    collect(hijriHolidayMap.get(`${islamic.month}-${islamic.day}`) || []);
+
+    const dbHoliday = HOLIDAYS_DB[jy]?.[jm]?.includes(jd) || false;
+    if (dbHoliday) {
+        isHoliday = true;
+        if (events.length === 0) {
+            events.push({ text: "تعطیل رسمی", isHoliday: true });
+        }
+    }
+
+    return {
+        isHoliday,
+        events,
+        islamicDay: islamic.day,
+        islamicMonth: islamic.month,
+        islamicYear: islamic.year,
+    };
+}
+
+function buildRelativeDayLabel(gy, gm, gd) {
+    const target = new Date(gy, gm - 1, gd);
+    target.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const diffDays = Math.round((target.getTime() - today.getTime()) / 86400000);
+
+    if (diffDays === 0) return "امروز";
+    if (diffDays === 1) return "فردا";
+    if (diffDays === -1) return "دیروز";
+    return WEEKDAY_FA[target.getDay()];
+}
+
+function buildOccasionSentence(jy, jm, jd, gy, gm, gd, weekdayIndex) {
+    const relativeLabel = buildRelativeDayLabel(gy, gm, gd);
+    const dateFa = `${toPersianDigits(jd)} ${PERSIAN_MONTHS[jm - 1]} ${toPersianDigits(jy)}`;
+    const info = getHolidayInfo(jy, jm, jd, gy, gm, gd, weekdayIndex);
+
+    if (!info.events.length) {
+        return { text: `${relativeLabel} ${dateFa} - مناسبت خاصی ثبت نشده`, isHoliday: info.isHoliday };
+    }
+
+    const holidayEvents = info.events.filter((e) => e.isHoliday).map((e) => e.text);
+    const otherEvents = info.events.filter((e) => !e.isHoliday).map((e) => e.text);
+
+    let sentence = `${relativeLabel} ${dateFa}`;
+    if (holidayEvents.length) {
+        sentence += `، ${holidayEvents.join("، ")}`;
+    }
+    if (otherEvents.length) {
+        sentence += `، ${otherEvents.join("، ")}`;
+    }
+    sentence += ".";
+
+    return { text: sentence, isHoliday: info.isHoliday };
+}
+
+// ========================================
+// وضعیت فعلی
+// ========================================
+
+const now = new Date();
+const todayJalali = toJalaali(now.getFullYear(), now.getMonth() + 1, now.getDate());
+
+let currentJalaaliYear = todayJalali.jy;
+let currentJalaaliMonth = todayJalali.jm;
+let currentModalDate = null;
+let selectedDayElement = null;
+
+// ========================================
+// داده‌های واقعیِ فعالیت/سشنِ هر روز
+// ========================================
+
+function isRealToday(gy, gm, gd) {
+    return gy === now.getFullYear() && gm === now.getMonth() + 1 && gd === now.getDate();
+}
+
+function isFutureDate(gy, gm, gd) {
+    const targetDate = new Date(gy, gm - 1, gd);
+    targetDate.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return targetDate > today;
+}
+
+function getDayActivityData(gy, gm, gd) {
+    const isoDate = toISODate(gy, gm, gd);
+    const isToday = isRealToday(gy, gm, gd);
+    const isFuture = isFutureDate(gy, gm, gd);
+
+    const untimedEntries = untimedActivities
+        .filter((activity) => !activity.archived && activity.isActive)
+        .map((activity) => {
+            const record = getActivityRecord(activity.id, isoDate);
+            return { 
+                activity, 
+                record: record || { completedCount: 0, completedChecks: [] }
+            };
+        });
+
+    const timedSessions = sessions.filter(session => {
+        if (session.date) {
+            const sessionDate = new Date(session.date);
+            return sessionDate.getFullYear() === gy && 
+                   sessionDate.getMonth() === gm - 1 && 
+                   sessionDate.getDate() === gd;
+        }
+        return isToday;
+    });
+
+    // مرتب‌سازی سشن‌ها بر اساس زمان شروع
+    const sortedSessions = [...timedSessions].sort((a, b) => {
+        const aStart = a.startTime.split(':').map(Number);
+        const bStart = b.startTime.split(':').map(Number);
+        const aMinutes = aStart[0] * 60 + aStart[1];
+        const bMinutes = bStart[0] * 60 + bStart[1];
+        
+        if (aMinutes !== bMinutes) {
+            return aMinutes - bMinutes;
+        }
+        
+        const aEnd = a.endTime.split(':').map(Number);
+        const bEnd = b.endTime.split(':').map(Number);
+        return (aEnd[0] * 60 + aEnd[1]) - (bEnd[0] * 60 + bEnd[1]);
+    });
+
+    return { untimedEntries, timedSessions: sortedSessions, isoDate, isToday, isFuture };
+}
+
+// ========================================
+// ساخت یک سلولِ روز برای گرید ماه
+// ========================================
+
+function buildDayCellHTML(jy, jm, jd) {
+    const g = toGregorian(jy, jm, jd);
+    const weekdayIndex = new Date(g.gy, g.gm - 1, g.gd).getDay();
+    const holidayInfo = getHolidayInfo(jy, jm, jd, g.gy, g.gm, g.gd, weekdayIndex);
+    const isToday = isRealToday(g.gy, g.gm, g.gd);
+
+    const dayOnly = new Date(g.gy, g.gm - 1, g.gd).getTime();
+    const todayOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const isFuture = dayOnly > todayOnly;
+
+    const { untimedEntries, timedSessions } = getDayActivityData(g.gy, g.gm, g.gd);
+
+    const classNames = ["calendar-day"];
+    if (isToday) classNames.push("calendar-day--today");
+    if (holidayInfo.isHoliday) classNames.push("calendar-day--holiday");
+
+    const todayLabelHTML = isToday ? `<span class="calendar-day__today-label">امروز</span>` : "";
+
+    let bodyHTML;
+    let durationHTML;
+
+    if (isFuture) {
+        bodyHTML = `<span class="calendar-day__empty">هنوز نرسیده</span>`;
+        durationHTML = "";
+    } else {
+        const hasAnyData = untimedEntries.length > 0 || timedSessions.length > 0;
+
+        if (hasAnyData) {
+            const totalCompleted = untimedEntries.reduce((sum, e) => sum + (e.record.completedCount || 0), 0);
+            const totalTarget = untimedEntries.reduce((sum, e) => sum + (e.activity.targetCount || 0), 0);
+            const progressHTML = totalTarget > 0
+                ? `<div class="calendar-day__activity-progress">${totalCompleted} از ${totalTarget}</div>`
+                : "";
+
+            const sessionColors = [...new Set(timedSessions.map((s) => s.color))];
+            const sessionsHTML = sessionColors.length
+                ? `<div class="calendar-day__sessions">${sessionColors
+                    .map((color) => `<span class="calendar-day__session" style="--activity-color: ${color}"></span>`)
+                    .join("")}</div>`
+                : "";
+
+            bodyHTML = `${progressHTML}${sessionsHTML}`;
+
+            const totalMinutes = timedSessions.length ? getTotalDuration(timedSessions) : 0;
+            durationHTML = `<span class="calendar-day__duration">${formatTotalDuration(totalMinutes)}</span>`;
+        } else {
+            bodyHTML = `<span class="calendar-day__empty">بدون فعالیت</span>`;
+            durationHTML = `<span class="calendar-day__duration">00:00</span>`;
+        }
+    }
+
     return `
-        <!-- =========================================================
-     CALENDAR PAGE
-========================================================= -->
+        <article
+            class="${classNames.join(" ")}"
+            data-date="${toISODate(g.gy, g.gm, g.gd)}"
+            data-jalali="${jy}-${jm}-${jd}"
+        >
+            <div class="calendar-day__top">
+                <span class="calendar-day__number">${toPersianDigits(jd)}</span>
+                ${todayLabelHTML}
+                <div class="calendar-day__dates">
+                    <span class="calendar-day__gregorian">${g.gd} ${GREGORIAN_MONTHS_EN[g.gm - 1]}</span>
+                    <span class="calendar-day__hijri">${toPersianDigits(holidayInfo.islamicDay)} ${ISLAMIC_MONTHS[holidayInfo.islamicMonth - 1]}</span>
+                </div>
+            </div>
+            ${bodyHTML}
+            ${durationHTML}
+        </article>
+    `;
+}
 
-<section class="calendar-page">
-  <!-- Header -->
-  <header class="calendar-page__header">
-    <div class="calendar-page__navigation">
-      <button type="button" class="calendar-page__nav-btn" aria-label="ماه قبل">
-        ‹
-      </button>
+// ========================================
+// ساخت گرید کامل ماه
+// ========================================
 
-      <div class="calendar-page__current-date">
-        <span class="calendar-page__month">شهریور</span>
-        <span class="calendar-page__year">۱۴۰۵</span>
-      </div>
+function buildMonthGridHTML() {
+    const monthLength = jalaaliMonthLength(currentJalaaliYear, currentJalaaliMonth);
+    const firstDayGregorian = toGregorian(currentJalaaliYear, currentJalaaliMonth, 1);
+    const firstWeekday = saturdayFirstWeekday(
+        new Date(firstDayGregorian.gy, firstDayGregorian.gm - 1, firstDayGregorian.gd).getDay()
+    );
 
-      <button type="button" class="calendar-page__nav-btn" aria-label="ماه بعد">
-        ›
-      </button>
-    </div>
+    const placeholders = Array.from(
+        { length: firstWeekday },
+        () => `<div class="calendar-day calendar-day--placeholder" aria-hidden="true"></div>`
+    ).join("");
 
-    <button type="button" class="calendar-page__today-btn">امروز</button>
-  </header>
+    const days = Array.from({ length: monthLength }, (_, i) =>
+        buildDayCellHTML(currentJalaaliYear, currentJalaaliMonth, i + 1)
+    ).join("");
 
-  <!-- Calendar -->
-  <div class="calendar-page__calendar">
-    <!-- Week Days -->
-    <div class="calendar-page__weekdays">
-      <span>شنبه</span>
-      <span>یکشنبه</span>
-      <span>دوشنبه</span>
-      <span>سه‌شنبه</span>
-      <span>چهارشنبه</span>
-      <span>پنجشنبه</span>
-      <span>جمعه</span>
-    </div>
+    return placeholders + days;
+}
 
-    <!-- Days -->
-    <div class="calendar-page__days">
-      <!-- ۱ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۱</span>
+function updateCalendarPageHeader() {
+    const monthEl = document.querySelector(".calendar-page__month");
+    const yearEl = document.querySelector(".calendar-page__year");
+    if (monthEl) monthEl.textContent = PERSIAN_MONTHS[currentJalaaliMonth - 1];
+    if (yearEl) yearEl.textContent = toPersianDigits(currentJalaaliYear);
+}
 
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 23 Aug </span>
+function renderCalendarPageToDOM() {
+    const daysContainer = document.querySelector(".calendar-page__days");
+    if (!daysContainer) {
+        setTimeout(renderCalendarPageToDOM, 50);
+        return;
+    }
 
-            <span class="calendar-day__hijri"> 10 ربیع‌الاول </span>
+    updateCalendarPageHeader();
+    daysContainer.innerHTML = buildMonthGridHTML();
+
+    if (!holidaysReady) {
+        const requestedYear = currentJalaaliYear;
+        const requestedMonth = currentJalaaliMonth;
+        loadHolidaysData().then(() => {
+            if (currentJalaaliYear === requestedYear && currentJalaaliMonth === requestedMonth) {
+                renderCalendarPageToDOM();
+            }
+        });
+    }
+}
+
+// ========================================
+// ناوبری
+// ========================================
+
+function goToPreviousMonth() {
+    currentJalaaliMonth -= 1;
+    if (currentJalaaliMonth < 1) {
+        currentJalaaliMonth = 12;
+        currentJalaaliYear -= 1;
+    }
+    renderCalendarPageToDOM();
+}
+
+function goToNextMonth() {
+    currentJalaaliMonth += 1;
+    if (currentJalaaliMonth > 12) {
+        currentJalaaliMonth = 1;
+        currentJalaaliYear += 1;
+    }
+    renderCalendarPageToDOM();
+}
+
+function goToToday() {
+    currentJalaaliYear = todayJalali.jy;
+    currentJalaaliMonth = todayJalali.jm;
+    renderCalendarPageToDOM();
+}
+
+// ========================================
+// مودال جزئیات روز
+// ========================================
+
+function buildSessionCardHTML(session) {
+    const hasNote = Boolean(session.note);
+    return `
+        <article class="day-session-card" style="--activity-color: ${session.color}">
+            <span class="day-session-card__color" aria-hidden="true"></span>
+            <div class="day-session-card__info">
+                <strong class="day-session-card__title">${session.title}</strong>
+                <div class="day-session-card__time">
+                    <span>${formatDisplayTime(session.startTime)}</span>
+                    <span class="day-session-card__time-separator">←</span>
+                    <span>${formatDisplayTime(session.endTime)}</span>
+                </div>
+            </div>
+            <span class="day-session-card__duration">${session.duration}</span>
+            <div class="day-session-card__actions">
+                <button class="day-session-card__edit" data-action="edit-session-from-calendar" data-session-id="${session.id}" title="ویرایش">✎</button>
+                <button class="day-session-card__delete" data-action="delete-session-from-calendar" data-session-id="${session.id}" title="حذف">🗑</button>
+            </div>
+            <button type="button" class="recent-activity__note ${hasNote ? "recent-activity__note--has-note" : ""}" data-action="session-note" data-session-id="${session.id}" aria-label="${hasNote ? "مشاهده یادداشت" : "افزودن یادداشت"}" title="${hasNote ? "مشاهده یادداشت" : "افزودن یادداشت"}">${hasNote ? "📖" : "+"}</button>
+        </article>
+    `;
+}
+
+function buildUntimedCardHTML(activity, record, date, isFuture) {
+    const disabledAttr = isFuture ? 'disabled' : '';
+    const disabledClass = isFuture ? 'day-untimed-card__check--disabled' : '';
+    
+    const checksHTML = Array.from({ length: activity.targetCount }, (_, index) => {
+        const isChecked = record.completedChecks?.includes(index) || false;
+        return `
+            <button
+                class="day-untimed-card__check ${isChecked ? 'day-untimed-card__check--done' : ''} ${disabledClass}"
+                data-check-index="${index}"
+                data-activity-id="${activity.id}"
+                data-date="${date}"
+                aria-label="${isChecked ? 'انجام شده' : 'انجام نشده'}"
+                ${disabledAttr}
+            ></button>
+        `;
+    }).join("");
+
+    return `
+        <article class="day-untimed-card ${isFuture ? 'day-untimed-card--future' : ''}" data-activity-id="${activity.id}" data-date="${date}">
+            <div class="day-untimed-card__header">
+                <strong class="day-untimed-card__title">${activity.title}</strong>
+                <span class="day-untimed-card__progress">${record.completedCount || 0}/${activity.targetCount}</span>
+            </div>
+            <div class="day-untimed-card__checks">${checksHTML}</div>
+        </article>
+    `;
+}
+
+function DayDetailModal() {
+    return `
+        <div class="day-detail-modal" id="dayDetailModal" aria-hidden="true">
+            <div class="day-detail-modal__overlay" data-action="close-day-detail"></div>
+            <div class="day-detail-modal__box" role="dialog" aria-modal="true" aria-labelledby="dayDetailModalTitle">
+                <header class="day-detail-modal__header">
+                    <div>
+                        <span class="day-detail-modal__eyebrow">جزئیات روز</span>
+                        <h2 class="day-detail-modal__title" id="dayDetailModalTitle">—</h2>
+                        <span class="day-detail-modal__subtitle" id="dayDetailModalSubtitle"></span>
+                    </div>
+                    <button type="button" class="day-detail-modal__close" data-action="close-day-detail" aria-label="بستن">×</button>
+                </header>
+
+                <div class="day-detail-modal__columns">
+                    <section class="day-detail-modal__column">
+                        <div class="day-detail-modal__column-header">
+                            <h3 class="day-detail-modal__column-title">
+                                <span>سشن‌های زمان‌دار</span>
+                                <span class="day-detail-modal__column-count" id="sessionsCount">0</span>
+                            </h3>
+                            <button type="button" class="day-detail-modal__add-session" data-action="add-session-from-calendar" title="افزودن سشن" id="addSessionFromCalendarBtn">
+                                +
+                            </button>
+                        </div>
+                        <div class="day-detail-modal__list" id="dayDetailSessionsList"></div>
+                    </section>
+                    <section class="day-detail-modal__column">
+                        <h3 class="day-detail-modal__column-title">
+                            فعالیت‌های بدون زمان
+                            <span class="day-detail-modal__column-count" id="untimedCount">0</span>
+                        </h3>
+                        <div class="day-detail-modal__list" id="dayDetailUntimedList"></div>
+                    </section>
+                </div>
+
+                <div class="day-detail-modal__occasion" id="dayDetailOccasion"></div>
+            </div>
+        </div>
+    `;
+}
+
+function injectDayDetailModal() {
+    if (document.getElementById("dayDetailModal")) return;
+    document.body.insertAdjacentHTML("beforeend", DayDetailModal());
+}
+
+function openDayDetailModal(dayEl) {
+    const modal = document.getElementById("dayDetailModal");
+    if (!modal) return;
+
+    const [jy, jm, jd] = dayEl.dataset.jalali.split("-").map(Number);
+    const g = toGregorian(jy, jm, jd);
+    const weekdayIndex = new Date(g.gy, g.gm - 1, g.gd).getDay();
+    const dateKey = toISODate(g.gy, g.gm, g.gd);
+    currentModalDate = dateKey;
+    selectedDayElement = dayEl;
+
+    const isFuture = isFutureDate(g.gy, g.gm, g.gd);
+
+    const titleEl = document.getElementById("dayDetailModalTitle");
+    if (titleEl) {
+        titleEl.textContent = `${toPersianDigits(jd)} ${PERSIAN_MONTHS[jm - 1]} ${toPersianDigits(jy)}`;
+    }
+
+    const subtitleEl = document.getElementById("dayDetailModalSubtitle");
+    if (subtitleEl) {
+        const weekdayName = WEEKDAY_FA[weekdayIndex];
+        const isToday = isRealToday(g.gy, g.gm, g.gd);
+        subtitleEl.textContent = isToday ? `${weekdayName} • امروز` : weekdayName;
+    }
+
+    const addSessionBtn = document.getElementById("addSessionFromCalendarBtn");
+    if (addSessionBtn) {
+        if (isFuture) {
+            addSessionBtn.disabled = true;
+            addSessionBtn.classList.add('day-detail-modal__add-session--disabled');
+        } else {
+            addSessionBtn.disabled = false;
+            addSessionBtn.classList.remove('day-detail-modal__add-session--disabled');
+        }
+    }
+
+    const { untimedEntries, timedSessions } = getDayActivityData(g.gy, g.gm, g.gd);
+
+    const sessionsListEl = document.getElementById("dayDetailSessionsList");
+    const sessionsCountEl = document.getElementById("sessionsCount");
+    if (sessionsListEl) {
+        if (timedSessions.length > 0) {
+            sessionsListEl.innerHTML = timedSessions.map(buildSessionCardHTML).join("");
+            if (sessionsCountEl) sessionsCountEl.textContent = timedSessions.length;
+        } else {
+            sessionsListEl.innerHTML = `<p class="day-detail-modal__empty">هیچ سشن‌ای برای این روز ثبت نشده است.</p>`;
+            if (sessionsCountEl) sessionsCountEl.textContent = "0";
+        }
+    }
+
+    const untimedListEl = document.getElementById("dayDetailUntimedList");
+    const untimedCountEl = document.getElementById("untimedCount");
+    if (untimedListEl) {
+        if (untimedEntries.length > 0) {
+            untimedListEl.innerHTML = untimedEntries
+                .map((e) => buildUntimedCardHTML(e.activity, e.record, dateKey, isFuture))
+                .join("");
+            
+            if (untimedCountEl) untimedCountEl.textContent = untimedEntries.length;
+            
+            if (!isFuture) {
+                untimedListEl.querySelectorAll('.day-untimed-card__check').forEach(check => {
+                    check.addEventListener('click', handleUntimedCheckClick);
+                });
+            }
+        } else {
+            untimedListEl.innerHTML = `<p class="day-detail-modal__empty">هیچ فعالیت بدون زمانی ثبت نشده است.</p>`;
+            if (untimedCountEl) untimedCountEl.textContent = "0";
+        }
+    }
+
+    const occasionEl = document.getElementById("dayDetailOccasion");
+    if (occasionEl) {
+        const occasion = buildOccasionSentence(jy, jm, jd, g.gy, g.gm, g.gd, weekdayIndex);
+        occasionEl.textContent = occasion.text;
+        occasionEl.classList.toggle("day-detail-modal__occasion--holiday", occasion.isHoliday);
+    }
+
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+}
+
+function closeDayDetailModal() {
+    const modal = document.getElementById("dayDetailModal");
+    if (!modal) return;
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+    currentModalDate = null;
+    selectedDayElement = null;
+}
+
+// ========================================
+// هندلر تیک زدن فعالیت‌های بدون زمان در مودال
+// ========================================
+
+function handleUntimedCheckClick(event) {
+    const check = event.currentTarget;
+    const card = check.closest('.day-untimed-card');
+    if (!card) return;
+
+    const activityId = Number(card.dataset.activityId);
+    const date = card.dataset.date || currentModalDate;
+    const checkIndex = Number(check.dataset.checkIndex);
+
+    toggleUntimedCheck(activityId, checkIndex, date);
+
+    check.classList.toggle('day-untimed-card__check--done');
+    check.setAttribute('aria-label', check.classList.contains('day-untimed-card__check--done') ? 'انجام شده' : 'انجام نشده');
+
+    const progressEl = card.querySelector('.day-untimed-card__progress');
+    if (progressEl) {
+        const record = getActivityRecord(activityId, date);
+        const completed = record?.completedCount || 0;
+        const activity = untimedActivities.find(a => a.id === activityId);
+        const target = activity?.targetCount || 0;
+        progressEl.textContent = `${completed}/${target}`;
+    }
+
+    document.dispatchEvent(new CustomEvent('untimed-activities:changed'));
+    renderCalendarPageToDOM();
+}
+
+// ========================================
+// رویدادها
+// ========================================
+
+document.addEventListener("click", (event) => {
+    if (event.target.closest('.calendar-page__nav-btn[aria-label="ماه قبل"]')) {
+        goToPreviousMonth();
+        return;
+    }
+
+    if (event.target.closest('.calendar-page__nav-btn[aria-label="ماه بعد"]')) {
+        goToNextMonth();
+        return;
+    }
+
+    if (event.target.closest(".calendar-page__today-btn")) {
+        goToToday();
+        return;
+    }
+
+    const dayEl = event.target.closest(".calendar-day:not(.calendar-day--placeholder)");
+    if (dayEl && dayEl.closest(".calendar-page")) {
+        document.querySelectorAll('.calendar-day--selected').forEach(el => {
+            el.classList.remove('calendar-day--selected');
+        });
+        dayEl.classList.add('calendar-day--selected');
+        openDayDetailModal(dayEl);
+        return;
+    }
+
+    if (event.target.closest('[data-action="close-day-detail"]')) {
+        closeDayDetailModal();
+        return;
+    }
+
+    if (event.target.closest('[data-action="add-session-from-calendar"]')) {
+        const addBtn = event.target.closest('[data-action="add-session-from-calendar"]');
+        if (addBtn && addBtn.disabled) return;
+        
+        if (currentModalDate) {
+            const dateObj = new Date(currentModalDate);
+            const customEvent = new CustomEvent('day:selected', {
+                detail: {
+                    gy: dateObj.getFullYear(),
+                    gm: dateObj.getMonth() + 1,
+                    gd: dateObj.getDate(),
+                    isToday: isRealToday(dateObj.getFullYear(), dateObj.getMonth() + 1, dateObj.getDate()),
+                    label: currentModalDate
+                }
+            });
+            document.dispatchEvent(customEvent);
+            
+            openSessionModal('add');
+        }
+        return;
+    }
+
+    const editBtn = event.target.closest('.day-session-card__edit, [data-action="edit-session-from-calendar"]');
+    if (editBtn) {
+        const sessionId = Number(editBtn.dataset.sessionId);
+        const session = sessions.find(s => s.id === sessionId);
+        if (session) {
+            closeDayDetailModal();
+            setTimeout(() => {
+                openSessionModal('edit', session);
+            }, 100);
+        }
+        return;
+    }
+
+    const deleteBtn = event.target.closest('.day-session-card__delete, [data-action="delete-session-from-calendar"]');
+    if (deleteBtn) {
+        const sessionId = Number(deleteBtn.dataset.sessionId);
+        const session = sessions.find(s => s.id === sessionId);
+        if (session) {
+            closeDayDetailModal();
+            setTimeout(() => {
+                openDeleteSessionModal(session);
+            }, 100);
+        }
+        return;
+    }
+
+    const noteBtn = event.target.closest('.recent-activity__note, [data-action="session-note"]');
+    if (noteBtn) {
+        const sessionId = Number(noteBtn.dataset.sessionId);
+        const session = sessions.find(s => s.id === sessionId);
+        if (session) {
+            const noteEvent = new CustomEvent('calendar:session-note', {
+                detail: { sessionId: session.id }
+            });
+            document.dispatchEvent(noteEvent);
+        }
+        return;
+    }
+});
+
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+        closeDayDetailModal();
+    }
+});
+
+document.addEventListener('sessions:changed', () => {
+    const modal = document.getElementById("dayDetailModal");
+    if (modal && modal.classList.contains('is-open') && selectedDayElement) {
+        openDayDetailModal(selectedDayElement);
+    }
+    renderCalendarPageToDOM();
+});
+
+document.addEventListener('session-note-saved', () => {
+    const modal = document.getElementById("dayDetailModal");
+    if (modal && modal.classList.contains('is-open') && selectedDayElement) {
+        openDayDetailModal(selectedDayElement);
+    }
+});
+
+document.addEventListener('untimed-activities:changed', () => {
+    const modal = document.getElementById("dayDetailModal");
+    if (modal && modal.classList.contains('is-open') && selectedDayElement) {
+        openDayDetailModal(selectedDayElement);
+    }
+    renderCalendarPageToDOM();
+});
+
+// ========================================
+// تابع اصلی صفحه
+// ========================================
+
+export function CalendarView() {
+    injectDayDetailModal();
+
+    setTimeout(() => {
+        renderCalendarPageToDOM();
+    }, 0);
+
+    return `
+        <section class="calendar-page">
+          <header class="calendar-page__header">
+            <div class="calendar-page__navigation">
+              <button type="button" class="calendar-page__nav-btn" aria-label="ماه قبل">‹</button>
+              <div class="calendar-page__current-date">
+                <span class="calendar-page__month"></span>
+                <span class="calendar-page__year"></span>
+              </div>
+              <button type="button" class="calendar-page__nav-btn" aria-label="ماه بعد">›</button>
+            </div>
+            <button type="button" class="calendar-page__today-btn">امروز</button>
+          </header>
+
+          <div class="calendar-page__calendar">
+            <div class="calendar-page__weekdays">
+              <span>شنبه</span>
+              <span>یکشنبه</span>
+              <span>دوشنبه</span>
+              <span>سه‌شنبه</span>
+              <span>چهارشنبه</span>
+              <span>پنجشنبه</span>
+              <span>جمعه</span>
+            </div>
+            <div class="calendar-page__days"></div>
           </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">8 از 12</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #4f9ea5"
-          ></span>
-
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #e0a458"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 02:45 </span>
-      </article>
-
-      <!-- ۲ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۲</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 24 Aug </span>
-
-            <span class="calendar-day__hijri"> 11 ربیع‌الاول </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">12 از 12</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #d96b6b"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 01:20 </span>
-      </article>
-
-      <!-- ۳ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۳</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 25 Aug </span>
-
-            <span class="calendar-day__hijri"> 12 ربیع‌الاول </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">7 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #4f9ea5"
-          ></span>
-
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #8b7cc4"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 03:10 </span>
-      </article>
-
-      <!-- ۴ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۴</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 26 Aug </span>
-
-            <span class="calendar-day__hijri"> 13 ربیع‌الاول </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">13 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #e0a458"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 00:55 </span>
-      </article>
-
-      <!-- ۵ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۵</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 27 Aug </span>
-
-            <span class="calendar-day__hijri"> 14 ربیع‌الاول </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">4 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #4f9ea5"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 01:40 </span>
-      </article>
-
-      <!-- ۶ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۶</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 28 Aug </span>
-
-            <span class="calendar-day__hijri"> 15 ربیع‌الاول </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">10 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #d96b6b"
-          ></span>
-
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #e0a458"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 02:15 </span>
-      </article>
-
-      <!-- ۷ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۷</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 29 Aug </span>
-
-            <span class="calendar-day__hijri"> 16 ربیع‌الاول </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">0 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #4f9ea5"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 01:05 </span>
-      </article>
-
-      <!-- ۸ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۸</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 30 Aug </span>
-
-            <span class="calendar-day__hijri"> 17 ربیع‌الاول </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">6 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #8b7cc4"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 00:40 </span>
-      </article>
-
-      <!-- ۹ امروز -->
-      <article class="calendar-day calendar-day--today">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number"> ۹ </span>
-
-          <span class="calendar-day__today-label"> امروز </span>
-          <div class="calendar-day__dates">
-
-            <span class="calendar-day__gregorian"> 31 Aug </span>
-
-            <span class="calendar-day__hijri"> 18 ربیع‌الاول </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">13 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #4f9ea5"
-          ></span>
-
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #e0a458"
-          ></span>
-
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #d96b6b"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 05:38 </span>
-      </article>
-
-      <!-- ۱۰ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۱۰</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 1 Sep </span>
-
-            <span class="calendar-day__hijri"> 19 ربیع‌الاول </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">9 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #4f9ea5"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 01:30 </span>
-      </article>
-
-      <!-- ۱۱ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۱۱</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 2 Sep </span>
-
-            <span class="calendar-day__hijri"> 20 ربیع‌الاول </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">0 از 19</div>
-
-        <span class="calendar-day__empty"> بدون فعالیت </span>
-
-        <span class="calendar-day__duration"> 00:00 </span>
-      </article>
-
-      <!-- ۱۲ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۱۲</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 3 Sep </span>
-
-            <span class="calendar-day__hijri"> 21 ربیع‌الاول </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">5 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #8b7cc4"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 00:50 </span>
-      </article>
-
-      <!-- ۱۳ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۱۳</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 4 Sep </span>
-
-            <span class="calendar-day__hijri"> 22 ربیع‌الاول </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">11 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #e0a458"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 01:15 </span>
-      </article>
-
-      <!-- ۱۴ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۱۴</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 5 Sep </span>
-
-            <span class="calendar-day__hijri"> 23 ربیع‌الاول </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">8 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #4f9ea5"
-          ></span>
-
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #d96b6b"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 02:35 </span>
-      </article>
-
-      <!-- ۱۵ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۱۵</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 6 Sep </span>
-
-            <span class="calendar-day__hijri"> 24 ربیع‌الاول </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">0 از 19</div>
-
-        <span class="calendar-day__empty"> بدون فعالیت </span>
-
-        <span class="calendar-day__duration"> 00:00 </span>
-      </article>
-
-      <!-- ۱۶ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۱۶</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 7 Sep </span>
-
-            <span class="calendar-day__hijri"> 25 ربیع‌الاول </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">7 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #4f9ea5"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 01:10 </span>
-      </article>
-
-      <!-- ۱۷ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۱۷</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 8 Sep </span>
-
-            <span class="calendar-day__hijri"> 26 ربیع‌الاول </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">3 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #e0a458"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 00:45 </span>
-      </article>
-
-      <!-- ۱۸ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۱۸</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 9 Sep </span>
-
-            <span class="calendar-day__hijri"> 27 ربیع‌الاول </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">12 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #d96b6b"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 01:25 </span>
-      </article>
-
-      <!-- ۱۹ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۱۹</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 10 Sep </span>
-
-            <span class="calendar-day__hijri"> 28 ربیع‌الاول </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">0 از 19</div>
-
-        <span class="calendar-day__empty"> بدون فعالیت </span>
-
-        <span class="calendar-day__duration"> 00:00 </span>
-      </article>
-
-      <!-- ۲۰ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۲۰</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 11 Sep </span>
-
-            <span class="calendar-day__hijri"> 29 ربیع‌الاول </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">14 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #4f9ea5"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 02:00 </span>
-      </article>
-
-      <!-- ۲۱ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۲۱</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 12 Sep </span>
-
-            <span class="calendar-day__hijri"> 30 ربیع‌الاول </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">9 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #8b7cc4"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 01:35 </span>
-      </article>
-
-      <!-- ۲۲ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۲۲</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 13 Sep </span>
-
-            <span class="calendar-day__hijri"> 1 ربیع‌الثانی </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">5 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #e0a458"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 00:55 </span>
-      </article>
-
-      <!-- ۲۳ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۲۳</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 14 Sep </span>
-
-            <span class="calendar-day__hijri"> 2 ربیع‌الثانی </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">15 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #4f9ea5"
-          ></span>
-
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #d96b6b"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 03:05 </span>
-      </article>
-
-      <!-- ۲۴ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۲۴</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 15 Sep </span>
-
-            <span class="calendar-day__hijri"> 3 ربیع‌الثانی </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">0 از 19</div>
-
-        <span class="calendar-day__empty"> بدون فعالیت </span>
-
-        <span class="calendar-day__duration"> 00:00 </span>
-      </article>
-
-      <!-- ۲۵ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۲۵</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 16 Sep </span>
-
-            <span class="calendar-day__hijri"> 4 ربیع‌الثانی </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">10 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #4f9ea5"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 01:50 </span>
-      </article>
-
-      <!-- ۲۶ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۲۶</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 17 Sep </span>
-
-            <span class="calendar-day__hijri"> 5 ربیع‌الثانی </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">18 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #8b7cc4"
-          ></span>
-
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #e0a458"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 03:25 </span>
-      </article>
-
-      <!-- ۲۷ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۲۷</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 18 Sep </span>
-
-            <span class="calendar-day__hijri"> 6 ربیع‌الثانی </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">2 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #d96b6b"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 00:35 </span>
-      </article>
-
-      <!-- ۲۸ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۲۸</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 19 Sep </span>
-
-            <span class="calendar-day__hijri"> 7 ربیع‌الثانی </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">11 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #4f9ea5"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 02:10 </span>
-      </article>
-
-      <!-- ۲۹ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۲۹</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 20 Sep </span>
-
-            <span class="calendar-day__hijri"> 8 ربیع‌الثانی </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">0 از 19</div>
-
-        <span class="calendar-day__empty"> بدون فعالیت </span>
-
-        <span class="calendar-day__duration"> 00:00 </span>
-      </article>
-
-      <!-- ۳۰ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۳۰</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 21 Sep </span>
-
-            <span class="calendar-day__hijri"> 9 ربیع‌الثانی </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">16 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #4f9ea5"
-          ></span>
-
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #e0a458"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 03:40 </span>
-      </article>
-
-      <!-- ۳۱ -->
-      <article class="calendar-day">
-        <div class="calendar-day__top">
-          <span class="calendar-day__number">۳۱</span>
-
-          <div class="calendar-day__dates">
-            <span class="calendar-day__gregorian"> 22 Sep </span>
-
-            <span class="calendar-day__hijri"> 10 ربیع‌الثانی </span>
-          </div>
-        </div>
-
-        <div class="calendar-day__activity-progress">19 از 19</div>
-
-        <div class="calendar-day__sessions">
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #4f9ea5"
-          ></span>
-
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #d96b6b"
-          ></span>
-
-          <span
-            class="calendar-day__session"
-            style="--activity-color: #8b7cc4"
-          ></span>
-        </div>
-
-        <span class="calendar-day__duration"> 04:20 </span>
-      </article>
-    </div>
-  </div>
-</section>
-
+        </section>
     `;
 }

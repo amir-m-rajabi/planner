@@ -143,6 +143,17 @@
     background-image: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
 }
 
+/* ========================================
+   Profile & Status Indicator
+======================================== */
+
+.profile-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .profile {
     width: 55px;
     height: 55px;
@@ -184,6 +195,29 @@
     display: block;
 
     object-fit: cover;
+}
+
+/* چراغ وضعیت آنلاین/آفلاین */
+.profile-status {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 13px;
+    height: 13px;
+
+    border-radius: 50%;
+    border: 2px solid var(--color-surface, #ffffff);
+    background-color: #22c55e; /* سبز آنلاین */
+    
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+
+    transition: background-color 200ms ease, box-shadow 200ms ease;
+}
+
+/* حالت آفلاین */
+.profile-status--offline {
+    background-color: #9ca3af; /* خاکستری آفلاین */
 }
 
 /* ========================================
@@ -327,40 +361,73 @@
     transform: translateY(0);
 }
 
+
+
+
+
 /* ========================================
-Auth Actions (غیرفعال — دست‌نخورده موند)
+   Auth Buttons (وقتی کاربر وارد نشده)
 ======================================== */
 
-/* .auth-actions {
+.auth-buttons {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
+    gap: 8px;
 }
 
-.auth-actions__login,
-.auth-actions__register {
+.auth-button {
+    height: 38px;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    padding-inline: 16px;
+    
+    border-radius: 10px;
+    
+    font-size: 12px;
+    font-weight: 600;
+    
     text-decoration: none;
-
-    font-size: var(--font-size-md);
-    font-weight: 500;
+    
+    cursor: pointer;
+    
+    transition:
+        background-color 180ms ease,
+        color 180ms ease,
+        border-color 180ms ease,
+        transform 180ms ease,
+        box-shadow 180ms ease;
 }
 
-.auth-actions__login {
-    color: var(--color-text-secondary);
+.auth-button--login {
+    border: 1px solid var(--color-border);
+    background-color: transparent;
+    color: var(--color-text);
 }
 
-.auth-actions__register {
-    padding: 10px 16px;
+.auth-button--login:hover {
+    background-color: var(--color-surface-hover);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    transform: translateY(-1px);
+}
 
-    color: var(--color-surface);
-
+.auth-button--register {
+    border: 1px solid var(--color-primary);
     background-color: var(--color-primary);
-
-    border-radius: var(--radius-md);
-
-    transition: background-color 180ms ease;
+    color: #ffffff;
+    box-shadow: 0 3px 10px rgba(79, 158, 165, 0.2);
 }
 
-.auth-actions__register:hover {
+.auth-button--register:hover {
     background-color: var(--color-primary-light);
-} */
+    border-color: var(--color-primary-light);
+    box-shadow: 0 4px 14px rgba(79, 158, 165, 0.3);
+    transform: translateY(-1px);
+}
+
+.auth-button:active {
+    transform: translateY(0);
+}
