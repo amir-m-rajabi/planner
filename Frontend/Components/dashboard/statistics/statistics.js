@@ -4,92 +4,83 @@ import { Chart, registerables } from "https://cdn.jsdelivr.net/npm/chart.js/+esm
 
 Chart.register(...registerables);
 
-// ========================================
-// وضعیت فعلی
-// ========================================
+// ============================================================
+// State Management
+// ============================================================
 
 let currentPeriod = "day"; // "day" | "week" | "month"
-let selectedDate = new Date(); // پیش‌فرض: امروز واقعی
+let selectedDate = new Date();
 let selectedIsToday = true;
 let selectedDateLabel = "امروز";
 
 let donutChartInstance = null;
 let statisticsInitialized = false;
 
-// ========================================
+// ============================================================
 // Component
-// ========================================
+// ============================================================
 
 export function Statistic() {
     return `
         <section class="statistics">
-  <!-- Header -->
+            <!-- Header -->
+            <header class="statistics__header">
+                <h2 class="statistics__title" id="statisticsTitle">آمار امروز</h2>
+            </header>
 
-  <header class="statistics__header">
-    <h2 class="statistics__title" id="statisticsTitle">آمار امروز</h2>
-  </header>
+            <!-- Period Selector -->
+            <div class="statistics__periods">
+                <button
+                    type="button"
+                    class="statistics__period statistics__period--active"
+                    data-period="day"
+                    id="statisticsPeriodDay"
+                >
+                    امروز
+                </button>
 
-  <!-- Period Selector -->
+                <button type="button" class="statistics__period" data-period="week">
+                    هفته گذشته
+                </button>
 
-  <div class="statistics__periods">
-    <button
-      type="button"
-      class="statistics__period statistics__period--active"
-      data-period="day"
-      id="statisticsPeriodDay"
-    >
-      امروز
-    </button>
+                <button type="button" class="statistics__period" data-period="month">
+                    ماه گذشته
+                </button>
+            </div>
 
-    <button type="button" class="statistics__period" data-period="week">
-      هفته گذشته
-    </button>
+            <!-- Statistics Content -->
+            <div class="statistics__content">
+                <!-- Donut Chart -->
+                <div class="statistics__chart">
+                    <div class="statistics__donut">
+                        <canvas id="statisticsDonutCanvas"></canvas>
 
-    <button type="button" class="statistics__period" data-period="month">
-      ماه گذشته
-    </button>
-  </div>
+                        <div class="statistics__donut-center">
+                            <span class="statistics__donut-label">زمان مفید</span>
+                            <strong class="statistics__donut-time" id="usefulTime">00:00</strong>
+                        </div>
+                    </div>
+                </div>
 
-  <!-- Statistics Content -->
+                <!-- Activity Details -->
+                <div class="statistics__details">
+                    <div class="statistics__details-header">
+                        <span>فعالیت‌ها</span>
+                        <span>سهم از زمان</span>
+                    </div>
 
-  <div class="statistics__content">
-    <!-- Donut Chart -->
-
-    <div class="statistics__chart">
-      <div class="statistics__donut">
-        <canvas id="statisticsDonutCanvas"></canvas>
-
-        <div class="statistics__donut-center">
-          <span class="statistics__donut-label"> زمان مفید </span>
-
-          <strong class="statistics__donut-time" id="usefulTime">
-            00:00
-          </strong>
-        </div>
-      </div>
-    </div>
-
-    <!-- Activity Details -->
-
-    <div class="statistics__details">
-      <div class="statistics__details-header">
-        <span> فعالیت‌ها </span>
-
-        <span> سهم از زمان </span>
-      </div>
-
-      <div class="statistics__activities" id="statisticsActivitiesList">
-        <!-- توسط JavaScript پر می‌شود -->
-      </div>
-    </div>
-  </div>
-</section>
+                    <div class="statistics__activities" id="statisticsActivitiesList">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
     `;
 }
 
-// ========================================
-// توابع کمکی زمان
-// ========================================
+// ============================================================
+// Time Helpers
+// ============================================================
 
 function isSameDay(a, b) {
     return (
@@ -110,9 +101,9 @@ function formatHM(totalSeconds) {
     return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
 }
 
-// ========================================
-// استخراج سشن‌های یک روز / یک بازه
-// ========================================
+// ============================================================
+// Session Filters
+// ============================================================
 
 function getSessionsForDate(date) {
     return sessions.filter(s => {
@@ -146,9 +137,9 @@ function getMonthRange(date) {
     return { start, end };
 }
 
-// ========================================
-// محاسبه‌ی سهم هر فعالیت
-// ========================================
+// ============================================================
+// Compute Breakdown
+// ============================================================
 
 function computeBreakdown(periodSessions) {
     const totals = {};
@@ -164,7 +155,7 @@ function computeBreakdown(periodSessions) {
     });
 
     const breakdown = timedActivities
-        .filter(activity => !activity.archived && totals[activity.id])
+        .filter(activity => !activity.is_archived && totals[activity.id])
         .map(activity => ({
             title: activity.title,
             color: activity.color,
@@ -176,9 +167,9 @@ function computeBreakdown(periodSessions) {
     return { breakdown, grandTotal };
 }
 
-// ========================================
-// یه برچسب کوتاه از برچسب کامل تقویم می‌سازه
-// ========================================
+// ============================================================
+// Label Helpers
+// ============================================================
 
 function toShortLabel(fullLabel) {
     const parts = fullLabel.split("،");
@@ -188,9 +179,9 @@ function toShortLabel(fullLabel) {
     return `${rest[0]} ${rest[1]}`;
 }
 
-// ========================================
-// رندر نمودار دونات با Chart.js
-// ========================================
+// ============================================================
+// Donut Chart Renderer
+// ============================================================
 
 function renderDonutChart(breakdown) {
     const canvas = document.querySelector("#statisticsDonutCanvas");
@@ -202,6 +193,25 @@ function renderDonutChart(breakdown) {
     }
 
     if (breakdown.length === 0) {
+        donutChartInstance = new Chart(canvas, {
+            type: "doughnut",
+            data: {
+                labels: ["بدون داده"],
+                datasets: [{
+                    data: [1],
+                    backgroundColor: ["#e8eaed"],
+                    borderWidth: 0,
+                    hoverOffset: 0
+                }]
+            },
+            options: {
+                cutout: "66%",
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: false }
+                }
+            }
+        });
         return;
     }
 
@@ -231,9 +241,9 @@ function renderDonutChart(breakdown) {
     });
 }
 
-// ========================================
-// رندر کامل ماژول
-// ========================================
+// ============================================================
+// Main Render Function
+// ============================================================
 
 function renderStatisticsToDOM() {
     const titleEl = document.querySelector("#statisticsTitle");
@@ -285,9 +295,9 @@ function renderStatisticsToDOM() {
     renderDonutChart(breakdown);
 }
 
-// ========================================
-// تعویض بازه (امروز/هفته/ماه)
-// ========================================
+// ============================================================
+// Period Switch Handler
+// ============================================================
 
 document.addEventListener("click", (event) => {
     const periodButton = event.target.closest(".statistics__period");
@@ -302,9 +312,9 @@ document.addEventListener("click", (event) => {
     renderStatisticsToDOM();
 });
 
-// ========================================
-// گوش‌دادن به انتخاب روز از تقویم
-// ========================================
+// ============================================================
+// Listen for Day Selection from Calendar
+// ============================================================
 
 document.addEventListener("day:selected", (event) => {
     const { gy, gm, gd, isToday, label } = event.detail;
@@ -316,46 +326,47 @@ document.addEventListener("day:selected", (event) => {
     renderStatisticsToDOM();
 });
 
-// ========================================
-// گوش‌دادن به تغییرات فعالیت‌ها/سشن‌ها
-// ========================================
+// ============================================================
+// Listen for Activity/Session Changes
+// ============================================================
 
 document.addEventListener("timed-activities:changed", () => {
-    renderStatisticsToDOM();
+    setTimeout(() => {
+        renderStatisticsToDOM();
+    }, 100);
 });
 
-// تغییر: رویداد sessions:changed برای همه حالت‌ها رندر می‌شود
 document.addEventListener("sessions:changed", () => {
-    renderStatisticsToDOM();
+    setTimeout(() => {
+        renderStatisticsToDOM();
+    }, 100);
 });
 
-// ========================================
-// شروع
-// ========================================
+// ============================================================
+// Initialization
+// ============================================================
 
 export function initStatistics() {
     if (statisticsInitialized) return;
     statisticsInitialized = true;
-    
-    // رندر فوری
+
     renderStatisticsToDOM();
-    
-    // تلاش مجدد با تاخیر
+
     setTimeout(() => {
         const activitiesEl = document.querySelector("#statisticsActivitiesList");
         if (activitiesEl && activitiesEl.innerHTML === "") {
             renderStatisticsToDOM();
         }
     }, 100);
-    
+
     setTimeout(() => {
         renderStatisticsToDOM();
     }, 500);
 }
 
-// ========================================
-// رندر اولیه با تاخیر برای اطمینان از ساخت DOM
-// ========================================
+// ============================================================
+// Initial Render with Delay
+// ============================================================
 
 setTimeout(() => {
     renderStatisticsToDOM();

@@ -1,460 +1,307 @@
-/* ========================================
+/* ============================================================
    Activity Status Filter
-======================================== */
+============================================================ */
 
 .activity-status-filter {
     width: fit-content;
-
     display: flex;
     align-items: center;
-
     padding: 4px;
-
     background-color: var(--color-background);
-
     border: 1px solid var(--color-border);
     border-radius: 12px;
-
     box-shadow: var(--shadow-sm);
-
     gap: 3px;
 }
 
-
-/* ========================================
+/* ============================================================
    Filter Item
-======================================== */
+============================================================ */
 
 .activity-status-filter__item {
     position: relative;
-
     min-width: 145px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     gap: 8px;
-
     padding: 9px 14px;
-
     border: 0;
     border-radius: 9px;
-
     background-color: transparent;
-
     color: var(--color-text-secondary);
-
     font-family: inherit;
     font-size: 12px;
     font-weight: 500;
-
     cursor: pointer;
-
-    transition:
-        background-color 0.2s ease,
-        color 0.2s ease,
-        box-shadow 0.2s ease,
-        transform 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-
-/* ========================================
+/* ============================================================
    Indicator
-======================================== */
+============================================================ */
 
 .activity-status-filter__indicator {
     width: 6px;
     height: 6px;
-
     flex-shrink: 0;
-
     border-radius: 50%;
-
     background-color: var(--color-text-secondary);
-
     opacity: 0.45;
-
-    transition:
-        background-color 0.2s ease,
-        opacity 0.2s ease,
-        transform 0.2s ease;
+    transition: background-color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
 }
 
-
-/* ========================================
+/* ============================================================
    Count
-======================================== */
+============================================================ */
 
 .activity-status-filter__count {
     min-width: 20px;
     height: 20px;
-
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
     padding-inline: 5px;
-
     border-radius: 999px;
-
     background-color: rgba(0, 0, 0, 0.04);
-
     color: var(--color-text-secondary);
-
     font-size: 10px;
     font-weight: 600;
-
-    transition:
-        background-color 0.2s ease,
-        color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-
-/* ========================================
+/* ============================================================
    Hover
-======================================== */
+============================================================ */
 
 .activity-status-filter__item:hover {
     color: var(--color-text);
-
     background-color: var(--color-surface);
 }
 
-
-.activity-status-filter__item:hover
-.activity-status-filter__indicator {
+.activity-status-filter__item:hover .activity-status-filter__indicator {
     opacity: 0.8;
-
     transform: scale(1.15);
 }
 
-
-/* ========================================
+/* ============================================================
    Active
-======================================== */
+============================================================ */
 
 .activity-status-filter__item--active {
     background-color: var(--color-surface);
-
     color: var(--color-text);
-
     font-weight: 600;
-
     box-shadow: var(--shadow-sm);
 }
 
-
-.activity-status-filter__item--active
-.activity-status-filter__indicator {
+.activity-status-filter__item--active .activity-status-filter__indicator {
     background-color: var(--color-primary);
-
     opacity: 1;
-
     transform: scale(1.15);
 }
 
-
-.activity-status-filter__item--active
-.activity-status-filter__count {
+.activity-status-filter__item--active .activity-status-filter__count {
     background-color: rgba(79, 158, 165, 0.1);
-
     color: var(--color-primary);
 }
 
-
-/* ========================================
-   Active Hover
-======================================== */
-
-.activity-status-filter__item--active:hover {
-    color: var(--color-text);
-}
-
-
-/* ========================================
+/* ============================================================
    Focus
-======================================== */
+============================================================ */
 
 .activity-status-filter__item:focus-visible {
     outline: 2px solid var(--color-primary);
-
     outline-offset: 2px;
 }
 
-
-/* ========================================
+/* ============================================================
    Responsive
-======================================== */
+============================================================ */
 
 @media (max-width: 500px) {
-
     .activity-status-filter {
         width: 100%;
     }
 
-
     .activity-status-filter__item {
         min-width: 0;
-
         flex: 1;
-
         padding-inline: 10px;
-
         font-size: 11px;
     }
-
 }
 
-
-/* ========================================
+/* ============================================================
    Activities Page
-======================================== */
+============================================================ */
 
 .activities-page {
     width: 100%;
     overflow: hidden;
 }
 
-
 .activities-page__container {
     width: min(100% - 64px, 1400px);
     height: calc(100vh - var(--header-height));
-
     margin-inline: auto;
-
     padding-block: 32px;
-
     display: flex;
     flex-direction: column;
-
     min-height: 0;
 }
 
-
-/* ========================================
+/* ============================================================
    Page Header
-======================================== */
+============================================================ */
 
 .activities-page__header {
     flex-shrink: 0;
-
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-
     gap: 24px;
-
     margin-bottom: 28px;
 }
-
 
 .activities-page__heading {
     min-width: 0;
 }
 
-
 .activities-page__title {
     margin: 0;
-
     color: var(--color-text);
-
     font-size: 25px;
     font-weight: 700;
 }
 
-
 .activities-page__description {
     margin: 7px 0 0;
-
     color: var(--color-text-secondary);
-
     font-size: 12px;
 }
-
 
 .activities-page__filter {
     flex-shrink: 0;
 }
 
-
-/* ========================================
+/* ============================================================
    Columns
-======================================== */
+============================================================ */
 
 .activities-page__columns {
     flex: 1;
     min-height: 0;
-
     display: grid;
-
     grid-template-columns: 1fr 1fr;
-
     gap: 20px;
-
     direction: rtl;
 }
 
-
-/* ========================================
+/* ============================================================
    Activity Column
-======================================== */
+============================================================ */
 
 .activity-column {
     min-width: 0;
     min-height: 0;
-
     display: flex;
     flex-direction: column;
-
     background-color: var(--color-background);
-
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
-
     box-shadow: var(--shadow-sm);
-
     overflow: hidden;
 }
 
-
-/* ========================================
+/* ============================================================
    Column Header
-======================================== */
+============================================================ */
 
 .activity-column__header {
     flex-shrink: 0;
-
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     gap: 16px;
-
     padding: 18px 20px;
-
     background-color: var(--color-surface);
-
     border-bottom: 1px solid var(--color-border);
 }
 
-
 .activity-column__heading {
     min-width: 0;
-
     display: flex;
     align-items: center;
-
     gap: 9px;
 }
 
-
 .activity-column__title {
     margin: 0;
-
     color: var(--color-text);
-
     font-size: 14px;
     font-weight: 650;
 }
 
-
 .activity-column__count {
     min-width: 21px;
     height: 21px;
-
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
     padding-inline: 5px;
-
     border-radius: 999px;
-
     background-color: rgba(79, 158, 165, 0.08);
-
     color: var(--color-primary);
-
     font-size: 10px;
     font-weight: 600;
 }
 
-
-/* ========================================
+/* ============================================================
    Add Button
-======================================== */
+============================================================ */
 
 .activity-column__add {
     flex-shrink: 0;
-
     display: flex;
     align-items: center;
-
     gap: 6px;
-
     padding: 8px 11px;
-
     border: 1px solid rgba(79, 158, 165, 0.2);
     border-radius: 9px;
-
     background-color: rgba(79, 158, 165, 0.06);
-
     color: var(--color-primary);
-
     font-family: inherit;
     font-size: 11px;
     font-weight: 600;
-
     cursor: pointer;
-
-    transition:
-        background-color 0.2s ease,
-        border-color 0.2s ease,
-        color 0.2s ease,
-        transform 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
-
 
 .activity-column__add-icon {
     font-size: 16px;
-
     line-height: 1;
 }
 
-
 .activity-column__add:hover {
     background-color: var(--color-primary);
-
     border-color: var(--color-primary);
-
     color: var(--color-surface);
-
     transform: translateY(-1px);
 }
 
-
-/* ========================================
+/* ============================================================
    Activity List
-======================================== */
+============================================================ */
 
 .activity-column__list {
     flex: 1;
     min-height: 0;
-
     display: flex;
     flex-direction: column;
-
     gap: 10px;
-
     padding: 14px;
-
     overflow-y: auto;
-}
-
-
-/* Hide Scrollbar */
-
-.activity-column__list {
     scrollbar-width: none;
 }
 
@@ -462,164 +309,117 @@
     display: none;
 }
 
-
-/* ========================================
+/* ============================================================
    Empty State
-======================================== */
+============================================================ */
 
 .activity-column__empty {
     flex: 1;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     padding: 30px 16px;
-
     color: var(--color-text-secondary);
-
     font-size: 11px;
     text-align: center;
 }
 
-
-/* ========================================
+/* ============================================================
    Timed Activity Card
-======================================== */
+============================================================ */
 
 .activity-card {
     position: relative;
-
     width: 100%;
     min-height: 70px;
-
     display: flex;
     align-items: center;
-
     padding: 12px 14px 12px 15px;
-
     background-color: var(--color-surface);
-
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
-
     box-shadow: var(--shadow-sm);
-
     overflow: hidden;
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        transform 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
-
 
 .activity-card:hover {
     border-color: color-mix(in srgb, var(--activity-color, var(--color-primary)) 35%, transparent);
-
     box-shadow: var(--shadow-md);
-
     transform: translateY(-1px);
 }
 
-
-/* ========================================
+/* ============================================================
    Activity Color
-======================================== */
+============================================================ */
 
 .activity-card__color {
     position: absolute;
-
     top: 0;
     right: 0;
-
     width: 14px;
     height: 100%;
-
     background-color: var(--activity-color, var(--color-primary));
-
     border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
 }
 
-
-/* ========================================
+/* ============================================================
    Content
-======================================== */
+============================================================ */
 
 .activity-card__content {
     min-width: 0;
-
     flex: 1;
-
     display: flex;
     flex-direction: column;
-
     gap: 5px;
-
     padding-right: 8px;
 }
 
-
-/* ========================================
+/* ============================================================
    Header
-======================================== */
+============================================================ */
 
 .activity-card__header {
     min-width: 0;
-
     display: flex;
     align-items: center;
-
     gap: 6px;
 }
 
-
-/* ========================================
+/* ============================================================
    Title
-======================================== */
+============================================================ */
 
 .activity-card__title {
     min-width: 0;
-
     margin: 0;
-
     overflow: hidden;
-
     color: var(--color-text);
-
     font-size: 12px;
     font-weight: 650;
-
     line-height: 1.4;
-
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-
-/* ========================================
+/* ============================================================
    Type Badge
-======================================== */
+============================================================ */
 
 .activity-card__type {
     flex-shrink: 0;
-
     padding: 2px 6px;
-
     border-radius: 999px;
-
     background-color: rgba(79, 158, 165, 0.08);
-
     color: var(--color-primary);
-
     font-size: 8px;
     font-weight: 500;
 }
 
-
-/* ========================================
-   Dates - در یک ردیف
-======================================== */
+/* ============================================================
+   Dates
+============================================================ */
 
 .activity-card__dates {
     display: flex;
@@ -639,261 +439,183 @@
     opacity: 0.7;
 }
 
-
-/* ========================================
+/* ============================================================
    Actions
-======================================== */
+============================================================ */
 
 .activity-card__actions {
     flex-shrink: 0;
-
     display: flex;
     align-items: center;
-
     gap: 4px;
-
     margin-right: 10px;
 }
 
-
-/* ========================================
+/* ============================================================
    Action Buttons
-======================================== */
+============================================================ */
 
 .activity-card__action-button {
     width: 27px;
     height: 27px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     padding: 0;
-
     border: 1px solid var(--color-border);
     border-radius: 7px;
-
     background-color: transparent;
-
     color: var(--color-text-secondary);
-
     font-family: inherit;
     font-size: 12px;
-
     cursor: pointer;
-
-    transition:
-        background-color 0.2s ease,
-        color 0.2s ease,
-        border-color 0.2s ease,
-        transform 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
-
 
 /* Edit */
 .activity-card__edit:hover {
     background-color: rgba(186, 206, 87, 0.432);
-
     border-color: rgba(198, 230, 79, 0.522);
-
     color: var(--color-primary);
-
     transform: translateY(-1px);
 }
-
 
 /* Archive */
 .activity-card__archive:hover {
     background-color: rgba(210, 70, 70, 0.08);
-
     border-color: rgba(210, 70, 70, 0.25);
-
     color: #c94b4b;
-
     transform: translateY(-1px);
 }
-
 
 /* Restore */
 .activity-card__restore:hover {
     background-color: rgba(79, 158, 165, 0.08);
-
     border-color: rgba(79, 158, 165, 0.25);
-
     color: var(--color-primary);
-
     transform: translateY(-1px);
 }
-
 
 /* Delete */
 .activity-card__delete:hover {
     background-color: rgba(210, 49, 49, 0.232);
-
     border-color: rgba(203, 62, 62, 0.642);
-
     color: #9b0c0c;
-
     transform: translateY(-1px);
 }
 
-
-/* ========================================
+/* ============================================================
    Archived State
-======================================== */
+============================================================ */
 
 .activity-card--archived {
     opacity: 0.82;
 }
 
-
 .activity-card--archived .activity-card__color {
     opacity: 0.55;
 }
-
 
 .activity-card--archived:hover {
     opacity: 1;
 }
 
-
-/* ========================================
+/* ============================================================
    Untimed Activity Card
-======================================== */
+============================================================ */
 
 .untimed-activity-card {
     position: relative;
-
     width: 100%;
     min-height: 70px;
-
     display: flex;
     align-items: center;
-
     padding: 12px 14px 12px 15px;
-
     background-color: var(--color-surface);
-
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
-
     box-shadow: var(--shadow-sm);
-
     overflow: hidden;
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        transform 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
-
 
 .untimed-activity-card:hover {
     border-color: rgba(79, 158, 165, 0.25);
-
     box-shadow: var(--shadow-md);
-
     transform: translateY(-1px);
 }
 
-
-/* ========================================
+/* ============================================================
    Activity Color
-======================================== */
+============================================================ */
 
 .untimed-activity-card__color {
     position: absolute;
-
     top: 0;
     right: 0;
-
     width: 4px;
     height: 100%;
-
     background-color: #4f9ea5;
-
     border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
 }
 
-
-/* ========================================
+/* ============================================================
    Content
-======================================== */
+============================================================ */
 
 .untimed-activity-card__content {
     min-width: 0;
-
     flex: 1;
-
     display: flex;
     flex-direction: column;
-
     gap: 5px;
-
     padding-right: 8px;
 }
 
-
-/* ========================================
+/* ============================================================
    Header
-======================================== */
+============================================================ */
 
 .untimed-activity-card__header {
     min-width: 0;
-
     display: flex;
     align-items: center;
-
     gap: 6px;
 }
 
-
-/* ========================================
+/* ============================================================
    Title
-======================================== */
+============================================================ */
 
 .untimed-activity-card__title {
     min-width: 0;
-
     margin: 0;
-
     overflow: hidden;
-
     color: var(--color-text);
-
     font-size: 12px;
     font-weight: 650;
-
     line-height: 1.4;
-
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-
-/* ========================================
+/* ============================================================
    Type Badge
-======================================== */
+============================================================ */
 
 .untimed-activity-card__type {
     flex-shrink: 0;
-
     padding: 2px 6px;
-
     border-radius: 999px;
-
     background-color: rgba(79, 158, 165, 0.08);
-
     color: var(--color-primary);
-
     font-size: 8px;
     font-weight: 500;
 }
 
-
-/* ========================================
-   Dates - در یک ردیف
-======================================== */
+/* ============================================================
+   Dates
+============================================================ */
 
 .untimed-activity-card__dates {
     display: flex;
@@ -913,156 +635,111 @@
     opacity: 0.7;
 }
 
-
-/* ========================================
+/* ============================================================
    Actions
-======================================== */
+============================================================ */
 
 .untimed-activity-card__actions {
     flex-shrink: 0;
-
     display: flex;
     align-items: center;
-
     gap: 4px;
-
     margin-right: 10px;
 }
 
-
-/* ========================================
+/* ============================================================
    Action Buttons
-======================================== */
+============================================================ */
 
 .untimed-activity-card__action-button {
     width: 27px;
     height: 27px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     padding: 0;
-
     border: 1px solid var(--color-border);
     border-radius: 7px;
-
     background-color: transparent;
-
     color: var(--color-text-secondary);
-
     font-family: inherit;
     font-size: 12px;
-
     cursor: pointer;
-
-    transition:
-        background-color 0.2s ease,
-        color 0.2s ease,
-        border-color 0.2s ease,
-        transform 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
-
 
 /* Edit */
 .untimed-activity-card__edit:hover {
     background-color: rgba(186, 206, 87, 0.432);
-
     border-color: rgba(198, 230, 79, 0.522);
-
     color: var(--color-primary);
-
     transform: translateY(-1px);
 }
-
 
 /* Archive */
 .untimed-activity-card__archive:hover {
     background-color: rgba(210, 70, 70, 0.08);
-
     border-color: rgba(210, 70, 70, 0.25);
-
     color: #c94b4b;
-
     transform: translateY(-1px);
 }
-
 
 /* Restore */
 .untimed-activity-card__restore:hover {
     background-color: rgba(79, 158, 165, 0.08);
-
     border-color: rgba(79, 158, 165, 0.25);
-
     color: var(--color-primary);
-
     transform: translateY(-1px);
 }
-
 
 /* Delete */
 .untimed-activity-card__delete:hover {
     background-color: rgba(210, 49, 49, 0.232);
-
     border-color: rgba(203, 62, 62, 0.642);
-
     color: #9b0c0c;
-
     transform: translateY(-1px);
 }
 
-
-/* ========================================
+/* ============================================================
    Archived State
-======================================== */
+============================================================ */
 
 .untimed-activity-card--archived {
     opacity: 0.82;
 }
 
-
-.untimed-activity-card--archived
-.untimed-activity-card__color {
+.untimed-activity-card--archived .untimed-activity-card__color {
     opacity: 0.55;
 }
-
 
 .untimed-activity-card--archived:hover {
     opacity: 1;
 }
 
-
-/* ========================================
+/* ============================================================
    Focus
-======================================== */
+============================================================ */
 
 .activity-card__action-button:focus-visible,
 .untimed-activity-card__action-button:focus-visible {
     outline: 2px solid var(--color-primary);
-
     outline-offset: 2px;
 }
 
-
-/* ========================================
+/* ============================================================
    Responsive
-======================================== */
+============================================================ */
 
 @media (max-width: 850px) {
-
     .activities-page__header {
         align-items: flex-start;
-
         flex-direction: column;
     }
 
-
     .activities-page__columns {
         grid-template-columns: 1fr;
-
         overflow-y: auto;
         overflow-x: hidden;
-
         scrollbar-width: none;
     }
 
@@ -1078,82 +755,61 @@
         flex: none;
         overflow-y: visible;
     }
-
 }
 
-
 @media (max-width: 500px) {
-
     .activities-page__container {
         width: min(100% - 32px, 1400px);
-
         padding-block: 20px;
     }
-
 
     .activities-page__title {
         font-size: 21px;
     }
 
-
     .activity-column__header {
         padding: 15px;
     }
 
-
     .activity-column__list {
         padding: 12px;
     }
-
 
     .activity-card,
     .untimed-activity-card {
         padding: 11px 12px;
     }
 
-
     .activity-card__actions,
     .untimed-activity-card__actions {
         margin-right: 8px;
-
         gap: 3px;
     }
-
 
     .activity-card__action-button,
     .untimed-activity-card__action-button {
         width: 25px;
         height: 25px;
     }
-
 }
 
-
-/* ========================================
+/* ============================================================
    Activity Form Modal
-======================================== */
+============================================================ */
 
 .activity-form {
     display: none;
-
     position: fixed;
     inset: 0;
-
     width: 100%;
     height: 100%;
-
     padding: 24px;
-
     align-items: center;
     justify-content: center;
-
     background: rgba(15, 23, 42, 0.42);
-
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
-
     z-index: 1000;
-
     direction: rtl;
 }
 
@@ -1161,46 +817,33 @@
     display: flex;
 }
 
-
-/* ========================================
+/* ============================================================
    Container
-======================================== */
+============================================================ */
 
 .activity-form__container {
     width: min(100%, 480px);
     max-height: calc(100vh - 48px);
-
     display: flex;
     flex-direction: column;
-
     background: #ffffff;
-
     border: 1px solid rgba(15, 23, 42, 0.08);
     border-radius: 18px;
-
-    box-shadow:
-        0 20px 50px rgba(15, 23, 42, 0.16),
-        0 4px 12px rgba(15, 23, 42, 0.06);
-
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(15, 23, 42, 0.06);
     overflow: hidden;
-
     animation: activityFormEnter 180ms ease-out;
 }
 
-
-/* ========================================
+/* ============================================================
    Header
-======================================== */
+============================================================ */
 
 .activity-form__header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-
     gap: 20px;
-
     padding: 22px 24px 18px;
-
     border-bottom: 1px solid #edf0f2;
 }
 
@@ -1210,120 +853,89 @@
 
 .activity-form__eyebrow {
     display: block;
-
     margin-bottom: 5px;
-
     color: #8a929b;
-
     font-size: 11px;
     font-weight: 600;
 }
 
 .activity-form__title {
     margin: 0;
-
     color: #20262d;
-
     font-size: 18px;
     font-weight: 700;
-
     line-height: 1.5;
 }
 
 .activity-form__description {
     margin: 6px 0 0;
-
     color: #7b838c;
-
     font-size: 12px;
     line-height: 1.7;
 }
 
-
-/* ========================================
+/* ============================================================
    Close Button
-======================================== */
+============================================================ */
 
 .activity-form__close {
     flex: 0 0 32px;
-
     width: 32px;
     height: 32px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     padding: 0;
-
     border: 1px solid #edf0f2;
     border-radius: 9px;
-
     background: #f8f9fa;
     color: #737b84;
-
     font-family: inherit;
     font-size: 20px;
     line-height: 1;
-
     cursor: pointer;
-
-    transition:
-        background-color 160ms ease,
-        color 160ms ease,
-        border-color 160ms ease,
-        transform 160ms ease;
+    transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
 }
 
 .activity-form__close:hover {
     background: #f1f3f5;
     color: #343a40;
     border-color: #e1e5e8;
-
     transform: rotate(4deg);
 }
 
-
-/* ========================================
+/* ============================================================
    Form
-======================================== */
+============================================================ */
 
 .activity-form__form {
     display: flex;
     flex-direction: column;
-
     min-height: 0;
-
     padding: 22px 24px 24px;
-
     overflow-y: auto;
 }
 
-
-/* ========================================
+/* ============================================================
    Section
-======================================== */
+============================================================ */
 
 .activity-form__section {
     margin: 0;
     padding: 0;
-
     border: 0;
 }
 
 .activity-form__section-title {
     margin-bottom: 18px;
-
     color: #353c43;
-
     font-size: 13px;
     font-weight: 700;
 }
 
-
-/* ========================================
+/* ============================================================
    Fields
-======================================== */
+============================================================ */
 
 .activity-form__field {
     margin-bottom: 18px;
@@ -1331,41 +943,28 @@
 
 .activity-form__label {
     display: block;
-
     margin-bottom: 8px;
-
     color: #4d555d;
-
     font-size: 12px;
     font-weight: 600;
 }
 
-
-/* ========================================
+/* ============================================================
    Text Input
-======================================== */
+============================================================ */
 
 .activity-form__input {
     width: 100%;
     height: 42px;
-
     padding: 0 12px;
-
     border: 1px solid #dfe4e8;
     border-radius: 9px;
-
     outline: none;
-
     background: #ffffff;
     color: #252b31;
-
     font-family: inherit;
     font-size: 13px;
-
-    transition:
-        border-color 160ms ease,
-        box-shadow 160ms ease,
-        background-color 160ms ease;
+    transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
 }
 
 .activity-form__input::placeholder {
@@ -1378,96 +977,67 @@
 
 .activity-form__input:focus {
     border-color: #4f9ea5;
-
-    box-shadow:
-        0 0 0 3px rgba(79, 158, 165, 0.10);
+    box-shadow: 0 0 0 3px rgba(79, 158, 165, 0.10);
 }
 
-
-/* ========================================
+/* ============================================================
    Color Picker
-======================================== */
+============================================================ */
 
 .activity-form__color-picker {
     display: flex;
     align-items: center;
-
     gap: 10px;
-
     height: 42px;
-
     padding: 5px 8px 5px 12px;
-
     border: 1px solid #dfe4e8;
     border-radius: 9px;
-
     background: #ffffff;
 }
 
 .activity-form__color-input {
     width: 32px;
     height: 32px;
-
     padding: 0;
-
     border: 0;
     border-radius: 7px;
-
     background: transparent;
-
     cursor: pointer;
-
     overflow: hidden;
 }
 
 .activity-form__color-preview {
     color: #7a828a;
-
     font-size: 12px;
 }
 
-
-/* ========================================
+/* ============================================================
    Actions
-======================================== */
+============================================================ */
 
 .activity-form__actions {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-
     gap: 9px;
-
     margin-top: 8px;
     padding-top: 18px;
-
     border-top: 1px solid #edf0f2;
 }
 
-
 /* Cancel */
-
 .activity-form__cancel {
     height: 38px;
-
     padding: 0 16px;
-
     border: 1px solid #e1e5e8;
     border-radius: 9px;
-
     background: #ffffff;
     color: #68717a;
-
     font-family: inherit;
     font-size: 12px;
     font-weight: 600;
-
     cursor: pointer;
-
-    transition:
-        background-color 160ms ease,
-        border-color 160ms ease,
-        color 160ms ease;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
 }
 
 .activity-form__cancel:hover {
@@ -1476,49 +1046,30 @@
     color: #3f474e;
 }
 
-
 /* Submit */
-
 .activity-form__submit {
     height: 38px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     gap: 6px;
-
     padding: 0 17px;
-
     border: 1px solid #4f9ea5;
     border-radius: 9px;
-
     background: #4f9ea5;
     color: #ffffff;
-
     font-family: inherit;
     font-size: 12px;
     font-weight: 600;
-
     cursor: pointer;
-
-    box-shadow:
-        0 4px 10px rgba(79, 158, 165, 0.16);
-
-    transition:
-        background-color 160ms ease,
-        border-color 160ms ease,
-        box-shadow 160ms ease,
-        transform 160ms ease;
+    box-shadow: 0 4px 10px rgba(79, 158, 165, 0.16);
+    transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
 .activity-form__submit:hover {
     background: #438c93;
     border-color: #438c93;
-
-    box-shadow:
-        0 6px 14px rgba(79, 158, 165, 0.22);
-
+    box-shadow: 0 6px 14px rgba(79, 158, 165, 0.22);
     transform: translateY(-1px);
 }
 
@@ -1531,47 +1082,40 @@
     line-height: 1;
 }
 
-
-/* ========================================
+/* ============================================================
    Hidden Untimed Field
-======================================== */
+============================================================ */
 
 .activity-form__field--untimed[hidden] {
     display: none;
 }
 
-
-/* ========================================
+/* ============================================================
    Animation
-======================================== */
+============================================================ */
 
 @keyframes activityFormEnter {
-
     from {
         opacity: 0;
         transform: translateY(8px) scale(0.98);
     }
-
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
     }
 }
 
-
-/* ========================================
-   Responsive
-======================================== */
+/* ============================================================
+   Responsive - Form
+============================================================ */
 
 @media (max-width: 520px) {
-
     .activity-form {
         padding: 14px;
     }
 
     .activity-form__container {
         max-height: calc(100vh - 28px);
-
         border-radius: 15px;
     }
 
@@ -1597,32 +1141,23 @@
     }
 }
 
-
-/* ========================================
+/* ============================================================
    Archive Confirm Modal
-======================================== */
+============================================================ */
 
 .archive-confirm-modal {
     display: none;
-
     position: fixed;
     inset: 0;
-
     width: 100%;
     height: 100%;
-
     padding: 24px;
-
     align-items: center;
     justify-content: center;
-
     background: rgba(15, 23, 42, 0.42);
-
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
-
     z-index: 1000;
-
     direction: rtl;
 }
 
@@ -1637,69 +1172,48 @@
 
 .archive-confirm-modal__box {
     position: relative;
-
     width: min(100%, 400px);
-
     display: flex;
     flex-direction: column;
     align-items: center;
-
     text-align: center;
-
     gap: 14px;
-
     padding: 28px 26px 24px;
-
     background: #ffffff;
-
     border: 1px solid rgba(15, 23, 42, 0.08);
     border-radius: 18px;
-
-    box-shadow:
-        0 20px 50px rgba(15, 23, 42, 0.16),
-        0 4px 12px rgba(15, 23, 42, 0.06);
-
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(15, 23, 42, 0.06);
     animation: activityFormEnter 180ms ease-out;
 }
 
 .archive-confirm-modal__icon {
     width: 52px;
     height: 52px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     border-radius: 50%;
-
     background-color: rgba(210, 70, 70, 0.1);
-
     color: #c94b4b;
-
     font-size: 22px;
 }
 
 .archive-confirm-modal__content {
     display: flex;
     flex-direction: column;
-
     gap: 8px;
 }
 
 .archive-confirm-modal__title {
     margin: 0;
-
     color: #20262d;
-
     font-size: 16px;
     font-weight: 700;
 }
 
 .archive-confirm-modal__message {
     margin: 0;
-
     color: #5c646c;
-
     font-size: 13px;
     line-height: 1.6;
 }
@@ -1708,15 +1222,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
     gap: 8px;
-
     margin-top: 4px;
-
     padding: 8px 14px;
-
     background: #f8f9fa;
-
     border: 1px solid #edf0f2;
     border-radius: 10px;
 }
@@ -1724,66 +1233,46 @@
 .archive-confirm-modal__activity-color {
     width: 10px;
     height: 10px;
-
     flex-shrink: 0;
-
     border-radius: 50%;
-
     background-color: var(--color-primary);
 }
 
 .archive-confirm-modal__activity strong {
     color: #20262d;
-
     font-size: 13px;
     font-weight: 650;
 }
 
 .archive-confirm-modal__note {
     margin: 0;
-
     color: #8a929b;
-
     font-size: 11px;
     line-height: 1.7;
 }
 
 .archive-confirm-modal__actions {
     width: 100%;
-
     display: flex;
     align-items: center;
-
     gap: 9px;
-
     margin-top: 6px;
 }
 
 .archive-confirm-modal__cancel,
 .archive-confirm-modal__confirm {
     flex: 1;
-
     height: 40px;
-
     border-radius: 9px;
-
     font-family: inherit;
     font-size: 12px;
     font-weight: 600;
-
     cursor: pointer;
-
-    transition:
-        background-color 160ms ease,
-        border-color 160ms ease,
-        color 160ms ease,
-        box-shadow 160ms ease,
-        transform 160ms ease;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
 .archive-confirm-modal__cancel {
     border: 1px solid #e1e5e8;
-
     background: #ffffff;
     color: #68717a;
 }
@@ -1796,19 +1285,15 @@
 
 .archive-confirm-modal__confirm {
     border: 1px solid #c94b4b;
-
     background: #c94b4b;
     color: #ffffff;
-
     box-shadow: 0 4px 10px rgba(201, 75, 75, 0.2);
 }
 
 .archive-confirm-modal__confirm:hover {
     background: #b23f3f;
     border-color: #b23f3f;
-
     box-shadow: 0 6px 14px rgba(201, 75, 75, 0.26);
-
     transform: translateY(-1px);
 }
 
@@ -1833,32 +1318,23 @@
     }
 }
 
-
-/* ========================================
+/* ============================================================
    Delete Confirm Modal
-======================================== */
+============================================================ */
 
 .delete-confirm-modal {
     display: none;
-
     position: fixed;
     inset: 0;
-
     width: 100%;
     height: 100%;
-
     padding: 24px;
-
     align-items: center;
     justify-content: center;
-
     background: rgba(15, 23, 42, 0.42);
-
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
-
     z-index: 1000;
-
     direction: rtl;
 }
 
@@ -1873,45 +1349,29 @@
 
 .delete-confirm-modal__box {
     position: relative;
-
     width: min(100%, 400px);
-
     display: flex;
     flex-direction: column;
     align-items: center;
-
     text-align: center;
-
     gap: 14px;
-
     padding: 28px 26px 24px;
-
     background: #ffffff;
-
     border: 1px solid rgba(15, 23, 42, 0.08);
     border-radius: 18px;
-
-    box-shadow:
-        0 20px 50px rgba(15, 23, 42, 0.16),
-        0 4px 12px rgba(15, 23, 42, 0.06);
-
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(15, 23, 42, 0.06);
     animation: activityFormEnter 180ms ease-out;
 }
 
 .delete-confirm-modal__icon {
     width: 52px;
     height: 52px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     border-radius: 50%;
-
     background-color: rgba(155, 12, 12, 0.1);
-
     color: #9b0c0c;
-
     font-size: 26px;
     font-weight: 700;
     line-height: 1;
@@ -1920,24 +1380,19 @@
 .delete-confirm-modal__content {
     display: flex;
     flex-direction: column;
-
     gap: 8px;
 }
 
 .delete-confirm-modal__title {
     margin: 0;
-
     color: #20262d;
-
     font-size: 16px;
     font-weight: 700;
 }
 
 .delete-confirm-modal__message {
     margin: 0;
-
     color: #5c646c;
-
     font-size: 13px;
     line-height: 1.6;
 }
@@ -1946,15 +1401,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
     gap: 8px;
-
     margin-top: 4px;
-
     padding: 8px 14px;
-
     background: #f8f9fa;
-
     border: 1px solid #edf0f2;
     border-radius: 10px;
 }
@@ -1962,33 +1412,24 @@
 .delete-confirm-modal__activity-color {
     width: 10px;
     height: 10px;
-
     flex-shrink: 0;
-
     border-radius: 50%;
-
     background-color: var(--color-primary);
 }
 
 .delete-confirm-modal__activity strong {
     color: #20262d;
-
     font-size: 13px;
     font-weight: 650;
 }
 
 .delete-confirm-modal__warning {
     margin: 0;
-
     padding: 8px 12px;
-
     background: rgba(155, 12, 12, 0.06);
-
     border: 1px solid rgba(155, 12, 12, 0.16);
     border-radius: 9px;
-
     color: #9b0c0c;
-
     font-size: 11px;
     font-weight: 600;
     line-height: 1.7;
@@ -1996,40 +1437,26 @@
 
 .delete-confirm-modal__actions {
     width: 100%;
-
     display: flex;
     align-items: center;
-
     gap: 9px;
-
     margin-top: 6px;
 }
 
 .delete-confirm-modal__cancel,
 .delete-confirm-modal__confirm {
     flex: 1;
-
     height: 40px;
-
     border-radius: 9px;
-
     font-family: inherit;
     font-size: 12px;
     font-weight: 600;
-
     cursor: pointer;
-
-    transition:
-        background-color 160ms ease,
-        border-color 160ms ease,
-        color 160ms ease,
-        box-shadow 160ms ease,
-        transform 160ms ease;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
 .delete-confirm-modal__cancel {
     border: 1px solid #e1e5e8;
-
     background: #ffffff;
     color: #68717a;
 }
@@ -2042,19 +1469,15 @@
 
 .delete-confirm-modal__confirm {
     border: 1px solid #9b0c0c;
-
     background: #9b0c0c;
     color: #ffffff;
-
     box-shadow: 0 4px 10px rgba(155, 12, 12, 0.24);
 }
 
 .delete-confirm-modal__confirm:hover {
     background: #7d0a0a;
     border-color: #7d0a0a;
-
     box-shadow: 0 6px 14px rgba(155, 12, 12, 0.3);
-
     transform: translateY(-1px);
 }
 
@@ -2079,32 +1502,23 @@
     }
 }
 
-
-/* ========================================
+/* ============================================================
    Concurrent Activity Warning Modal
-======================================== */
+============================================================ */
 
 .activity-warning-modal {
     display: none;
-
     position: fixed;
     inset: 0;
-
     width: 100%;
     height: 100%;
-
     padding: 24px;
-
     align-items: center;
     justify-content: center;
-
     background: rgba(15, 23, 42, 0.42);
-
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
-
     z-index: 1000;
-
     direction: rtl;
 }
 
@@ -2119,45 +1533,29 @@
 
 .activity-warning-modal__box {
     position: relative;
-
     width: min(100%, 380px);
-
     display: flex;
     flex-direction: column;
     align-items: center;
-
     text-align: center;
-
     gap: 14px;
-
     padding: 28px 26px 24px;
-
     background: #ffffff;
-
     border: 1px solid rgba(15, 23, 42, 0.08);
     border-radius: 18px;
-
-    box-shadow:
-        0 20px 50px rgba(15, 23, 42, 0.16),
-        0 4px 12px rgba(15, 23, 42, 0.06);
-
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(15, 23, 42, 0.06);
     animation: activityFormEnter 180ms ease-out;
 }
 
 .activity-warning-modal__icon {
     width: 52px;
     height: 52px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     border-radius: 50%;
-
     background-color: rgba(230, 184, 76, 0.16);
-
     color: #b8860b;
-
     font-size: 24px;
     font-weight: 800;
 }
@@ -2165,63 +1563,46 @@
 .activity-warning-modal__content {
     display: flex;
     flex-direction: column;
-
     gap: 8px;
 }
 
 .activity-warning-modal__title {
     margin: 0;
-
     color: #20262d;
-
     font-size: 16px;
     font-weight: 700;
 }
 
 .activity-warning-modal__message {
     margin: 0;
-
     color: #5c646c;
-
     font-size: 13px;
     line-height: 1.6;
 }
 
 .activity-warning-modal__actions {
     width: 100%;
-
     margin-top: 6px;
 }
 
 .activity-warning-modal__confirm {
     width: 100%;
     height: 40px;
-
     border: 1px solid var(--color-primary);
     border-radius: 9px;
-
     background: var(--color-primary);
     color: #ffffff;
-
     font-family: inherit;
     font-size: 12px;
     font-weight: 600;
-
     cursor: pointer;
-
     box-shadow: 0 4px 10px rgba(33, 110, 137, 0.18);
-
-    transition:
-        background-color 160ms ease,
-        box-shadow 160ms ease,
-        transform 160ms ease;
+    transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
 .activity-warning-modal__confirm:hover {
     background: var(--color-primary-light);
-
     box-shadow: 0 6px 14px rgba(33, 110, 137, 0.24);
-
     transform: translateY(-1px);
 }
 

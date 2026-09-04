@@ -1,619 +1,366 @@
-/* ========================================
+/* ============================================================
    Auth Page
-======================================== */
+============================================================ */
 
 .auth-page {
-  width: 100%;
-  height: 100vh;
-
-  display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-
-  overflow: hidden;
-
-  background: #f6f8f8;
+    width: 100%;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    overflow: hidden;
+    background: #f6f8f8;
 }
 
-
-/* ========================================
-   Brand
-======================================== */
+/* ============================================================
+   Brand Section
+============================================================ */
 
 .auth-brand {
-  position: relative;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 50px;
-
-  overflow: hidden;
-
-  background: #4f9ea5;
-  color: #ffffff;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+    overflow: hidden;
+    background: #4f9ea5;
+    color: #ffffff;
 }
 
 .auth-brand::before {
-  content: "";
-
-  position: absolute;
-
-  width: 420px;
-  height: 420px;
-
-  right: -180px;
-  bottom: -180px;
-
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 50%;
+    content: "";
+    position: absolute;
+    width: 420px;
+    height: 420px;
+    right: -180px;
+    bottom: -180px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 50%;
 }
 
 .auth-brand::after {
-  content: "";
-
-  position: absolute;
-
-  width: 300px;
-  height: 300px;
-
-  left: -170px;
-  top: -140px;
-
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 50%;
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    left: -170px;
+    top: -140px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 50%;
 }
-
 
 .auth-brand__content {
-  position: relative;
-  z-index: 2;
-
-  width: 100%;
-  max-width: 390px;
-
-  text-align: right;
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 390px;
+    text-align: right;
 }
-
 
 .auth-brand__logo {
-  margin-bottom: 70px;
-
-  font-size: 24px;
-  font-weight: 800;
-
-  letter-spacing: -0.5px;
+    margin-bottom: 70px;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
 }
-
 
 .auth-brand__title {
-  margin: 0;
-
-  font-size: 34px;
-  line-height: 1.45;
-  font-weight: 800;
+    margin: 0;
+    font-size: 34px;
+    line-height: 1.45;
+    font-weight: 800;
 }
-
 
 .auth-brand__description {
-  max-width: 350px;
-
-  margin: 14px 0 0;
-
-  font-size: 14px;
-  line-height: 2;
-
-  color: rgba(255, 255, 255, 0.82);
+    max-width: 350px;
+    margin: 14px 0 0;
+    font-size: 14px;
+    line-height: 2;
+    color: rgba(255, 255, 255, 0.82);
 }
 
-
-/* ========================================
+/* ============================================================
    Decorative Clock
-======================================== */
+============================================================ */
 
 .auth-brand__clock {
-  position: relative;
-
-  width: 170px;
-  height: 170px;
-
-  margin: 55px auto 0;
-
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 50%;
+    position: relative;
+    width: 170px;
+    height: 170px;
+    margin: 55px auto 0;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 50%;
 }
 
-
 .auth-clock__numbers {
-  position: absolute;
-  inset: 16px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  font-size: 10px;
-
-  color: rgba(255, 255, 255, 0.7);
+    position: absolute;
+    inset: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .auth-clock__numbers span:nth-child(1) {
-  position: absolute;
-  top: -2px;
-  left: 50%;
-
-  transform: translateX(-50%);
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .auth-clock__numbers span:nth-child(2) {
-  position: absolute;
-  right: -1px;
-  top: 50%;
-
-  transform: translateY(-50%);
+    position: absolute;
+    right: -1px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .auth-clock__numbers span:nth-child(3) {
-  position: absolute;
-  bottom: -2px;
-  left: 50%;
-
-  transform: translateX(-50%);
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .auth-clock__numbers span:nth-child(4) {
-  position: absolute;
-  left: -1px;
-  top: 50%;
-
-  transform: translateY(-50%);
+    position: absolute;
+    left: -1px;
+    top: 50%;
+    transform: translateY(-50%);
 }
-
 
 .auth-clock__hand {
-  position: absolute;
-
-  left: 50%;
-  bottom: 50%;
-
-  width: 2px;
-
-  border-radius: 10px;
-
-  background: #ffffff;
-
-  transform-origin: bottom;
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    width: 2px;
+    border-radius: 10px;
+    background: #ffffff;
+    transform-origin: bottom;
 }
-
 
 .auth-clock__hand--hour {
-  height: 42px;
-
-  transform: translateX(-50%) rotate(40deg);
+    height: 42px;
+    transform: translateX(-50%) rotate(40deg);
 }
-
 
 .auth-clock__hand--minute {
-  height: 58px;
-
-  opacity: 0.7;
-
-  transform: translateX(-50%) rotate(125deg);
+    height: 58px;
+    opacity: 0.7;
+    transform: translateX(-50%) rotate(125deg);
 }
-
 
 .auth-clock__center {
-  position: absolute;
-
-  left: 50%;
-  top: 50%;
-
-  width: 9px;
-  height: 9px;
-
-  transform: translate(-50%, -50%);
-
-  border-radius: 50%;
-
-  background: #ffffff;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 9px;
+    height: 9px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: #ffffff;
 }
 
-
-/* ========================================
+/* ============================================================
    Auth Panel
-======================================== */
+============================================================ */
 
 .auth-panel {
-  min-width: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 20px;
-
-  overflow-y: auto;
-
-  box-sizing: border-box;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+    box-sizing: border-box;
 }
 
-
-/* ========================================
+/* ============================================================
    Auth Card
-======================================== */
+============================================================ */
 
 .auth-card {
-  width: 100%;
-  max-width: 460px;
-
-  padding: 24px 28px;
-
-  background: #ffffff;
-
-  border: 1px solid #e7e9ea;
-  border-radius: 18px;
-
-  box-shadow:
-    0 15px 45px rgba(25, 45, 48, 0.07);
-
-  box-sizing: border-box;
-
-  /* محدود کردن ارتفاع کارت */
-  max-height: calc(100vh - 40px);
-  overflow-y: auto;
+    width: 100%;
+    max-width: 460px;
+    padding: 24px 28px;
+    background: #ffffff;
+    border: 1px solid #e7e9ea;
+    border-radius: 18px;
+    box-shadow: 0 15px 45px rgba(25, 45, 48, 0.07);
+    box-sizing: border-box;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
 }
 
-/* اسکرول‌بار مخفی برای کارت */
 .auth-card::-webkit-scrollbar {
-  width: 4px;
+    width: 4px;
 }
 
 .auth-card::-webkit-scrollbar-thumb {
-  background: #d1d5d6;
-  border-radius: 4px;
+    background: #d1d5d6;
+    border-radius: 4px;
 }
 
 .auth-card::-webkit-scrollbar-track {
-  background: transparent;
+    background: transparent;
 }
-
 
 .auth-card__header {
-  margin-bottom: 14px;
+    margin-bottom: 14px;
 }
-
 
 .auth-card__title {
-  margin: 0;
-
-  font-size: 20px;
-  font-weight: 800;
-
-  color: #222222;
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    color: #222222;
 }
-
 
 .auth-card__subtitle {
-  margin: 4px 0 0;
-
-  font-size: 11px;
-
-  color: #999999;
+    margin: 4px 0 0;
+    font-size: 11px;
+    color: #999999;
 }
 
-
-/* ========================================
-   Switch
-======================================== */
+/* ============================================================
+   Mode Switch
+============================================================ */
 
 .auth-switch {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-
-  height: 38px;
-
-  padding: 3px;
-
-  margin-bottom: 16px;
-
-  background: #f3f5f5;
-
-  border-radius: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 38px;
+    padding: 3px;
+    margin-bottom: 16px;
+    background: #f3f5f5;
+    border-radius: 10px;
 }
-
 
 .auth-switch__button {
-  border: none;
-  border-radius: 8px;
-
-  background: transparent;
-
-  color: #999999;
-
-  font-family: inherit;
-  font-size: 11px;
-  font-weight: 600;
-
-  cursor: pointer;
-
-  transition: 0.2s ease;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #999999;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
 }
-
 
 .auth-switch__button--active {
-  background: #ffffff;
-
-  color: #4f9ea5;
-
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.06);
+    background: #ffffff;
+    color: #4f9ea5;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
-
-/* ========================================
+/* ============================================================
    Forms
-======================================== */
+============================================================ */
 
 .auth-form {
-  display: flex;
-  flex-direction: column;
-
-  gap: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-/* مهم: فرم‌ها باید با hidden به درستی مخفی شوند */
 .auth-form[hidden] {
-  display: none !important;
+    display: none !important;
 }
-
 
 .auth-form__row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-
-  gap: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
 }
 
+/* ============================================================
+   Form Fields
+============================================================ */
 
 .auth-field {
-  position: relative;
-
-  display: flex;
-  flex-direction: column;
-
-  gap: 4px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
-
 
 .auth-field label {
-  font-size: 10px;
-  font-weight: 600;
-
-  color: #333333;
+    font-size: 10px;
+    font-weight: 600;
+    color: #333333;
 }
-
 
 .auth-field input,
 .auth-field select {
-  width: 100%;
-  height: 36px;
-
-  padding: 0 10px;
-
-  border: 1px solid #e0e3e4;
-  border-radius: 8px;
-
-  outline: none;
-
-  background: #f9fafb;
-  color: #222222;
-
-  font-family: inherit;
-  font-size: 10px;
-
-  box-sizing: border-box;
-
-  transition: 0.2s ease;
+    width: 100%;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid #e0e3e4;
+    border-radius: 8px;
+    outline: none;
+    background: #f9fafb;
+    color: #222222;
+    font-family: inherit;
+    font-size: 10px;
+    box-sizing: border-box;
+    transition: 0.2s ease;
 }
-
 
 .auth-field input::placeholder {
-  color: #aaaaaa;
-  font-size: 9px;
+    color: #aaaaaa;
+    font-size: 9px;
 }
-
 
 .auth-field input:focus,
 .auth-field select:focus {
-  background: #ffffff;
-
-  border-color: #4f9ea5;
-
-  box-shadow:
-    0 0 0 3px rgba(79, 158, 165, 0.08);
+    background: #ffffff;
+    border-color: #4f9ea5;
+    box-shadow: 0 0 0 3px rgba(79, 158, 165, 0.08);
 }
-
 
 .auth-field select {
-  cursor: pointer;
+    cursor: pointer;
 }
-
 
 .auth-field select:disabled {
-  cursor: not-allowed;
-
-  opacity: 0.6;
+    cursor: not-allowed;
+    opacity: 0.6;
 }
 
-
-/* ========================================
+/* ============================================================
    Field Error
-======================================== */
+============================================================ */
 
 .auth-field__error {
-  font-size: 8px;
-  color: #ef4444;
-  margin-top: 1px;
+    font-size: 8px;
+    color: #ef4444;
+    margin-top: 1px;
 }
 
-
-/* ========================================
-   Field Label Row
-======================================== */
+/* ============================================================
+   Label Row
+============================================================ */
 
 .auth-field__label-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
-
 
 .auth-field__forgot {
-  padding: 0;
-
-  border: none;
-
-  background: transparent;
-
-  color: #4f9ea5;
-
-  font-family: inherit;
-  font-size: 9px;
-
-  cursor: pointer;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #4f9ea5;
+    font-family: inherit;
+    font-size: 9px;
+    cursor: pointer;
 }
 
-
-/* ========================================
-   Checkbox
-======================================== */
-
-.auth-checkbox {
-  display: flex;
-  align-items: center;
-
-  gap: 6px;
-
-  margin-top: 0;
-
-  font-size: 9px;
-
-  color: #777777;
-
-  cursor: pointer;
-}
-
-
-.auth-checkbox input {
-  width: 13px;
-  height: 13px;
-
-  accent-color: #4f9ea5;
-
-  cursor: pointer;
-}
-
-
-/* ========================================
-   Submit
-======================================== */
-
-.auth-submit {
-  width: 100%;
-  height: 38px;
-
-  margin-top: 2px;
-
-  border: none;
-  border-radius: 9px;
-
-  background: #4f9ea5;
-  color: #ffffff;
-
-  font-family: inherit;
-  font-size: 11px;
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition: 0.2s ease;
-}
-
-
-.auth-submit:hover {
-  opacity: 0.9;
-
-  transform: translateY(-1px);
-}
-
-
-/* ========================================
-   Footer
-======================================== */
-
-.auth-card__footer {
-  margin: 12px 0 0;
-
-  text-align: center;
-
-  font-size: 9px;
-
-  color: #aaaaaa;
-}
-
-
-/* ========================================
-   Responsive
-======================================== */
-
-@media (max-width: 850px) {
-
-  .auth-page {
-    grid-template-columns: 1fr;
-  }
-
-  .auth-brand {
-    display: none;
-  }
-
-  .auth-panel {
-    min-height: 100vh;
-    padding: 16px;
-  }
-
-  .auth-card {
-    max-height: calc(100vh - 32px);
-  }
-}
-
-
-@media (max-width: 500px) {
-
-  .auth-panel {
-    padding: 10px;
-  }
-
-  .auth-card {
-    padding: 18px 14px;
-    border-radius: 14px;
-    max-height: calc(100vh - 20px);
-  }
-
-  .auth-form__row {
-    grid-template-columns: 1fr;
-    gap: 6px;
-  }
-
-  .auth-field input,
-  .auth-field select {
-    height: 34px;
-    font-size: 10px;
-  }
-}
-
-/* ========================================
+/* ============================================================
    Password Wrapper
-======================================== */
+============================================================ */
 
 .auth-field__password-wrapper {
     position: relative;
@@ -629,28 +376,122 @@
     left: 10px;
     top: 50%;
     transform: translateY(-50%);
-    
     width: 24px;
     height: 24px;
-    
     display: flex;
     align-items: center;
     justify-content: center;
-    
     padding: 0;
-    
     border: none;
     background: transparent;
-    
     font-size: 14px;
-    
     cursor: pointer;
-    
     color: #999999;
-    
     transition: color 0.2s ease;
 }
 
 .auth-field__toggle-password:hover {
     color: #4f9ea5;
+}
+
+/* ============================================================
+   Checkbox
+============================================================ */
+
+.auth-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 0;
+    font-size: 9px;
+    color: #777777;
+    cursor: pointer;
+}
+
+.auth-checkbox input {
+    width: 13px;
+    height: 13px;
+    accent-color: #4f9ea5;
+    cursor: pointer;
+}
+
+/* ============================================================
+   Submit Button
+============================================================ */
+
+.auth-submit {
+    width: 100%;
+    height: 38px;
+    margin-top: 2px;
+    border: none;
+    border-radius: 9px;
+    background: #4f9ea5;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.auth-submit:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* ============================================================
+   Footer
+============================================================ */
+
+.auth-card__footer {
+    margin: 12px 0 0;
+    text-align: center;
+    font-size: 9px;
+    color: #aaaaaa;
+}
+
+/* ============================================================
+   Responsive Design
+============================================================ */
+
+@media (max-width: 850px) {
+    .auth-page {
+        grid-template-columns: 1fr;
+    }
+
+    .auth-brand {
+        display: none;
+    }
+
+    .auth-panel {
+        min-height: 100vh;
+        padding: 16px;
+    }
+
+    .auth-card {
+        max-height: calc(100vh - 32px);
+    }
+}
+
+@media (max-width: 500px) {
+    .auth-panel {
+        padding: 10px;
+    }
+
+    .auth-card {
+        padding: 18px 14px;
+        border-radius: 14px;
+        max-height: calc(100vh - 20px);
+    }
+
+    .auth-form__row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    .auth-field input,
+    .auth-field select {
+        height: 34px;
+        font-size: 10px;
+    }
 }

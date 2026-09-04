@@ -1,6 +1,6 @@
-/* ========================================
+/* ============================================================
    Timed Activities (Dashboard Module)
-======================================== */
+============================================================ */
 
 .timed-activities {
     width: 100%;
@@ -14,9 +14,9 @@
     overflow: hidden;
 }
 
-/* ========================================
+/* ============================================================
    Header
-======================================== */
+============================================================ */
 
 .timed-activities__header {
     display: flex;
@@ -33,9 +33,9 @@
     font-weight: 600;
 }
 
-/* ========================================
+/* ============================================================
    Add Button
-======================================== */
+============================================================ */
 
 .timed-activities__add {
     width: 32px;
@@ -67,9 +67,18 @@
     transform: scale(0.96);
 }
 
-/* ========================================
+.timed-activities__empty {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-secondary);
+    font-size: 13px;
+}
+
+/* ============================================================
    Content
-======================================== */
+============================================================ */
 
 .timed-activities__content {
     min-width: 0;
@@ -79,9 +88,9 @@
     overflow: hidden;
 }
 
-/* ========================================
+/* ============================================================
    Activities List
-======================================== */
+============================================================ */
 
 .timed-activities__list {
     width: 100%;
@@ -100,9 +109,9 @@
     display: none;
 }
 
-/* ========================================
+/* ============================================================
    Activity Card
-======================================== */
+============================================================ */
 
 .timed-activity {
     min-width: 0;
@@ -126,9 +135,9 @@
     transform: translateY(-1px);
 }
 
-/* ========================================
+/* ============================================================
    Activity Color Indicator
-======================================== */
+============================================================ */
 
 .timed-activity__indicator {
     width: 5px;
@@ -140,9 +149,9 @@
     border-radius: 5px 0 0 5px;
 }
 
-/* ========================================
+/* ============================================================
    Activity Information
-======================================== */
+============================================================ */
 
 .timed-activity__info {
     min-width: 0;
@@ -171,9 +180,9 @@
     text-align: right;
 }
 
-/* ========================================
+/* ============================================================
    Start Button
-======================================== */
+============================================================ */
 
 .timed-activity__start {
     min-width: 64px;
@@ -219,25 +228,24 @@
     border-color: var(--activity-color);
 }
 
-/* Disabled State */
 .timed-activity__start--disabled {
     opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
 }
 
-/* ========================================
+/* ============================================================
    Start Icon
-======================================== */
+============================================================ */
 
 .timed-activity__start-icon {
     font-size: 10px;
     line-height: 1;
 }
 
-/* ========================================
+/* ============================================================
    Scroll Hint
-======================================== */
+============================================================ */
 
 .timed-activities__scroll-hint {
     width: 100%;
@@ -261,9 +269,9 @@
     opacity: 0.9;
 }
 
-/* ========================================
+/* ============================================================
    Activity Form Modal
-======================================== */
+============================================================ */
 
 .activity-form {
     display: none;
@@ -441,7 +449,7 @@
     border-radius: 9px;
     background: var(--color-surface);
     box-sizing: border-box;
-}       
+}
 
 .activity-form__color-input {
     width: 32px;
@@ -557,9 +565,9 @@
     }
 }
 
-/* ========================================
+/* ============================================================
    Concurrent Activity Warning Modal
-======================================== */
+============================================================ */
 
 .activity-warning-modal {
     display: none;
@@ -665,9 +673,9 @@
     transform: translateY(0);
 }
 
-/* ========================================
-   Responsive
-======================================== */
+/* ============================================================
+   Responsive Design
+============================================================ */
 
 @media (max-width: 520px) {
     .activity-form {
@@ -708,4 +716,80 @@
         border-radius: 15px;
         padding: 24px 20px 20px;
     }
+}
+
+/* ============================================================
+   Dark Theme Support
+============================================================ */
+
+:root[data-theme="dark"] .timed-activity {
+    background-color: #1a2629;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+:root[data-theme="dark"] .timed-activity:hover {
+    background-color: #203035;
+    border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+}
+
+:root[data-theme="dark"] .timed-activity__title {
+    color: var(--color-text);
+}
+
+:root[data-theme="dark"] .timed-activities__scroll-hint {
+    background: linear-gradient(to bottom, transparent, #1a2629);
+}
+
+:root[data-theme="dark"] .activity-form__container {
+    background: #1a2629;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+:root[data-theme="dark"] .activity-form__header {
+    background: #1a2629;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+:root[data-theme="dark"] .activity-form__form {
+    background: #1a2629;
+}
+
+:root[data-theme="dark"] .activity-form__input {
+    background: #1a2629;
+    border-color: rgba(255, 255, 255, 0.06);
+    color: var(--color-text);
+}
+
+:root[data-theme="dark"] .activity-form__input:focus {
+    border-color: var(--color-primary-light);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 20%, transparent);
+}
+
+:root[data-theme="dark"] .activity-form__color-picker {
+    background: #1a2629;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+:root[data-theme="dark"] .activity-form__cancel {
+    background: #1a2629;
+    border-color: rgba(255, 255, 255, 0.06);
+    color: var(--color-text-secondary);
+}
+
+:root[data-theme="dark"] .activity-form__cancel:hover {
+    background: #203035;
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+:root[data-theme="dark"] .activity-warning-modal__box {
+    background: #1a2629;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+:root[data-theme="dark"] .activity-warning-modal__title {
+    color: var(--color-text);
+}
+
+:root[data-theme="dark"] .activity-warning-modal__message {
+    color: var(--color-text-secondary);
 }

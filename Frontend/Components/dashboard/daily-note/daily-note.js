@@ -1,20 +1,17 @@
+import { DailyNotesAPI } from "../../../js/api.js";
+
+// ============================================================
+// Component
+// ============================================================
+
 export function DailyNote() {
     return `
         <section class="daily-notes">
-
-            <!-- Header -->
-
             <header class="daily-notes__header">
-                <h2 class="daily-notes__title">
-                    دفترچه امروز
-                </h2>
+                <h2 class="daily-notes__title">دفترچه امروز</h2>
             </header>
 
-
-            <!-- Notebook -->
-
             <div class="daily-notes__content">
-
                 <button
                     type="button"
                     class="daily-notebook"
@@ -22,150 +19,47 @@ export function DailyNote() {
                     data-note-exists="false"
                     aria-label="باز کردن دفترچه یادداشت امروز"
                 >
-
-
-
-                    <!-- Notebook -->
-
                     <div class="daily-notebook__book">
-
                         <div class="daily-notebook__spine"></div>
-
-
                         <div class="daily-notebook__content">
-
-                            <span class="daily-notebook__icon">
-                                📖
-                            </span>
-
-                            <span class="daily-notebook__name">
-                                یادداشت روزانه
-                            </span>
-
-                            <span
-                                class="daily-notebook__date"
-                                id="dailyNotebookDate"
-                            >
-                                امروز
-                            </span>
-
+                            <span class="daily-notebook__icon">📖</span>
+                            <span class="daily-notebook__name">یادداشت روزانه</span>
+                            <span class="daily-notebook__date" id="dailyNotebookDate">امروز</span>
                         </div>
-
                     </div>
-
-
-                    <!-- Status -->
 
                     <div class="daily-notebook__status">
-
-                        <span
-                            class="daily-notebook__message"
-                            id="dailyNotebookStatus"
-                        >
+                        <span class="daily-notebook__message" id="dailyNotebookStatus">
                             هنوز یادداشتی برای امروز ثبت نشده
                         </span>
-
                     </div>
-
                 </button>
-
             </div>
 
+            <!-- Modal -->
+            <div class="daily-note-modal" id="dailyNoteModal" aria-hidden="true">
+                <div class="daily-note-modal__overlay" data-action="close-daily-note"></div>
 
-            <!-- ========================================
-                 Daily Note Modal
-            ======================================== -->
-
-            <div
-                class="daily-note-modal"
-                id="dailyNoteModal"
-                aria-hidden="true"
-            >
-
-                <!-- Overlay -->
-
-                <div
-                    class="daily-note-modal__overlay"
-                    data-action="close-daily-note"
-                ></div>
-
-
-                <!-- Modal -->
-
-                <div
-                    class="daily-note-modal__book"
-                    role="dialog"
-                    aria-modal="true"
-                    aria-labelledby="dailyNoteModalTitle"
-                >
-
-                    <!-- Left / Cover -->
-
+                <div class="daily-note-modal__book" role="dialog" aria-modal="true" aria-labelledby="dailyNoteModalTitle">
                     <div class="daily-note-modal__cover">
-
-
                         <div class="daily-note-modal__cover-content">
-
-                            <span class="daily-note-modal__cover-icon">
-                                📖
-                            </span>
-
-                            <span class="daily-note-modal__cover-title">
-                                دفترچه امروز
-                            </span>
-
-                            <span class="daily-note-modal__cover-date">
-                                امروز
-                            </span>
-
+                            <span class="daily-note-modal__cover-icon">📖</span>
+                            <span class="daily-note-modal__cover-title">دفترچه امروز</span>
+                            <span class="daily-note-modal__cover-date">امروز</span>
                         </div>
-
                     </div>
 
-
-                    <!-- Right / Writing Page -->
-
                     <div class="daily-note-modal__page">
-
                         <header class="daily-note-modal__header">
-
                             <div>
-
-                                <span class="daily-note-modal__eyebrow">
-                                    یادداشت روزانه
-                                </span>
-
-                                <h2
-                                    class="daily-note-modal__title"
-                                    id="dailyNoteModalTitle"
-                                >
-                                    امروز چه گذشت؟
-                                </h2>
-
+                                <span class="daily-note-modal__eyebrow">یادداشت روزانه</span>
+                                <h2 class="daily-note-modal__title" id="dailyNoteModalTitle">امروز چه گذشت؟</h2>
                             </div>
-
-
-                            <button
-                                type="button"
-                                class="daily-note-modal__close"
-                                data-action="close-daily-note"
-                                aria-label="بستن دفترچه"
-                            >
-                                ×
-                            </button>
-
+                            <button type="button" class="daily-note-modal__close" data-action="close-daily-note" aria-label="بستن دفترچه">×</button>
                         </header>
 
-
-                        <!-- Writing Area -->
-
                         <div class="daily-note-modal__editor">
-
-                            <div
-                                class="daily-note-modal__lines"
-                                aria-hidden="true"
-                            ></div>
-
+                            <div class="daily-note-modal__lines" aria-hidden="true"></div>
                             <textarea
                                 id="dailyNoteInput"
                                 class="daily-note-modal__textarea"
@@ -173,554 +67,320 @@ export function DailyNote() {
                                 maxlength="5000"
                                 spellcheck="false"
                             ></textarea>
-
                         </div>
 
-
-                        <!-- Footer -->
-
                         <footer class="daily-note-modal__footer">
-
-                            <span
-                                class="daily-note-modal__counter"
-                                id="dailyNoteCounter"
-                            >
-                                0 / 5000
-                            </span>
-
-
+                            <span class="daily-note-modal__counter" id="dailyNoteCounter">0 / 5000</span>
                             <div class="daily-note-modal__actions">
-
-                                <button
-                                    type="button"
-                                    class="daily-note-modal__cancel"
-                                    data-action="close-daily-note"
-                                >
-                                    بستن
-                                </button>
-
-                                <button
-                                    type="button"
-                                    class="daily-note-modal__save"
-                                    id="dailyNoteSave"
-                                >
-                                    ذخیره یادداشت
-                                </button>
-
+                                <button type="button" class="daily-note-modal__cancel" data-action="close-daily-note">بستن</button>
+                                <button type="button" class="daily-note-modal__save" id="dailyNoteSave">ذخیره یادداشت</button>
                             </div>
-
                         </footer>
-
                     </div>
-
                 </div>
-
             </div>
-
         </section>
     `;
 }
 
-let dailyNoteContent = "";
+// ============================================================
+// State
+// ============================================================
 
-// روزی که دفترچه الان بهش اشاره می‌کنه (پیش‌فرض: امروز).
-// هر روز دفترچه‌ی خودش رو داره چون کلید localStorage بر
-// اساس همین ساخته می‌شه.
+let dailyNoteContent = "";
 let currentNoteDate = new Date();
 let currentIsToday = true;
 let currentDateLabel = "امروز";
+let currentNoteId = null;
 
+// ============================================================
+// Utility Functions
+// ============================================================
 
-/* ========================================
-   Daily Notes
-======================================== */
-
-
-/* ========================================
-   کلید ذخیره‌سازی برای یک تاریخ مشخص
-======================================== */
-
-function getNoteKey(date) {
-
-    const year =
-        date.getFullYear();
-
-    const month =
-        String(date.getMonth() + 1)
-            .padStart(2, "0");
-
-    const day =
-        String(date.getDate())
-            .padStart(2, "0");
-
-    return `daily-note-${year}-${month}-${day}`;
+function getUserId() {
+    const session = JSON.parse(localStorage.getItem('auth:session')) || {};
+    return session.userId;
 }
 
-
-/* ========================================
-   بارگذاری یادداشتِ روزِ فعلاً انتخاب‌شده
-======================================== */
-
-function loadNoteForCurrentDate() {
-
-    dailyNoteContent =
-        localStorage.getItem(
-            getNoteKey(currentNoteDate)
-        ) || "";
+function getDateKey(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
 }
 
+// ============================================================
+// Load Note from Database
+// ============================================================
 
-/* ========================================
-   Init
-======================================== */
+async function loadNoteFromDatabase(date) {
+    try {
+        const userId = getUserId();
+        if (!userId) {
+            dailyNoteContent = "";
+            currentNoteId = null;
+            return;
+        }
 
-export function initDailyNotes() {
+        const dateStr = getDateKey(date);
+        const allNotes = await DailyNotesAPI.getAll(userId);
 
-    const notebook =
-        document.querySelector("#dailyNotebook");
+        const note = allNotes.find(n => {
+            const noteDate = new Date(n.note_date);
+            const noteDateStr = getDateKey(noteDate);
+            return noteDateStr === dateStr;
+        });
 
-    const modal =
-        document.querySelector("#dailyNoteModal");
+        if (note) {
+            dailyNoteContent = note.content || "";
+            currentNoteId = note.id;
+        } else {
+            dailyNoteContent = "";
+            currentNoteId = null;
+        }
 
-    const saveButton =
-        document.querySelector("#dailyNoteSave");
+    } catch (error) {
+        dailyNoteContent = "";
+        currentNoteId = null;
+    }
+}
 
-    const textarea =
-        document.querySelector("#dailyNoteInput");
+// ============================================================
+// Save Note to Database
+// ============================================================
 
-    const counter =
-        document.querySelector("#dailyNoteCounter");
+async function saveNoteToDatabase(content, date) {
+    try {
+        const userId = getUserId();
 
-    if (
-        !notebook ||
-        !modal ||
-        !saveButton ||
-        !textarea
-    ) {
-        return;
+        if (!userId) {
+            alert('لطفاً وارد حساب کاربری خود شوید');
+            return false;
+        }
+
+        const dateStr = getDateKey(date);
+        const allNotes = await DailyNotesAPI.getAll(userId);
+
+        const existingNote = allNotes.find(n => {
+            const noteDate = new Date(n.note_date);
+            const noteDateStr = getDateKey(noteDate);
+            return noteDateStr === dateStr;
+        });
+
+        if (existingNote) {
+            await DailyNotesAPI.update(existingNote.id, content);
+            currentNoteId = existingNote.id;
+        } else {
+            const result = await DailyNotesAPI.create(userId, dateStr, content);
+            currentNoteId = result.id;
+        }
+
+        return true;
+
+    } catch (error) {
+        alert('خطا در ذخیره یادداشت: ' + error.message);
+        return false;
+    }
+}
+
+// ============================================================
+// Load Note for Current Date
+// ============================================================
+
+async function loadNoteForCurrentDate() {
+    await loadNoteFromDatabase(currentNoteDate);
+    updateNotebookStatus();
+}
+
+// ============================================================
+// Update Notebook Status
+// ============================================================
+
+function updateNotebookStatus() {
+    const notebook = document.querySelector("#dailyNotebook");
+    const status = document.querySelector("#dailyNotebookStatus");
+
+    if (!notebook || !status) return;
+
+    const hasNote = dailyNoteContent.trim().length > 0;
+    notebook.dataset.noteExists = String(hasNote);
+
+    const dayPhrase = currentIsToday ? "امروز" : currentDateLabel;
+
+    if (hasNote) {
+        status.textContent = `برای ${dayPhrase} یادداشت دارید`;
+    } else {
+        status.textContent = `هنوز یادداشتی برای ${dayPhrase} ثبت نشده`;
+    }
+}
+
+// ============================================================
+// Update Date Display
+// ============================================================
+
+function updateNotebookDateDisplay() {
+    const dateEl = document.querySelector("#dailyNotebookDate");
+    if (dateEl) dateEl.textContent = currentDateLabel;
+
+    const coverDateEl = document.querySelector(".daily-note-modal__cover-date");
+    if (coverDateEl) coverDateEl.textContent = currentDateLabel;
+
+    const coverTitleEl = document.querySelector(".daily-note-modal__cover-title");
+    if (coverTitleEl) {
+        coverTitleEl.textContent = currentIsToday ? "دفترچه امروز" : `دفترچه ${currentDateLabel}`;
     }
 
+    const modalTitleEl = document.querySelector("#dailyNoteModalTitle");
+    if (modalTitleEl) {
+        modalTitleEl.textContent = currentIsToday ? "امروز چه گذشت؟" : `${currentDateLabel} چه گذشت؟`;
+    }
 
-    /* ========================================
-       Load Saved Note
-    ======================================== */
+    const headerTitleEl = document.querySelector(".daily-notes__title");
+    if (headerTitleEl) {
+        headerTitleEl.textContent = currentIsToday ? "دفترچه امروز" : `دفترچه ${currentDateLabel}`;
+    }
+}
 
-    loadNoteForCurrentDate();
+// ============================================================
+// Character Counter
+// ============================================================
 
+function updateDailyNoteCounter() {
+    const textarea = document.querySelector("#dailyNoteInput");
+    const counter = document.querySelector("#dailyNoteCounter");
 
-    /* ========================================
-       Open Modal
-    ======================================== */
+    if (!textarea || !counter) return;
 
-    notebook.addEventListener("click", () => {
+    counter.textContent = `${textarea.value.length} / 5000`;
+}
 
-        openDailyNoteModal();
+// ============================================================
+// Open Modal
+// ============================================================
 
+function openDailyNoteModal() {
+    const modal = document.querySelector("#dailyNoteModal");
+    const textarea = document.querySelector("#dailyNoteInput");
+
+    if (!modal || !textarea) return;
+
+    textarea.value = dailyNoteContent;
+    updateDailyNoteCounter();
+
+    modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("daily-note-modal-open");
+
+    requestAnimationFrame(() => {
+        modal.classList.add("is-open");
     });
 
-
-    /* ========================================
-       Close Button
-    ======================================== */
-
-    const closeButton =
-        modal.querySelector(
-            ".daily-note-modal__close"
-        );
-
-    if (closeButton) {
-
-        closeButton.addEventListener(
-            "click",
-            () => {
-
-                closeDailyNoteModal();
-
-            }
-        );
-
-    }
-
-
-    /* ========================================
-       Cancel Button
-    ======================================== */
-
-    const cancelButton =
-        modal.querySelector(
-            ".daily-note-modal__cancel"
-        );
-
-    if (cancelButton) {
-
-        cancelButton.addEventListener(
-            "click",
-            () => {
-
-                closeDailyNoteModal();
-
-            }
-        );
-
-    }
-
-
-    /* ========================================
-       Overlay
-    ======================================== */
-
-    const overlay =
-        modal.querySelector(
-            ".daily-note-modal__overlay"
-        );
-
-    if (overlay) {
-
-        overlay.addEventListener(
-            "click",
-            () => {
-
-                closeDailyNoteModal();
-
-            }
-        );
-
-    }
-
-
-    /* ========================================
-       Save
-    ======================================== */
-
-    saveButton.addEventListener(
-        "click",
-        () => {
-
-            saveDailyNote();
-
-        }
-    );
-
-
-    /* ========================================
-       Character Counter
-    ======================================== */
-
-    textarea.addEventListener(
-        "input",
-        () => {
-
-            updateDailyNoteCounter();
-
-        }
-    );
-
-
-    /* ========================================
-       Initial State
-    ======================================== */
-
-    updateNotebookStatus();
-
-    updateDailyNoteCounter();
+    setTimeout(() => {
+        textarea.focus();
+    }, 250);
 }
 
+// ============================================================
+// Close Modal
+// ============================================================
 
-/* ========================================
-   گوش‌دادن به انتخاب روز از تقویم
-   دفترچه، یادداشت، و متن‌های «امروز» همه عوض می‌شن.
-======================================== */
+function closeDailyNoteModal() {
+    const modal = document.querySelector("#dailyNoteModal");
+    if (!modal) return;
 
-document.addEventListener("day:selected", (event) => {
+    modal.classList.remove("is-open");
+    document.body.classList.remove("daily-note-modal-open");
 
+    setTimeout(() => {
+        modal.setAttribute("aria-hidden", "true");
+    }, 300);
+}
+
+// ============================================================
+// Save Daily Note
+// ============================================================
+
+async function saveDailyNote() {
+    const textarea = document.querySelector("#dailyNoteInput");
+    if (!textarea) return;
+
+    const content = textarea.value.trim();
+    const success = await saveNoteToDatabase(content, currentNoteDate);
+
+    if (success) {
+        dailyNoteContent = content;
+        updateNotebookStatus();
+        closeDailyNoteModal();
+    }
+}
+
+// ============================================================
+// Listen for Day Selection from Calendar
+// ============================================================
+
+document.addEventListener("day:selected", async (event) => {
     const { gy, gm, gd, isToday, label } = event.detail;
 
     currentNoteDate = new Date(gy, gm - 1, gd);
     currentIsToday = isToday;
     currentDateLabel = isToday ? "امروز" : label;
 
-    loadNoteForCurrentDate();
+    await loadNoteForCurrentDate();
     updateNotebookDateDisplay();
     updateNotebookStatus();
 });
 
+// ============================================================
+// Close with Escape Key
+// ============================================================
 
-/* ========================================
-   آپدیت متن‌های تاریخ (به‌جای «امروز»)
-======================================== */
-
-function updateNotebookDateDisplay() {
-
-    const dateEl =
-        document.querySelector("#dailyNotebookDate");
-
-    if (dateEl) {
-        dateEl.textContent = currentDateLabel;
+document.addEventListener('keyup', (event) => {
+    if (event.code === 'Escape') {
+        closeDailyNoteModal();
     }
+});
 
-    const coverDateEl =
-        document.querySelector(".daily-note-modal__cover-date");
+// ============================================================
+// Initialization
+// ============================================================
 
-    if (coverDateEl) {
-        coverDateEl.textContent = currentDateLabel;
-    }
+export async function initDailyNotes() {
+    const notebook = document.querySelector("#dailyNotebook");
+    const modal = document.querySelector("#dailyNoteModal");
+    const saveButton = document.querySelector("#dailyNoteSave");
+    const textarea = document.querySelector("#dailyNoteInput");
 
-    const coverTitleEl =
-        document.querySelector(".daily-note-modal__cover-title");
+    if (!notebook || !modal || !saveButton || !textarea) return;
 
-    if (coverTitleEl) {
-        coverTitleEl.textContent =
-            currentIsToday ? "دفترچه امروز" : `دفترچه ${currentDateLabel}`;
-    }
-
-    const modalTitleEl =
-        document.querySelector("#dailyNoteModalTitle");
-
-    if (modalTitleEl) {
-        modalTitleEl.textContent =
-            currentIsToday ? "امروز چه گذشت؟" : `${currentDateLabel} چه گذشت؟`;
-    }
-
-    const headerTitleEl =
-        document.querySelector(".daily-notes__title");
-
-    if (headerTitleEl) {
-        headerTitleEl.textContent =
-            currentIsToday ? "دفترچه امروز" : `دفترچه ${currentDateLabel}`;
-    }
-}
-
-
-/* ========================================
-   Open Modal
-======================================== */
-
-function openDailyNoteModal() {
-
-    const modal =
-        document.querySelector(
-            "#dailyNoteModal"
-        );
-
-    const textarea =
-        document.querySelector(
-            "#dailyNoteInput"
-        );
-
-    if (!modal || !textarea) {
-        return;
-    }
-
-
-    /* Load Current Note */
-
-    textarea.value =
-        dailyNoteContent;
-
-
+    await loadNoteForCurrentDate();
+    updateNotebookStatus();
     updateDailyNoteCounter();
 
+    // Open notebook
+    notebook.addEventListener("click", openDailyNoteModal);
 
-    /* Open */
-
-    modal.setAttribute(
-        "aria-hidden",
-        "false"
-    );
-
-    document.body.classList.add(
-        "daily-note-modal-open"
-    );
-
-
-    /* Animation */
-
-    requestAnimationFrame(() => {
-
-        modal.classList.add(
-            "is-open"
-        );
-
+    // Close buttons
+    const closeElements = modal.querySelectorAll('[data-action="close-daily-note"]');
+    closeElements.forEach(el => {
+        el.addEventListener("click", closeDailyNoteModal);
     });
 
+    // Cancel button
+    const cancelBtn = modal.querySelector(".daily-note-modal__cancel");
+    if (cancelBtn) {
+        cancelBtn.addEventListener("click", closeDailyNoteModal);
+    }
 
-    /* Focus */
+    // Save button
+    saveButton.addEventListener("click", saveDailyNote);
 
-    setTimeout(() => {
+    // Textarea input counter
+    textarea.addEventListener("input", updateDailyNoteCounter);
 
-        textarea.focus();
-
-    }, 250);
+    // Ctrl+Enter to save
+    textarea.addEventListener("keydown", async (event) => {
+        if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+            event.preventDefault();
+            await saveDailyNote();
+        }
+    });
 }
-
-
-/* ========================================
-   Close Modal
-======================================== */
-
-function closeDailyNoteModal() {
-
-    const modal =
-        document.querySelector(
-            "#dailyNoteModal"
-        );
-
-    if (!modal) {
-        return;
-    }
-
-
-    modal.classList.remove(
-        "is-open"
-    );
-
-    document.body.classList.remove(
-        "daily-note-modal-open"
-    );
-
-
-    setTimeout(() => {
-
-        modal.setAttribute(
-            "aria-hidden",
-            "true"
-        );
-
-    }, 300);
-}
-
-
-/* ========================================
-   Save Daily Note
-   (روی کلیدِ همون روزی که الان انتخاب شده ذخیره می‌شه)
-======================================== */
-
-function saveDailyNote() {
-
-    const textarea =
-        document.querySelector(
-            "#dailyNoteInput"
-        );
-
-    if (!textarea) {
-        return;
-    }
-
-
-    /* Get Content */
-
-    dailyNoteContent =
-        textarea.value.trim();
-
-
-    /* Save */
-
-    localStorage.setItem(
-        getNoteKey(currentNoteDate),
-        dailyNoteContent
-    );
-
-
-    /* Update Notebook */
-
-    updateNotebookStatus();
-
-
-    /* Close */
-
-    closeDailyNoteModal();
-
-
-    console.log(
-        "Daily note saved:",
-        dailyNoteContent
-    );
-}
-
-
-/* ========================================
-   Update Notebook Status
-======================================== */
-
-function updateNotebookStatus() {
-
-    const notebook =
-        document.querySelector(
-            "#dailyNotebook"
-        );
-
-    const status =
-        document.querySelector(
-            "#dailyNotebookStatus"
-        );
-
-    if (!notebook || !status) {
-        return;
-    }
-
-
-    const hasNote =
-        dailyNoteContent.trim().length > 0;
-
-
-    /* Data Attribute */
-
-    notebook.dataset.noteExists =
-        String(hasNote);
-
-
-    const dayPhrase =
-        currentIsToday ? "امروز" : currentDateLabel;
-
-
-    /* Status Text */
-
-    if (hasNote) {
-
-        status.textContent =
-            `برای ${dayPhrase} یادداشت دارید`;
-            status.style.backgroundColor = 'aquamarine'
-
-    } else {
-
-        status.textContent =
-            `هنوز یادداشتی برای ${dayPhrase} ثبت نشده`;
-            status.style.backgroundColor = 'white'
-
-
-    }
-}
-
-
-/* ========================================
-   Character Counter
-======================================== */
-
-function updateDailyNoteCounter() {
-
-    const textarea =
-        document.querySelector(
-            "#dailyNoteInput"
-        );
-
-    const counter =
-        document.querySelector(
-            "#dailyNoteCounter"
-        );
-
-    if (!textarea || !counter) {
-        return;
-    }
-
-
-    counter.textContent =
-        `${textarea.value.length} / 5000`;
-}
-
-
-document.addEventListener('keyup',(event)=>{
-
-    if(event.code === 'Escape'){
-        closeDailyNoteModal()
-    }
-})

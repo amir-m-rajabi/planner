@@ -1,17 +1,14 @@
 import { 
     sessions, 
-    getTotalDuration, 
-    formatTotalDuration,
     openSessionModal,
     openDeleteSessionModal
 } from "../../Components/dashboard/sessions/sessions.js";
 
-import { timedActivities } from "../../Components/dashboard/timed-activities/timed-activities.js";
-import { untimedActivities, getActivityRecord, toggleUntimedCheck } from "../../Components/dashboard/untimed-activities/untimed-activities.js";
+import { untimedActivities, untimedActivityRecords, getActivityRecord, toggleUntimedCheck } from "../../Components/dashboard/untimed-activities/untimed-activities.js";
 
-// ========================================
-// دیتابیس کامل تعطیلات رسمی ایران (همه سال‌ها)
-// ========================================
+// ============================================================
+// Iranian Official Holidays Database (All Years)
+// ============================================================
 
 const HOLIDAYS_DB = {
     1400: { 1: [1, 2, 3, 12, 13], 2: [], 3: [14, 15], 4: [4, 5], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [29] },
@@ -40,9 +37,9 @@ const HOLIDAYS_DB = {
     1410: { 1: [1, 2, 3, 12, 13], 2: [], 3: [14, 15], 4: [4, 5], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [29] }
 };
 
-// ========================================
+// ============================================================
 // Jalali <-> Gregorian Conversion
-// ========================================
+// ============================================================
 
 function div(a, b) { return ~~(a / b); }
 function mod(a, b) { return a - ~~(a / b) * b; }
@@ -149,9 +146,9 @@ function jalaaliMonthLength(jy, jm) {
     return isLeapJalaaliYear(jy) ? 30 : 29;
 }
 
-// ========================================
-// Gregorian <-> Islamic (Hijri)
-// ========================================
+// ============================================================
+// Gregorian <-> Islamic (Hijri) Conversion
+// ============================================================
 
 const ISLAMIC_EPOCH = 1948439.5;
 
@@ -193,9 +190,9 @@ function gregorianToIslamic(gy, gm, gd) {
     return julianDayToIslamic(gregorianToJulianDay(gy, gm, gd));
 }
 
-// ========================================
-// نام‌ها و ابزارهای کمکی
-// ========================================
+// ============================================================
+// Names and Helpers
+// ============================================================
 
 const PERSIAN_MONTHS = [
     "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
@@ -237,9 +234,38 @@ function formatDisplayTime(time) {
     return time.split(":").slice(0, 2).join(":");
 }
 
-// ========================================
-// دیتاست تعطیلات از API
-// ========================================
+// ============================================================
+// Time Calculation Helpers (same as statistics.js)
+// ============================================================
+
+function isSameDay(a, b) {
+    return (
+        a.getFullYear() === b.getFullYear() &&
+        a.getMonth() === b.getMonth() &&
+        a.getDate() === b.getDate()
+    );
+}
+
+function timeToSeconds(time) {
+    const [h, m, s] = time.split(":").map(Number);
+    return h * 3600 + (m || 0) * 60 + (s || 0);
+}
+
+function calculateDayUsefulTime(timedSessions) {
+    let totalSeconds = 0;
+    timedSessions.forEach(session => {
+        if (session.startTime && session.endTime) {
+            const startSeconds = timeToSeconds(session.startTime);
+            const endSeconds = timeToSeconds(session.endTime);
+            totalSeconds += Math.max(0, endSeconds - startSeconds);
+        }
+    });
+    return totalSeconds;
+}
+
+// ============================================================
+// Holidays Dataset from API
+// ============================================================
 
 const HOLIDAYS_API_URL = "https://raw.githubusercontent.com/BaseMax/persian-holidays-api/main/holidays.json";
 
@@ -297,20 +323,19 @@ function loadHolidaysData() {
             holidaysReady = true;
         })
         .catch((error) => {
-            console.warn("تقویم: دریافت دیتاست تعطیلات ممکن نشد؛ فقط جمعه‌ها تعطیل نشان داده می‌شوند.", error);
             holidaysReady = false;
         });
 
     return holidaysPromise;
 }
 
-// ========================================
-// تشخیص تعطیلی - ترکیب API و دیتابیس
-// ========================================
+// ============================================================
+// Holiday Detection - Combined API and Database
+// ============================================================
 
 function getHolidayInfo(jy, jm, jd, gy, gm, gd, weekdayIndex) {
     const events = [];
-    let isHoliday = weekdayIndex === 5; // جمعه
+    let isHoliday = weekdayIndex === 5;
 
     const collect = (list) => {
         list.forEach((entry) => {
@@ -379,9 +404,9 @@ function buildOccasionSentence(jy, jm, jd, gy, gm, gd, weekdayIndex) {
     return { text: sentence, isHoliday: info.isHoliday };
 }
 
-// ========================================
-// وضعیت فعلی
-// ========================================
+// ============================================================
+// State Management
+// ============================================================
 
 const now = new Date();
 const todayJalali = toJalaali(now.getFullYear(), now.getMonth() + 1, now.getDate());
@@ -391,9 +416,9 @@ let currentJalaaliMonth = todayJalali.jm;
 let currentModalDate = null;
 let selectedDayElement = null;
 
-// ========================================
-// داده‌های واقعیِ فعالیت/سشنِ هر روز
-// ========================================
+// ============================================================
+// Day Data Helpers
+// ============================================================
 
 function isRealToday(gy, gm, gd) {
     return gy === now.getFullYear() && gm === now.getMonth() + 1 && gd === now.getDate();
@@ -413,12 +438,17 @@ function getDayActivityData(gy, gm, gd) {
     const isFuture = isFutureDate(gy, gm, gd);
 
     const untimedEntries = untimedActivities
-        .filter((activity) => !activity.archived && activity.isActive)
+        .filter((activity) => activity.is_active === true)
         .map((activity) => {
             const record = getActivityRecord(activity.id, isoDate);
             return { 
                 activity, 
-                record: record || { completedCount: 0, completedChecks: [] }
+                record: record || { 
+                    completed_count: 0, 
+                    completed_checks: [],
+                    activity_id: activity.id,
+                    record_date: isoDate
+                }
             };
         });
 
@@ -432,7 +462,6 @@ function getDayActivityData(gy, gm, gd) {
         return isToday;
     });
 
-    // مرتب‌سازی سشن‌ها بر اساس زمان شروع
     const sortedSessions = [...timedSessions].sort((a, b) => {
         const aStart = a.startTime.split(':').map(Number);
         const bStart = b.startTime.split(':').map(Number);
@@ -451,9 +480,9 @@ function getDayActivityData(gy, gm, gd) {
     return { untimedEntries, timedSessions: sortedSessions, isoDate, isToday, isFuture };
 }
 
-// ========================================
-// ساخت یک سلولِ روز برای گرید ماه
-// ========================================
+// ============================================================
+// Day Cell Builder
+// ============================================================
 
 function buildDayCellHTML(jy, jm, jd) {
     const g = toGregorian(jy, jm, jd);
@@ -466,6 +495,13 @@ function buildDayCellHTML(jy, jm, jd) {
     const isFuture = dayOnly > todayOnly;
 
     const { untimedEntries, timedSessions } = getDayActivityData(g.gy, g.gm, g.gd);
+
+    const usefulSeconds = calculateDayUsefulTime(timedSessions);
+    const totalMinutes = Math.round(usefulSeconds / 60);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    const usefulTimeFormatted = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+    const hasUsefulTime = usefulSeconds > 0;
 
     const classNames = ["calendar-day"];
     if (isToday) classNames.push("calendar-day--today");
@@ -483,8 +519,8 @@ function buildDayCellHTML(jy, jm, jd) {
         const hasAnyData = untimedEntries.length > 0 || timedSessions.length > 0;
 
         if (hasAnyData) {
-            const totalCompleted = untimedEntries.reduce((sum, e) => sum + (e.record.completedCount || 0), 0);
-            const totalTarget = untimedEntries.reduce((sum, e) => sum + (e.activity.targetCount || 0), 0);
+            const totalCompleted = untimedEntries.reduce((sum, e) => sum + (e.record.completed_count || 0), 0);
+            const totalTarget = untimedEntries.reduce((sum, e) => sum + (e.activity.target_count || 0), 0);
             const progressHTML = totalTarget > 0
                 ? `<div class="calendar-day__activity-progress">${totalCompleted} از ${totalTarget}</div>`
                 : "";
@@ -498,8 +534,7 @@ function buildDayCellHTML(jy, jm, jd) {
 
             bodyHTML = `${progressHTML}${sessionsHTML}`;
 
-            const totalMinutes = timedSessions.length ? getTotalDuration(timedSessions) : 0;
-            durationHTML = `<span class="calendar-day__duration">${formatTotalDuration(totalMinutes)}</span>`;
+            durationHTML = `<span class="calendar-day__duration ${hasUsefulTime ? 'calendar-day__duration--has-time' : ''}">${usefulTimeFormatted}</span>`;
         } else {
             bodyHTML = `<span class="calendar-day__empty">بدون فعالیت</span>`;
             durationHTML = `<span class="calendar-day__duration">00:00</span>`;
@@ -526,9 +561,9 @@ function buildDayCellHTML(jy, jm, jd) {
     `;
 }
 
-// ========================================
-// ساخت گرید کامل ماه
-// ========================================
+// ============================================================
+// Month Grid Builder
+// ============================================================
 
 function buildMonthGridHTML() {
     const monthLength = jalaaliMonthLength(currentJalaaliYear, currentJalaaliMonth);
@@ -577,9 +612,9 @@ function renderCalendarPageToDOM() {
     }
 }
 
-// ========================================
-// ناوبری
-// ========================================
+// ============================================================
+// Navigation
+// ============================================================
 
 function goToPreviousMonth() {
     currentJalaaliMonth -= 1;
@@ -605,9 +640,9 @@ function goToToday() {
     renderCalendarPageToDOM();
 }
 
-// ========================================
-// مودال جزئیات روز
-// ========================================
+// ============================================================
+// Day Detail Modal
+// ============================================================
 
 function buildSessionCardHTML(session) {
     const hasNote = Boolean(session.note);
@@ -636,8 +671,10 @@ function buildUntimedCardHTML(activity, record, date, isFuture) {
     const disabledAttr = isFuture ? 'disabled' : '';
     const disabledClass = isFuture ? 'day-untimed-card__check--disabled' : '';
     
-    const checksHTML = Array.from({ length: activity.targetCount }, (_, index) => {
-        const isChecked = record.completedChecks?.includes(index) || false;
+    const checks = record.completed_checks || [];
+    
+    const checksHTML = Array.from({ length: activity.target_count }, (_, index) => {
+        const isChecked = checks.includes(index) || false;
         return `
             <button
                 class="day-untimed-card__check ${isChecked ? 'day-untimed-card__check--done' : ''} ${disabledClass}"
@@ -654,7 +691,7 @@ function buildUntimedCardHTML(activity, record, date, isFuture) {
         <article class="day-untimed-card ${isFuture ? 'day-untimed-card--future' : ''}" data-activity-id="${activity.id}" data-date="${date}">
             <div class="day-untimed-card__header">
                 <strong class="day-untimed-card__title">${activity.title}</strong>
-                <span class="day-untimed-card__progress">${record.completedCount || 0}/${activity.targetCount}</span>
+                <span class="day-untimed-card__progress">${record.completed_count || 0}/${activity.target_count}</span>
             </div>
             <div class="day-untimed-card__checks">${checksHTML}</div>
         </article>
@@ -770,6 +807,7 @@ function openDayDetailModal(dayEl) {
             
             if (!isFuture) {
                 untimedListEl.querySelectorAll('.day-untimed-card__check').forEach(check => {
+                    check.removeEventListener('click', handleUntimedCheckClick);
                     check.addEventListener('click', handleUntimedCheckClick);
                 });
             }
@@ -799,11 +837,11 @@ function closeDayDetailModal() {
     selectedDayElement = null;
 }
 
-// ========================================
-// هندلر تیک زدن فعالیت‌های بدون زمان در مودال
-// ========================================
+// ============================================================
+// Untimed Check Handler (Updated)
+// ============================================================
 
-function handleUntimedCheckClick(event) {
+async function handleUntimedCheckClick(event) {
     const check = event.currentTarget;
     const card = check.closest('.day-untimed-card');
     if (!card) return;
@@ -812,27 +850,44 @@ function handleUntimedCheckClick(event) {
     const date = card.dataset.date || currentModalDate;
     const checkIndex = Number(check.dataset.checkIndex);
 
-    toggleUntimedCheck(activityId, checkIndex, date);
+    check.disabled = true;
 
-    check.classList.toggle('day-untimed-card__check--done');
-    check.setAttribute('aria-label', check.classList.contains('day-untimed-card__check--done') ? 'انجام شده' : 'انجام نشده');
+    try {
+        const result = await toggleUntimedCheck(activityId, checkIndex, date);
+        
+        if (result) {
+            const isChecked = result.completed_checks?.includes(checkIndex) || false;
+            check.classList.toggle('day-untimed-card__check--done', isChecked);
+            check.setAttribute('aria-label', isChecked ? 'انجام شده' : 'انجام نشده');
 
-    const progressEl = card.querySelector('.day-untimed-card__progress');
-    if (progressEl) {
-        const record = getActivityRecord(activityId, date);
-        const completed = record?.completedCount || 0;
-        const activity = untimedActivities.find(a => a.id === activityId);
-        const target = activity?.targetCount || 0;
-        progressEl.textContent = `${completed}/${target}`;
+            const progressEl = card.querySelector('.day-untimed-card__progress');
+            if (progressEl) {
+                const completed = result.completed_count || 0;
+                const activity = untimedActivities.find(a => Number(a.id) === activityId);
+                const target = activity?.target_count || 0;
+                progressEl.textContent = `${completed}/${target}`;
+            }
+
+            const existingIndex = untimedActivityRecords.findIndex(r => r.id === result.id);
+            if (existingIndex !== -1) {
+                untimedActivityRecords[existingIndex] = result;
+            } else {
+                untimedActivityRecords.push(result);
+            }
+
+            renderCalendarPageToDOM();
+            document.dispatchEvent(new CustomEvent('untimed-activities:changed'));
+        }
+    } catch (error) {
+        // Silently handle errors
+    } finally {
+        check.disabled = false;
     }
-
-    document.dispatchEvent(new CustomEvent('untimed-activities:changed'));
-    renderCalendarPageToDOM();
 }
 
-// ========================================
-// رویدادها
-// ========================================
+// ============================================================
+// Event Listeners
+// ============================================================
 
 document.addEventListener("click", (event) => {
     if (event.target.closest('.calendar-page__nav-btn[aria-label="ماه قبل"]')) {
@@ -941,6 +996,10 @@ document.addEventListener('sessions:changed', () => {
     renderCalendarPageToDOM();
 });
 
+document.addEventListener('timed-activities:changed', () => {
+    renderCalendarPageToDOM();
+});
+
 document.addEventListener('session-note-saved', () => {
     const modal = document.getElementById("dayDetailModal");
     if (modal && modal.classList.contains('is-open') && selectedDayElement) {
@@ -956,9 +1015,9 @@ document.addEventListener('untimed-activities:changed', () => {
     renderCalendarPageToDOM();
 });
 
-// ========================================
-// تابع اصلی صفحه
-// ========================================
+// ============================================================
+// Main Calendar Page Function
+// ============================================================
 
 export function CalendarView() {
     injectDayDetailModal();

@@ -1,6 +1,6 @@
-/* ========================================
+/* ============================================================
    Recent Activities
-======================================== */
+============================================================ */
 
 .recent-activities {
     width: 100%;
@@ -17,9 +17,9 @@
     box-shadow: var(--shadow-sm);
 }
 
-/* ========================================
+/* ============================================================
    Header
-======================================== */
+============================================================ */
 
 .recent-activities__header {
     width: 100%;
@@ -52,9 +52,9 @@
     font-weight: 700;
 }
 
-/* ========================================
-   View All
-======================================== */
+/* ============================================================
+   View All Button
+============================================================ */
 
 .recent-activities__view-all {
     flex-shrink: 0;
@@ -78,9 +78,9 @@
     background-color: rgba(79, 158, 165, 0.05);
 }
 
-/* ========================================
+/* ============================================================
    Content
-======================================== */
+============================================================ */
 
 .recent-activities__content {
     width: 100%;
@@ -109,9 +109,9 @@
     display: none;
 }
 
-/* ========================================
+/* ============================================================
    Session Card
-======================================== */
+============================================================ */
 
 .recent-activity {
     position: relative;
@@ -125,11 +125,7 @@
     padding: 11px 10px 11px 8px;
     border-radius: 10px;
     border: 1px solid var(--activity-color);
-    background-color: color-mix(
-        in srgb,
-        var(--activity-color) 18%,
-        var(--color-background)
-    );
+    background-color: color-mix(in srgb, var(--activity-color) 18%, var(--color-background));
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
     transform: translateY(-1px);
     overflow: hidden;
@@ -137,16 +133,8 @@
 }
 
 .recent-activity:hover {
-    border-color: color-mix(
-        in srgb,
-        var(--activity-color) 55%,
-        var(--color-border)
-    );
-    background-color: color-mix(
-        in srgb,
-        var(--activity-color) 28%,
-        var(--color-background)
-    );
+    border-color: color-mix(in srgb, var(--activity-color) 55%, var(--color-border));
+    background-color: color-mix(in srgb, var(--activity-color) 28%, var(--color-background));
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
     transform: scale(1.01);
 }
@@ -160,9 +148,9 @@
     background-color: var(--activity-color);
 }
 
-/* ========================================
-   Main
-======================================== */
+/* ============================================================
+   Main Content
+============================================================ */
 
 .recent-activity__main {
     min-width: 0;
@@ -204,11 +192,12 @@
     flex-shrink: 0;
     color: var(--color-text-secondary);
     font-size: 9px;
+    font-weight: 500;
 }
 
-/* ========================================
+/* ============================================================
    Session Actions
-======================================== */
+============================================================ */
 
 .recent-activity__actions {
     display: flex;
@@ -248,9 +237,9 @@
     transform: translateY(-1px);
 }
 
-/* ========================================
-   Note
-======================================== */
+/* ============================================================
+   Note Button
+============================================================ */
 
 .recent-activity__note {
     width: 31px;
@@ -273,36 +262,20 @@
 
 .recent-activity__note:hover {
     color: var(--activity-color);
-    border-color: color-mix(
-        in srgb,
-        var(--activity-color) 30%,
-        var(--color-border)
-    );
-    background-color: color-mix(
-        in srgb,
-        var(--activity-color) 7%,
-        var(--color-surface)
-    );
+    border-color: color-mix(in srgb, var(--activity-color) 30%, var(--color-border));
+    background-color: color-mix(in srgb, var(--activity-color) 7%, var(--color-surface));
     transform: translateY(-1px);
 }
 
 .recent-activity__note--has-note {
     color: var(--activity-color);
-    border-color: color-mix(
-        in srgb,
-        var(--activity-color) 25%,
-        var(--color-border)
-    );
-    background-color: color-mix(
-        in srgb,
-        var(--activity-color) 6%,
-        var(--color-surface)
-    );
+    border-color: color-mix(in srgb, var(--activity-color) 25%, var(--color-border));
+    background-color: color-mix(in srgb, var(--activity-color) 6%, var(--color-surface));
 }
 
-/* ========================================
-   Add Session
-======================================== */
+/* ============================================================
+   Add Session Button
+============================================================ */
 
 .recent-activities__add {
     width: calc(100% - 24px);
@@ -341,9 +314,9 @@
    ============================================================
    ============================================================ */
 
-/* =========================================
+/* ============================================================
    Session Modal (Add/Edit)
-========================================= */
+============================================================ */
 
 .session-modal {
     position: fixed;
@@ -476,27 +449,6 @@
     position: relative;
 }
 
-/* ====== استایل select - بدون تغییر رنگ ====== */
-.session-form__select {
-    width: 100%;
-    height: 44px;
-    padding: 0 13px 0 35px;
-    box-sizing: border-box;
-    appearance: none;
-    -webkit-appearance: none;
-    border: 1px solid var(--color-border);
-    border-radius: 10px;
-    outline: none;
-    background: var(--color-background);
-    color: var(--color-text);
-    font-family: inherit;
-    font-size: 12px;
-    cursor: pointer;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-
-/* ====== استایل select برای نمایش بهتر رنگ ====== */
 .session-form__select {
     width: 100%;
     height: 44px;
@@ -515,8 +467,6 @@
     transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
-
-/* ====== وقتی select غیرفعاله ====== */
 .session-form__select:disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -667,9 +617,9 @@
     transform: translateY(-1px);
 }
 
-/* =========================================
+/* ============================================================
    Sessions Modal (View All)
-========================================= */
+============================================================ */
 
 .sessions-modal {
     position: fixed;
@@ -785,6 +735,7 @@
 .sessions-modal__summary {
     flex-shrink: 0;
     display: flex;
+    justify-content: space-around;
     align-items: center;
     gap: 18px;
     padding: 13px 22px;
@@ -794,6 +745,7 @@
 
 .sessions-modal__summary-item {
     display: flex;
+    align-items: center;
     flex-direction: column;
     gap: 3px;
 }
@@ -816,8 +768,11 @@
     background: var(--color-border);
 }
 
+/* ============================================================
+   Add Session Button in Summary
+============================================================ */
+
 .sessions-modal__add {
-    margin-right: auto;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -843,6 +798,39 @@
 .sessions-modal__add-icon {
     font-size: 16px;
     line-height: 1;
+}
+
+/* ============================================================
+   Delete All Button
+============================================================ */
+
+.sessions-modal__delete-all {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 8px 12px;
+    border: 1px solid rgba(201, 75, 75, 0.2);
+    border-radius: 9px;
+    background: rgba(201, 75, 75, 0.06);
+    color: #c94b4b;
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.sessions-modal__delete-all:hover {
+    background: rgba(201, 75, 75, 0.12);
+    border-color: rgba(201, 75, 75, 0.35);
+    transform: translateY(-1px);
+}
+
+.sessions-modal__delete-all:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
 }
 
 .sessions-modal__content {
@@ -901,9 +889,9 @@
     background: var(--color-background);
 }
 
-/* =========================================
+/* ============================================================
    Delete Session Modal
-========================================= */
+============================================================ */
 
 .delete-session-modal {
     position: fixed;
@@ -1079,9 +1067,156 @@
     transform: translateY(-1px);
 }
 
-/* =========================================
+/* ============================================================
+   Delete All Sessions Modal
+============================================================ */
+
+.delete-all-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1250;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    direction: rtl;
+}
+
+.delete-all-modal.is-open {
+    display: flex;
+}
+
+.delete-all-modal__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(20, 24, 28, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.delete-all-modal__box {
+    position: relative;
+    z-index: 1;
+    width: min(420px, 100%);
+    padding: 28px 24px 22px;
+    box-sizing: border-box;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    box-shadow: 0 24px 65px rgba(0, 0, 0, 0.18);
+    text-align: center;
+    animation: delete-all-modal-show 0.2s ease-out;
+}
+
+@keyframes delete-all-modal-show {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.delete-all-modal__icon {
+    width: 52px;
+    height: 52px;
+    margin: 0 auto 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(201, 75, 75, 0.1);
+    border: 1px solid rgba(201, 75, 75, 0.2);
+    color: #c94b4b;
+    font-size: 26px;
+}
+
+.delete-all-modal__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.delete-all-modal__title {
+    margin: 0 0 8px;
+    color: var(--color-text);
+    font-size: 19px;
+    font-weight: 750;
+}
+
+.delete-all-modal__message {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.delete-all-modal__message strong {
+    color: var(--color-text);
+}
+
+.delete-all-modal__warning {
+    margin: 12px 0 0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: rgba(201, 75, 75, 0.06);
+    border: 1px solid rgba(201, 75, 75, 0.1);
+    color: #c94b4b;
+    font-size: 10px;
+    line-height: 1.7;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.delete-all-modal__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.delete-all-modal__cancel,
+.delete-all-modal__confirm {
+    height: 42px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 650;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    flex: 1;
+}
+
+.delete-all-modal__cancel {
+    border: 1px solid var(--color-border);
+    background: transparent;
+    color: var(--color-text-secondary);
+}
+
+.delete-all-modal__cancel:hover {
+    background: var(--color-background);
+    color: var(--color-text);
+}
+
+.delete-all-modal__confirm {
+    border: 1px solid #c94b4b;
+    background: #c94b4b;
+    color: #ffffff;
+}
+
+.delete-all-modal__confirm:hover {
+    background: #b94242;
+    border-color: #b94242;
+    transform: translateY(-1px);
+}
+
+/* ============================================================
    Session Note Modal
-========================================= */
+============================================================ */
 
 .session-note-modal {
     position: fixed;
@@ -1222,80 +1357,9 @@
     color: #fff;
 }
 
-/* =========================================
-   Responsive - All Modals
-========================================= */
-
-@media (max-width: 600px) {
-    .sessions-modal {
-        padding: 12px;
-    }
-    .sessions-modal__box {
-        max-height: calc(100vh - 24px);
-        border-radius: 16px;
-    }
-    .sessions-modal__header {
-        padding: 16px;
-    }
-    .sessions-modal__summary {
-        gap: 12px;
-        padding: 12px 16px;
-    }
-    .sessions-modal__list {
-        max-height: 380px;
-        padding: 12px;
-    }
-    .sessions-modal__footer {
-        padding: 10px 14px;
-    }
-}
-
-@media (max-width: 500px) {
-    .session-modal {
-        padding: 12px;
-    }
-    .session-modal__box {
-        border-radius: 16px;
-    }
-    .session-modal__header {
-        padding: 18px 16px 14px;
-    }
-    .session-form {
-        padding: 16px;
-        gap: 14px;
-    }
-    .session-form__date {
-        gap: 6px;
-    }
-    .session-form__time {
-        gap: 6px;
-    }
-    .session-form__actions {
-        flex-direction: column-reverse;
-    }
-    .session-form__cancel,
-    .session-form__submit {
-        width: 100%;
-        flex: none;
-    }
-}
-
-@media (max-width: 450px) {
-    .delete-session-modal {
-        padding: 12px;
-    }
-    .delete-session-modal__box {
-        padding: 22px 18px 18px;
-        border-radius: 16px;
-    }
-}
-
-
-/* اضافه کردن به انتهای فایل sessions.css */
-
-/* =========================================
+/* ============================================================
    Empty State
-========================================= */
+============================================================ */
 
 .recent-activities__empty,
 .sessions-modal__empty {
@@ -1314,9 +1378,9 @@
     min-height: 200px;
 }
 
-/* =========================================
+/* ============================================================
    Error Modal
-========================================= */
+============================================================ */
 
 .error-modal {
     position: fixed;
@@ -1405,25 +1469,100 @@
     transform: translateY(-1px);
 }
 
-/* =========================================
-   Responsive - Error Modal
-========================================= */
+/* ============================================================
+   Responsive - All Modals
+============================================================ */
 
-@media (max-width: 500px) {
-    .error-modal {
+@media (max-width: 600px) {
+    .sessions-modal {
         padding: 12px;
     }
-    .error-modal__box {
-        padding: 24px 18px 18px;
+    .sessions-modal__box {
+        max-height: calc(100vh - 24px);
         border-radius: 16px;
     }
-    .error-modal__icon {
-        font-size: 32px;
+    .sessions-modal__header {
+        padding: 16px;
     }
-    .error-modal__title {
-        font-size: 16px;
+    .sessions-modal__summary {
+        gap: 12px;
+        padding: 12px 16px;
+        flex-wrap: wrap;
     }
-    .error-modal__message {
-        font-size: 12px;
+    .sessions-modal__list {
+        max-height: 380px;
+        padding: 12px;
+    }
+    .sessions-modal__footer {
+        padding: 10px 14px;
+    }
+}
+
+@media (max-width: 500px) {
+    .session-modal {
+        padding: 12px;
+    }
+    .session-modal__box {
+        border-radius: 16px;
+    }
+    .session-modal__header {
+        padding: 18px 16px 14px;
+    }
+    .session-form {
+        padding: 16px;
+        gap: 14px;
+    }
+    .session-form__date {
+        gap: 6px;
+    }
+    .session-form__time {
+        gap: 6px;
+    }
+    .session-form__actions {
+        flex-direction: column-reverse;
+    }
+    .session-form__cancel,
+    .session-form__submit {
+        width: 100%;
+        flex: none;
+    }
+    .delete-all-modal {
+        padding: 12px;
+    }
+    .delete-all-modal__box {
+        padding: 22px 18px 18px;
+        border-radius: 16px;
+    }
+    .delete-all-modal__icon {
+        width: 44px;
+        height: 44px;
+        font-size: 22px;
+    }
+    .delete-all-modal__title {
+        font-size: 17px;
+    }
+    .delete-all-modal__message {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 450px) {
+    .delete-session-modal {
+        padding: 12px;
+    }
+    .delete-session-modal__box {
+        padding: 22px 18px 18px;
+        border-radius: 16px;
+    }
+}
+
+@media (max-width: 400px) {
+    .sessions-modal__summary {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    .sessions-modal__summary-divider {
+        display: none;
     }
 }

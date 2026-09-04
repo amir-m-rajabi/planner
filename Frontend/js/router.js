@@ -1,16 +1,38 @@
+// File: Frontend/js/router.js
+
 import { DashboardView } from "../pages/dashboard/dashboard-view.js";
 import { ActivitiesView } from "../pages/activities/activities-view.js";
 import { ReportsView } from "../pages/reports/reports-view.js";
 import { CalendarView } from "../pages/calendar/calendar-view.js";
 import { ProfileView } from "../pages/profile/profile-view.js";
 import { AuthView, initAuthPage, isLoggedIn } from "../pages/login_register/auth.js";
-import { renderTimedActivitiesToDOM } from "../Components/dashboard/timed-activities/timed-activities.js"
+import { initTimedActivities } from "../Components/dashboard/timed-activities/timed-activities.js";
 import { initDailyNotes } from "../Components/dashboard/daily-note/daily-note.js";
-import { initUntimedActivities } from "../Components/dashboard/untimed-activities/untimed-activities.js"
-import { initClock } from "../Components/dashboard/clock/clock.js"
-import { renderTimedActivities } from '../pages/activities/activities-view.js';
-import { initProfilePage } from '../pages/profile/profile-view.js'
+import { initUntimedActivities } from "../Components/dashboard/untimed-activities/untimed-activities.js";
+import { initClock } from "../Components/dashboard/clock/clock.js";
+import { initActivitiesPage } from '../pages/activities/activities-view.js';
+import { initProfilePage } from '../pages/profile/profile-view.js';
 import { initReportsPage } from '../pages/reports/reports-view.js';
+import { initCalendar } from '../Components/dashboard/calendar/calendar.js';
+import { loadSessionsFromDatabase } from "../Components/dashboard/sessions/sessions.js";
+
+// ============================================================
+// Initialize Dashboard
+// ============================================================
+
+async function initDashboard() {
+    await loadSessionsFromDatabase();
+
+    initTimedActivities();
+    initUntimedActivities();
+    initDailyNotes();
+    initClock();
+    initCalendar();
+}
+
+// ============================================================
+// Router
+// ============================================================
 
 export function router() {
     const pageContent = document.querySelector("#page-content");
@@ -20,15 +42,14 @@ export function router() {
         case "/":
         case "/Frontend/index.html":
             pageContent.innerHTML = DashboardView();
-            renderTimedActivitiesToDOM()
-            initUntimedActivities()
-            initDailyNotes()
-            initClock()
+            setTimeout(() => {
+                initDashboard();
+            }, 100);
             break;
-           
+
         case "/activities":
             pageContent.innerHTML = ActivitiesView();
-            renderTimedActivities()
+            initActivitiesPage();
             break;
 
         case "/reports":
@@ -45,10 +66,8 @@ export function router() {
                 pageContent.innerHTML = ProfileView();
                 initProfilePage();
             } else {
-                // اگر وارد نشده، صفحه auth با تب ورود نمایش بده
                 pageContent.innerHTML = AuthView();
                 initAuthPage();
-                
                 setTimeout(() => {
                     const loginTab = document.getElementById('loginTabBtn');
                     if (loginTab) loginTab.click();
@@ -61,7 +80,7 @@ export function router() {
         case "/auth":
             pageContent.innerHTML = AuthView();
             initAuthPage();
-            
+
             setTimeout(() => {
                 const mode = path === "/register" ? "register" : "login";
                 const tabBtn = document.getElementById(mode === 'login' ? 'loginTabBtn' : 'registerTabBtn');
@@ -73,7 +92,8 @@ export function router() {
             pageContent.innerHTML = `
                 <section class="page-not-found">
                     <h1>صفحه پیدا نشد</h1>
-                    <p>این مسیر هنوز ساخته نشده است.</p>
+                    <p>مسیر ${path} پیدا نشد.</p>
+                    <a href="/Frontend/index.html" data-route="/" style="color: var(--color-primary);">بازگشت به صفحه اصلی</a>
                 </section>
             `;
     }

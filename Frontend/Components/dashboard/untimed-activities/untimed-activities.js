@@ -1,8 +1,29 @@
-// ========================================
-// Mock Data - Untimed Activities
-// ========================================
+// File: Components/dashboard/untimed-activities/untimed-activities.js
+
+import { UntimedActivitiesAPI, UntimedRecordsAPI } from "../../../js/api.js";
+
+// ============================================================
+// State
+// ============================================================
+
+export let untimedActivities = [];
+export let untimedActivityRecords = [];
+let untimedActivityBeingEdited = null;
+let currentViewDate = null;
+let activitiesLoaded = false;
+
+// ============================================================
+// Date Helpers
+// ============================================================
 
 function formatDateKey(date) {
+    if (!date) {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+        const day = String(today.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+    }
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
@@ -11,145 +32,222 @@ function formatDateKey(date) {
 
 export const CURRENT_DATE = formatDateKey(new Date());
 
-export const untimedActivities = [
-    {
-        id: 1,
-        title: "آب خوردن",
-        targetCount: 8,
-        isActive: true,
-        archived: false,
-        createdAt: "2026-08-28",
-        updatedAt: null
-    },
-    {
-        id: 2,
-        title: "نماز",
-        targetCount: 5,
-        isActive: true,
-        archived: false,
-        createdAt: "2026-08-28",
-        updatedAt: null
-    },
-    {
-        id: 3,
-        title: "مسواک",
-        targetCount: 1,
-        isActive: true,
-        archived: false,
-        createdAt: "2026-08-28",
-        updatedAt: null
-    },
-    {
-        id: 4,
-        title: "استراحت کوتاه",
-        targetCount: 3,
-        isActive: true,
-        archived: false,
-        createdAt: "2026-08-28",
-        updatedAt: null
+function getUserId() {
+    const session = JSON.parse(localStorage.getItem('auth:session')) || {};
+    return session.userId;
+}
+
+// ============================================================
+// Load Activities from API
+// ============================================================
+
+async function loadActivitiesFromAPI() {
+    try {
+        const userId = getUserId();
+        if (!userId) {
+            untimedActivities = [];
+            untimedActivityRecords = [];
+            activitiesLoaded = true;
+            return;
+        }
+
+        const activities = await UntimedActivitiesAPI.getAll(userId);
+        untimedActivities = activities || [];
+
+        untimedActivityRecords = [];
+        for (const activity of untimedActivities) {
+            try {
+                const records = await UntimedRecordsAPI.getByActivity(activity.id);
+                if (records && records.length > 0) {
+                    records.forEach(record => {
+                        if (!record.completed_checks) {
+                            record.completed_checks = [];
+                        }
+                        if (!record.completed_count) {
+                            record.completed_count = 0;
+                        }
+                    });
+                    untimedActivityRecords.push(...records);
+                }
+            } catch (err) {
+                // Silently handle individual record errors
+            }
+        }
+
+        activitiesLoaded = true;
+
+    } catch (error) {
+        untimedActivities = [];
+        untimedActivityRecords = [];
+        activitiesLoaded = true;
     }
-];
+}
 
-// ========================================
-// Mock Data - Daily Records
-// ========================================
-
-export const untimedActivityRecords = [
-    {
-        id: 1,
-        activityId: 1,
-        recordDate: CURRENT_DATE,
-        completedCount: 5,
-        completedChecks: [0, 1, 2, 3, 4]
-    },
-    {
-        id: 2,
-        activityId: 2,
-        recordDate: CURRENT_DATE,
-        completedCount: 3,
-        completedChecks: [0, 3, 4]
-    },
-    {
-        id: 3,
-        activityId: 3,
-        recordDate: CURRENT_DATE,
-        completedCount: 1,
-        completedChecks: [0]
-    },
-    {
-        id: 4,
-        activityId: 4,
-        recordDate: CURRENT_DATE,
-        completedCount: 1,
-        completedChecks: [0]
-    }
-];
-
-let untimedActivityBeingEdited = null;
-let currentViewDate = CURRENT_DATE;
-
-// ========================================
-// Get Activity Record For Date
-// ========================================
+// ============================================================
+// Get Activity Record
+// ============================================================
 
 export function getActivityRecord(activityId, date = CURRENT_DATE) {
-    return untimedActivityRecords.find(
-        record =>
-            record.activityId === activityId &&
-            record.recordDate === date
-    );
-}
-
-// ========================================
-// Toggle Untimed Check
-// ========================================
-
-export function toggleUntimedCheck(activityId, checkIndex, date = CURRENT_DATE) {
-    let record = getActivityRecord(activityId, date);
-
-    if (!record) {
-        record = {
-            id: Date.now() + Math.random() * 1000,
-            activityId: activityId,
-            recordDate: date,
-            completedCount: 0,
-            completedChecks: []
-        };
-        untimedActivityRecords.push(record);
-    }
-
-    const checkPosition = record.completedChecks.indexOf(checkIndex);
-
-    if (checkPosition === -1) {
-        record.completedChecks.push(checkIndex);
+    let dateStr = date;
+    if (date instanceof Date) {
+        const d = date;
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        dateStr = `${year}-${month}-${day}`;
+    } else if (typeof date === 'string' && date.includes('T')) {
+        dateStr = date.split('T')[0];
+    } else if (typeof date === 'string' && date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        dateStr = date;
     } else {
-        record.completedChecks.splice(checkPosition, 1);
+        dateStr = CURRENT_DATE;
     }
 
-    record.completedCount = record.completedChecks.length;
-    record.completedChecks.sort((a, b) => a - b);
+    const result = untimedActivityRecords.find(record => {
+        let recordDateStr = record.record_date;
+        if (record.record_date && record.record_date.includes('T')) {
+            recordDateStr = record.record_date.split('T')[0];
+        } else if (record.record_date && !record.record_date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            const d = new Date(record.record_date);
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            recordDateStr = `${year}-${month}-${day}`;
+        }
+        return Number(record.activity_id) === Number(activityId) && 
+               recordDateStr === dateStr;
+    });
 
-    return record;
+    return result;
 }
 
-// ========================================
+// ============================================================
+// Toggle Untimed Check
+// ============================================================
+
+export async function toggleUntimedCheck(activityId, checkIndex, date = CURRENT_DATE) {
+    try {
+        const userId = getUserId();
+        if (!userId) {
+            return null;
+        }
+
+        let dateStr = date;
+        if (date instanceof Date) {
+            const d = date;
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            dateStr = `${year}-${month}-${day}`;
+        } else if (typeof date === 'string' && date.includes('T')) {
+            dateStr = date.split('T')[0];
+        } else if (typeof date === 'string' && date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            dateStr = date;
+        } else {
+            dateStr = CURRENT_DATE;
+        }
+
+        const today = new Date();
+        const todayStr = formatDateKey(today);
+        if (dateStr > todayStr) {
+            return null;
+        }
+
+        let record = null;
+        const allRecords = await UntimedRecordsAPI.getByActivity(activityId);
+
+        const foundRecord = allRecords.find(r => {
+            let rDate = r.record_date;
+            if (rDate && rDate.includes('T')) {
+                rDate = rDate.split('T')[0];
+            } else if (rDate && !rDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                const d = new Date(rDate);
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                rDate = `${year}-${month}-${day}`;
+            }
+            return rDate === dateStr;
+        });
+
+        if (foundRecord) {
+            record = foundRecord;
+            const existingIndex = untimedActivityRecords.findIndex(r => r.id === record.id);
+            if (existingIndex === -1) {
+                untimedActivityRecords.push(record);
+            } else {
+                untimedActivityRecords[existingIndex] = record;
+            }
+        }
+
+        let completedChecks = [];
+        if (record) {
+            completedChecks = [...(record.completed_checks || [])];
+        }
+
+        const checkPosition = completedChecks.indexOf(checkIndex);
+        if (checkPosition === -1) {
+            completedChecks.push(checkIndex);
+        } else {
+            completedChecks.splice(checkPosition, 1);
+        }
+        completedChecks.sort((a, b) => a - b);
+
+        let result;
+        if (record) {
+            result = await UntimedRecordsAPI.update(record.id, completedChecks);
+            const index = untimedActivityRecords.findIndex(r => r.id === record.id);
+            if (index !== -1) {
+                untimedActivityRecords[index] = result;
+            }
+        } else {
+            result = await UntimedRecordsAPI.create(activityId, dateStr, completedChecks);
+            untimedActivityRecords.push(result);
+        }
+
+        updateUntimedActivityInDOM(activityId, dateStr);
+
+        return result;
+
+    } catch (error) {
+        return null;
+    }
+}
+
+// ============================================================
 // Create Untimed Activity HTML
-// ========================================
+// ============================================================
 
 function createUntimedActivityHTML(activity, date = CURRENT_DATE) {
-    const record = getActivityRecord(activity.id, date);
-    const completedCount = record?.completedCount ?? 0;
+    let dateStr = date;
+    if (date instanceof Date) {
+        dateStr = formatDateKey(date);
+    } else if (typeof date === 'string' && date.includes('T')) {
+        dateStr = date.split('T')[0];
+    }
+
+    const record = getActivityRecord(activity.id, dateStr);
+    const completedCount = record?.completed_count ?? 0;
+    const target = Number(activity.target_count) || Number(activity.targetCount) || 0;
+
+    const today = new Date();
+    const todayStr = formatDateKey(today);
+    const isFuture = dateStr > todayStr;
 
     const checks = Array.from(
-        { length: activity.targetCount },
+        { length: target },
         (_, index) => {
-            const isCompleted = record?.completedChecks?.includes(index) ?? false;
+            const isCompleted = record?.completed_checks?.includes(index) ?? false;
+            const disabled = isFuture ? 'disabled' : '';
+            const disabledClass = isFuture ? 'untimed-activity__check--disabled' : '';
+
             return `
                 <button
                     type="button"
-                    class="untimed-activity__check ${isCompleted ? 'untimed-activity__check--completed' : ''}"
+                    class="untimed-activity__check ${isCompleted ? 'untimed-activity__check--completed' : ''} ${disabledClass}"
                     data-check-index="${index}"
                     aria-label="${isCompleted ? 'انجام شده' : 'انجام نشده'}"
+                    ${disabled}
                 ></button>
             `;
         }
@@ -159,11 +257,12 @@ function createUntimedActivityHTML(activity, date = CURRENT_DATE) {
         <article
             class="untimed-activity"
             data-activity-id="${activity.id}"
-            data-date="${date}"
+            data-date="${dateStr}"
         >
             <div class="untimed-activity__info">
                 <h3 class="untimed-activity__title">${activity.title}</h3>
-                <span class="untimed-activity__progress">${completedCount}/${activity.targetCount}</span>
+                <span class="untimed-activity__progress">${completedCount}/${target}</span>
+                ${isFuture ? `<span class="untimed-activity__future-badge">🔮 آینده</span>` : ''}
             </div>
 
             <div
@@ -177,84 +276,95 @@ function createUntimedActivityHTML(activity, date = CURRENT_DATE) {
     `;
 }
 
-// ========================================
+// ============================================================
 // Update Single Untimed Activity
-// ========================================
+// ============================================================
 
 export function updateUntimedActivityInDOM(activityId, date = CURRENT_DATE) {
-    const activity = untimedActivities.find(item => item.id === activityId);
+    const activity = untimedActivities.find(item => Number(item.id) === activityId);
     if (!activity) return;
 
     const card = document.querySelector(`.untimed-activity[data-activity-id="${activityId}"]`);
     if (!card) return;
 
     const newHTML = createUntimedActivityHTML(activity, date);
-    
+
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = newHTML;
     const newCard = tempDiv.firstElementChild;
-    
+
     if (newCard) {
         card.replaceWith(newCard);
-        
+
         newCard.querySelectorAll('.untimed-activity__check').forEach(check => {
             check.addEventListener('click', handleSingleCheckClick);
         });
     }
 }
 
-// ========================================
+// ============================================================
 // Handle Single Check Click
-// ========================================
+// ============================================================
 
-function handleSingleCheckClick(event) {
+async function handleSingleCheckClick(event) {
     const check = event.currentTarget;
     const activityCard = check.closest('.untimed-activity');
     if (!activityCard) return;
 
     const activityId = Number(activityCard.dataset.activityId);
-    const activity = untimedActivities.find(item => item.id === activityId);
+    const activity = untimedActivities.find(item => Number(item.id) === activityId);
     if (!activity) return;
 
     const checkIndex = Number(check.dataset.checkIndex);
-    const date = activityCard.dataset.date || CURRENT_DATE;
 
-    toggleUntimedCheck(activityId, checkIndex, date);
+    let date = activityCard.dataset.date || CURRENT_DATE;
+    if (typeof date !== 'string' || date.includes('T')) {
+        date = formatDateKey(new Date(date));
+    }
+
+    await toggleUntimedCheck(activityId, checkIndex, date);
     updateUntimedActivityInDOM(activityId, date);
 }
 
-// ========================================
+// ============================================================
 // Render Untimed Activities
-// ========================================
+// ============================================================
 
 function renderUntimedActivities(date = CURRENT_DATE) {
+    if (!activitiesLoaded) {
+        return '<div class="untimed-activities__loading">در حال بارگذاری...</div>';
+    }
+
+    if (untimedActivities.length === 0) {
+        return '';
+    }
+
     return untimedActivities
-        .filter(activity => activity.isActive && !activity.archived)
+        .filter(activity => activity.is_active !== false && !activity.archived)
         .map(activity => createUntimedActivityHTML(activity, date))
         .join("");
 }
 
-// ========================================
+// ============================================================
 // Render Untimed Activities To DOM
-// ========================================
+// ============================================================
 
-export function renderUntimedActivitiesToDOM(date = CURRENT_DATE) {
+export async function renderUntimedActivitiesToDOM(date = CURRENT_DATE) {
     const list = document.querySelector(".untimed-activities__list");
     if (!list) return;
 
     currentViewDate = date;
 
+    await loadActivitiesFromAPI();
+
     const activeActivities = untimedActivities.filter(
-        activity => activity.isActive && !activity.archived
+        activity => activity.is_active !== false && !activity.archived
     );
 
     if (activeActivities.length === 0) {
         list.innerHTML = `
             <div class="untimed-activities__empty">
                 <p>هیچ فعالیتی برای این روز تعریف نشده است.</p>
-                <button type="button" class="untimed-activities__empty-add" data-action="create-untimed">
-                    + افزودن فعالیت جدید
-                </button>
             </div>
         `;
         return;
@@ -262,14 +372,18 @@ export function renderUntimedActivitiesToDOM(date = CURRENT_DATE) {
 
     list.innerHTML = renderUntimedActivities(date);
 
-    list.querySelectorAll('.untimed-activity__check').forEach(check => {
-        check.addEventListener('click', handleSingleCheckClick);
-    });
+    setTimeout(() => {
+        const checks = list.querySelectorAll('.untimed-activity__check');
+        checks.forEach(check => {
+            check.removeEventListener('click', handleSingleCheckClick);
+            check.addEventListener('click', handleSingleCheckClick);
+        });
+    }, 100);
 }
 
-// ========================================
+// ============================================================
 // Untimed Activity Form Modal
-// ========================================
+// ============================================================
 
 export function UntimedActivityForm() {
     return `
@@ -353,9 +467,9 @@ export function UntimedActivityForm() {
     `;
 }
 
-// ========================================
-// Open Untimed Activity Form
-// ========================================
+// ============================================================
+// Open/Close Functions
+// ============================================================
 
 export function openUntimedActivityForm(activity = null) {
     const form = document.querySelector('.activity-form[data-activity-type="untimed"]');
@@ -374,7 +488,7 @@ export function openUntimedActivityForm(activity = null) {
         if (descriptionEl) descriptionEl.textContent = "عنوان یا هدف فعالیت را ویرایش کنید.";
         if (submitTextEl) submitTextEl.textContent = "ذخیره تغییرات";
         if (titleInput) titleInput.value = activity.title;
-        if (targetInput) targetInput.value = activity.targetCount;
+        if (targetInput) targetInput.value = activity.target_count || activity.targetCount;
     } else {
         if (titleEl) titleEl.textContent = "ایجاد فعالیت بدون زمان";
         if (descriptionEl) descriptionEl.textContent = "فعالیت خود را ایجاد کنید تا بتوانید انجام آن را ثبت و پیگیری کنید.";
@@ -386,10 +500,6 @@ export function openUntimedActivityForm(activity = null) {
     form.classList.add("is-open");
 }
 
-// ========================================
-// Close Untimed Activity Form
-// ========================================
-
 function closeUntimedActivityForm() {
     const form = document.querySelector('.activity-form[data-activity-type="untimed"]');
     if (!form) return;
@@ -398,11 +508,24 @@ function closeUntimedActivityForm() {
     untimedActivityBeingEdited = null;
 }
 
-// ========================================
-// Handle Untimed Activity Form Actions
-// ========================================
+// ============================================================
+// Event Listeners
+// ============================================================
 
-function handleUntimedActivityFormActions(event) {
+// Add Activity
+document.addEventListener("click", (event) => {
+    const addButton = event.target.closest(
+        '.untimed-activities__add, [data-action="create-untimed"]'
+    );
+
+    if (!addButton) return;
+
+    event.preventDefault();
+    openUntimedActivityForm();
+});
+
+// Close Form
+document.addEventListener("click", (event) => {
     const actionButton = event.target.closest('[data-action="close-form"], [data-action="cancel"]');
     if (!actionButton) return;
 
@@ -410,51 +533,72 @@ function handleUntimedActivityFormActions(event) {
     if (!form) return;
 
     closeUntimedActivityForm();
-}
+});
 
-// ========================================
-// Handle Untimed Activity Form Submit
-// ========================================
+// Escape Key
+document.addEventListener('keyup', (event) => {
+    if (event.key === 'Escape') {
+        closeUntimedActivityForm();
+    }
+});
 
-function handleUntimedActivityFormSubmit(event) {
+// Submit Form
+document.addEventListener("submit", async (event) => {
     const form = event.target.closest("#untimed-activity-form");
     if (!form) return;
 
     event.preventDefault();
 
-    const formData = new FormData(form);
-    const title = formData.get("title")?.trim();
-    const target = Number(formData.get("target"));
+    const title = form.querySelector("#untimed-activity-title").value.trim();
+    const target = Number(form.querySelector("#untimed-activity-target").value);
 
-    if (!title || !target) return;
-
-    if (untimedActivityBeingEdited) {
-        untimedActivityBeingEdited.title = title;
-        untimedActivityBeingEdited.targetCount = target;
-        untimedActivityBeingEdited.updatedAt = new Date().toISOString();
-    } else {
-        const newActivity = {
-            id: Date.now() + Math.random() * 1000,
-            title: title,
-            targetCount: target,
-            isActive: true,
-            archived: false,
-            createdAt: new Date().toISOString(),
-            updatedAt: null
-        };
-        untimedActivities.push(newActivity);
+    if (!title || !target) {
+        alert('لطفاً عنوان و هدف فعالیت را وارد کنید');
+        return;
     }
 
+    try {
+        const userId = getUserId();
+        if (!userId) {
+            alert('لطفاً وارد حساب کاربری خود شوید');
+            return;
+        }
+
+        if (untimedActivityBeingEdited) {
+            await UntimedActivitiesAPI.update(untimedActivityBeingEdited.id, {
+                title: title,
+                target_count: target
+            });
+        } else {
+            await UntimedActivitiesAPI.create(userId, title, target);
+        }
+
+        await renderUntimedActivitiesToDOM(currentViewDate);
+        document.dispatchEvent(new CustomEvent("untimed-activities:changed"));
+
+        form.reset();
+        closeUntimedActivityForm();
+
+    } catch (error) {
+        alert(error.message || 'خطا در ذخیره فعالیت');
+    }
+});
+
+// Day Selection
+document.addEventListener("day:selected", (event) => {
+    const { gy, gm, gd } = event.detail;
+    const dateKey = `${gy}-${String(gm).padStart(2, "0")}-${String(gd).padStart(2, "0")}`;
+    renderUntimedActivitiesToDOM(dateKey);
+});
+
+// Activity Changes
+document.addEventListener("untimed-activities:changed", () => {
     renderUntimedActivitiesToDOM(currentViewDate);
-    document.dispatchEvent(new CustomEvent("untimed-activities:changed"));
+});
 
-    form.reset();
-    closeUntimedActivityForm();
-}
-
-// ========================================
-// UnTimeActivities - تابع اصلی
-// ========================================
+// ============================================================
+// Main Component
+// ============================================================
 
 export function UnTimeActivies() {
     return `
@@ -480,50 +624,10 @@ export function UnTimeActivies() {
     `;
 }
 
-// ========================================
-// Initialize Untimed Activities
-// ========================================
+// ============================================================
+// Initialization
+// ============================================================
 
 export function initUntimedActivities() {
     renderUntimedActivitiesToDOM();
-    document.addEventListener("submit", handleUntimedActivityFormSubmit);
-    document.addEventListener("click", handleUntimedActivityFormActions);
-    document.addEventListener('keyup', (event) => {
-        if (event.key === 'Escape') {
-            closeUntimedActivityForm();
-        }
-    });
 }
-
-// ========================================
-// باز کردن مودال ایجاد فعالیت
-// ========================================
-
-document.addEventListener("click", (event) => {
-    const addButton = event.target.closest(
-        '.untimed-activities__add, [data-action="create-untimed"]'
-    );
-
-    if (!addButton) return;
-    
-    event.preventDefault();
-    openUntimedActivityForm();
-});
-
-// ========================================
-// گوش‌دادن به انتخاب روز از تقویم
-// ========================================
-
-document.addEventListener("day:selected", (event) => {
-    const { gy, gm, gd } = event.detail;
-    const dateKey = `${gy}-${String(gm).padStart(2, "0")}-${String(gd).padStart(2, "0")}`;
-    renderUntimedActivitiesToDOM(dateKey);
-});
-
-// ========================================
-// گوش دادن به تغییرات فعالیت‌ها
-// ========================================
-
-document.addEventListener("untimed-activities:changed", () => {
-    renderUntimedActivitiesToDOM(currentViewDate);
-});

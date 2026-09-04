@@ -1,88 +1,104 @@
+// File: Frontend/Components/header/header.js
+
 const HEADER_STORAGE_KEYS = {
-  avatar: "profile:avatarSrc",
-  theme: "profile:theme",
+    avatar: "profile:avatarSrc",
+    theme: "profile:theme",
 };
 
 const HEADER_DEFAULT_AVATAR_MALE = "/Frontend/assets/images/profile-default-male.png";
 const HEADER_DEFAULT_AVATAR_FEMALE = "/Frontend/assets/images/profile-default-female.png";
 
-/* اعمال فوری تم ذخیره‌شده */
+// Apply saved theme immediately
 (function initHeaderTheme() {
-  const theme = localStorage.getItem(HEADER_STORAGE_KEYS.theme) || "light";
-  document.documentElement.classList.toggle("theme-dark", theme === "dark");
+    const theme = localStorage.getItem(HEADER_STORAGE_KEYS.theme) || "light";
+    document.documentElement.classList.toggle("theme-dark", theme === "dark");
 })();
 
-// ==================================================
-// تابع دریافت تصویر پیش‌فرض بر اساس جنسیت
-// ==================================================
+// ============================================================
+// Get Default Avatar by Gender
+// ============================================================
 
 function getDefaultAvatar(gender) {
-  if (gender === 'female') {
-    return HEADER_DEFAULT_AVATAR_FEMALE;
-  }
-  return HEADER_DEFAULT_AVATAR_MALE;
+    if (gender === 'female') {
+        return HEADER_DEFAULT_AVATAR_FEMALE;
+    }
+    return HEADER_DEFAULT_AVATAR_MALE;
 }
 
-// ==================================================
-// تابع دریافت تصویر پروفایل از localStorage
-// ==================================================
+// ============================================================
+// Get Header Avatar from localStorage
+// ============================================================
 
 function getHeaderAvatar() {
-  const userProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
-  const gender = userProfile.gender || 'male';
-  const defaultAvatar = getDefaultAvatar(gender);
-  
-  if (userProfile.avatar) {
-    const defaultMale = '/Frontend/assets/images/profile-default-male.png';
-    const defaultFemale = '/Frontend/assets/images/profile-default-female.png';
-    
-    if (userProfile.avatar === defaultMale || userProfile.avatar === defaultFemale) {
-      const correctDefault = getDefaultAvatar(gender);
-      userProfile.avatar = correctDefault;
-      localStorage.setItem('userProfile', JSON.stringify(userProfile));
-      return correctDefault;
+    const userProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
+    const gender = userProfile.gender || 'male';
+    const defaultAvatar = gender === 'female'
+        ? '/Frontend/assets/images/profile-default-female.png'
+        : '/Frontend/assets/images/profile-default-male.png';
+
+    if (userProfile.avatar) {
+        return `http://localhost:3000${userProfile.avatar}`;
     }
-    
-    return userProfile.avatar;
-  }
-  
-  const oldAvatar = localStorage.getItem(HEADER_STORAGE_KEYS.avatar);
-  if (oldAvatar) {
-    userProfile.avatar = oldAvatar;
-    localStorage.setItem('userProfile', JSON.stringify(userProfile));
-    return oldAvatar;
-  }
-  
-  return defaultAvatar;
+
+    return defaultAvatar;
 }
 
-// ==================================================
-// مدیریت وضعیت آنلاین/آفلاین کاربر
-// ==================================================
+// ============================================================
+// Update Online Status
+// ============================================================
 
 function updateOnlineStatus() {
-  const statusIndicator = document.getElementById('headerProfileStatus');
-  if (!statusIndicator) return;
+    const statusIndicator = document.getElementById('headerProfileStatus');
+    if (!statusIndicator) return;
 
-  if (navigator.onLine) {
-    statusIndicator.classList.remove('profile-status--offline');
-    statusIndicator.setAttribute('title', 'آنلاین');
-  } else {
-    statusIndicator.classList.add('profile-status--offline');
-    statusIndicator.setAttribute('title', 'آفلاین');
-  }
+    if (navigator.onLine) {
+        statusIndicator.classList.remove('profile-status--offline');
+        statusIndicator.setAttribute('title', 'آنلاین');
+    } else {
+        statusIndicator.classList.add('profile-status--offline');
+        statusIndicator.setAttribute('title', 'آفلاین');
+    }
 }
 
-// گوش دادن به تغییرات شبکه مرورگر
 window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 
-export function Header(){
+// ============================================================
+// Update Active Navigation Link
+// ============================================================
+
+export function updateActiveNav(path) {
+    document.querySelectorAll('.navigation__link').forEach(link => {
+        link.classList.remove('navigation__link--active');
+    });
+
+    document.querySelector('.profile')?.classList.remove('profile--active');
+
+    if (path === '/profile') {
+        document.querySelector('.profile')?.classList.add('profile--active');
+        return;
+    }
+
+    const targetLink = document.querySelector(`.navigation__link[data-route="${path}"]`);
+    if (targetLink) {
+        targetLink.classList.add('navigation__link--active');
+    } else {
+        const dashboardLink = document.querySelector(`.navigation__link[data-route="/"]`);
+        if (dashboardLink) {
+            dashboardLink.classList.add('navigation__link--active');
+        }
+    }
+}
+
+// ============================================================
+// Header Component
+// ============================================================
+
+export function Header() {
     const avatarSrc = getHeaderAvatar();
     const isOnline = navigator.onLine;
     const isLoggedIn = localStorage.getItem('auth:session') ? true : false;
 
-    // دکمه‌های ورود/ثبت‌نام
     const authButtons = `
         <div class="auth-buttons" style="${isLoggedIn ? 'display: none;' : ''}">
             <a href="/login" data-route="/login" class="auth-button auth-button--login">ورود</a>
@@ -90,7 +106,6 @@ export function Header(){
         </div>
     `;
 
-    // پروفایل کاربر
     const profileWrapper = `
         <div class="profile-wrapper" style="${!isLoggedIn ? 'display: none;' : ''}">
             <a href="/profile" data-route="/profile" class="profile">
@@ -101,8 +116,8 @@ export function Header(){
                     id="headerProfileImage"
                 />
             </a>
-            <span 
-                class="profile-status ${!isOnline ? 'profile-status--offline' : ''}" 
+            <span
+                class="profile-status ${!isOnline ? 'profile-status--offline' : ''}"
                 id="headerProfileStatus"
                 title="${isOnline ? 'آنلاین' : 'آفلاین'}"
             ></span>
@@ -151,7 +166,7 @@ export function Header(){
                         پایان
                     </button>
                 </div>
-                
+
                 <nav class="navigation" aria-label="منوی اصلی">
                     <ul class="navigation__list">
                         <li class="navigation__item">
@@ -181,9 +196,13 @@ export function Header(){
     `;
 }
 
+// ============================================================
+// Click Events
+// ============================================================
+
 document.addEventListener('click', (event) => {
     const navLink = event.target.closest('.navigation__link');
-    
+
     if (navLink) {
         document.querySelectorAll('.navigation__link').forEach(link => {
             link.classList.remove('navigation__link--active');
@@ -192,7 +211,7 @@ document.addEventListener('click', (event) => {
         document.querySelector('.profile')?.classList.remove('profile--active');
         return;
     }
-    
+
     if (event.target.closest('.logo')) {
         document.querySelectorAll('.navigation__link').forEach(link => {
             link.classList.remove('navigation__link--active');
@@ -201,7 +220,7 @@ document.addEventListener('click', (event) => {
         document.querySelector('.profile')?.classList.remove('profile--active');
         return;
     }
-    
+
     if (event.target.closest('.profile')) {
         document.querySelectorAll('.navigation__link').forEach(link => {
             link.classList.remove('navigation__link--active');
@@ -211,38 +230,38 @@ document.addEventListener('click', (event) => {
     }
 });
 
-// ==================================================
-// تابع بروزرسانی تصویر هدر
-// ==================================================
+// ============================================================
+// Update Header Avatar
+// ============================================================
 
 export function updateHeaderAvatar(avatarSrc) {
     const headerAvatar = document.getElementById('headerProfileImage');
-    
+
     if (headerAvatar && avatarSrc) {
         headerAvatar.src = avatarSrc;
     }
-    
+
     localStorage.setItem(HEADER_STORAGE_KEYS.avatar, avatarSrc);
-    
+
     const userProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
     userProfile.avatar = avatarSrc;
     localStorage.setItem('userProfile', JSON.stringify(userProfile));
 }
 
-// ==================================================
-// تابع همگام‌سازی کامل هدر با پروفایل
-// ==================================================
+// ============================================================
+// Sync Header with Profile
+// ============================================================
 
 export function syncHeaderWithProfile() {
     const userProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
     const gender = userProfile.gender || 'male';
     const defaultAvatar = getDefaultAvatar(gender);
-    
+
     let avatar = userProfile.avatar || defaultAvatar;
-    
+
     const defaultMale = '/Frontend/assets/images/profile-default-male.png';
     const defaultFemale = '/Frontend/assets/images/profile-default-female.png';
-    
+
     if (avatar === defaultMale || avatar === defaultFemale) {
         const correctDefault = getDefaultAvatar(gender);
         if (avatar !== correctDefault) {
@@ -251,20 +270,20 @@ export function syncHeaderWithProfile() {
             localStorage.setItem('userProfile', JSON.stringify(userProfile));
         }
     }
-    
+
     const headerAvatar = document.getElementById('headerProfileImage');
     if (headerAvatar) {
         headerAvatar.src = avatar;
     }
-    
+
     localStorage.setItem(HEADER_STORAGE_KEYS.avatar, avatar);
-    
+
     updateOnlineStatus();
 }
 
-// ==================================================
-// گوش دادن به event بروزرسانی آواتار از صفحه پروفایل
-// ==================================================
+// ============================================================
+// Avatar Updated Event Listener
+// ============================================================
 
 document.addEventListener('profile:avatar-updated', (event) => {
     const avatarSrc = event.detail?.src;
@@ -277,9 +296,9 @@ document.addEventListener('profile:avatar-updated', (event) => {
     }
 });
 
-// ==================================================
-// گوش دادن به تغییرات localStorage برای همگام‌سازی
-// ==================================================
+// ============================================================
+// Storage Change Listener
+// ============================================================
 
 window.addEventListener('storage', (e) => {
     if (e.key === 'userProfile') {
@@ -289,10 +308,10 @@ window.addEventListener('storage', (e) => {
                 const gender = newProfile.gender || 'male';
                 const defaultAvatar = getDefaultAvatar(gender);
                 let avatar = newProfile.avatar || defaultAvatar;
-                
+
                 const defaultMale = '/Frontend/assets/images/profile-default-male.png';
                 const defaultFemale = '/Frontend/assets/images/profile-default-female.png';
-                
+
                 if (avatar === defaultMale || avatar === defaultFemale) {
                     const correctDefault = getDefaultAvatar(gender);
                     if (avatar !== correctDefault) {
@@ -301,7 +320,7 @@ window.addEventListener('storage', (e) => {
                         localStorage.setItem('userProfile', JSON.stringify(newProfile));
                     }
                 }
-                
+
                 const headerAvatar = document.getElementById('headerProfileImage');
                 if (headerAvatar) {
                     headerAvatar.src = avatar;
@@ -314,24 +333,24 @@ window.addEventListener('storage', (e) => {
     }
 });
 
-// ==================================================
-// همگام‌سازی اولیه هنگام لود صفحه
-// ==================================================
+// ============================================================
+// DOM Ready
+// ============================================================
 
 document.addEventListener('DOMContentLoaded', function() {
     syncHeaderWithProfile();
 });
 
-// ==================================================
-// تابع بروزرسانی دکمه‌های هدر از بیرون
-// ==================================================
+// ============================================================
+// Update Header Buttons
+// ============================================================
 
 export function updateHeaderButtons() {
     const isLoggedIn = localStorage.getItem('auth:session') ? true : false;
-    
+
     const authButtons = document.querySelector('.auth-buttons');
     const profileWrapper = document.querySelector('.profile-wrapper');
-    
+
     if (authButtons) {
         authButtons.style.display = isLoggedIn ? 'none' : '';
     }

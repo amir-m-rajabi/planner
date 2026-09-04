@@ -1,8 +1,8 @@
-// فایل: /Frontend/pages/login_register/auth.js
+// File: /Frontend/pages/login_register/auth.js
 
-// ========================================
-// داده‌های استان‌ها
-// ========================================
+// ============================================================
+// Province Data
+// ============================================================
 
 const PROVINCE_NAMES = {
     "alborz": "البرز",
@@ -35,29 +35,32 @@ const PROVINCE_NAMES = {
     "yazd": "یزد"
 };
 
-// ========================================
-// وضعیت فعلی
-// ========================================
+// ============================================================
+// State Management
+// ============================================================
 
 let currentMode = "login"; // "login" | "register"
 
-// ========================================
-// توابع کمکی
-// ========================================
+// ============================================================
+// Utility Functions
+// ============================================================
 
+/**
+ * Validate username format (3-20 chars, alphanumeric and underscore)
+ */
 function isValidUsername(username) {
     return /^[a-zA-Z0-9_]{3,20}$/.test(username);
 }
 
+/**
+ * Validate password strength (min 8 chars, letters and numbers)
+ */
 function isValidPassword(password) {
-    // حداقل ۸ کاراکتر
     if (password.length < 8) return false;
     
-    // فقط حروف انگلیسی، اعداد و علائم مجاز
     const validCharsRegex = /^[a-zA-Z0-9!@#$%^&*()_\-+=\[\]{}:;,.?~]+$/;
     if (!validCharsRegex.test(password)) return false;
     
-    // حداقل یک حرف و یک عدد
     const hasLetter = /[a-zA-Z]/.test(password);
     const hasNumber = /[0-9]/.test(password);
     if (!hasLetter || !hasNumber) return false;
@@ -65,6 +68,9 @@ function isValidPassword(password) {
     return true;
 }
 
+/**
+ * Show error message for a specific field
+ */
 function showFieldError(inputId, message) {
     const input = document.getElementById(inputId);
     if (!input) return;
@@ -83,6 +89,9 @@ function showFieldError(inputId, message) {
     }
 }
 
+/**
+ * Clear all error messages from the form
+ */
 function clearAllErrors() {
     document.querySelectorAll('.auth-field__error').forEach(el => el.remove());
     document.querySelectorAll('.auth-field input, .auth-field select').forEach(el => {
@@ -90,9 +99,9 @@ function clearAllErrors() {
     });
 }
 
-// ========================================
-// Component - صفحه کامل Auth
-// ========================================
+// ============================================================
+// Component - Full Auth Page
+// ============================================================
 
 export function AuthView() {
     return `
@@ -194,7 +203,7 @@ export function AuthView() {
 
                         <button type="submit" class="auth-submit">ورود به Planner</button>
                     </form>
-
+                    
                     <!-- Register Form -->
                     <form class="auth-form auth-form--register" id="register-form" hidden novalidate>
                         <div class="auth-form__row">
@@ -208,7 +217,7 @@ export function AuthView() {
                                     autocomplete="off"
                                 />
                             </div>
-
+                    
                             <div class="auth-field">
                                 <label for="register-last-name"> نام خانوادگی </label>
                                 <input
@@ -220,7 +229,7 @@ export function AuthView() {
                                 />
                             </div>
                         </div>
-
+                    
                         <div class="auth-field">
                             <label for="register-username"> نام کاربری </label>
                             <input
@@ -231,7 +240,7 @@ export function AuthView() {
                                 autocomplete="off"
                             />
                         </div>
-
+                    
                         <div class="auth-form__row">
                             <div class="auth-field">
                                 <label for="register-province"> استان </label>
@@ -242,7 +251,7 @@ export function AuthView() {
                                     `).join('')}
                                 </select>
                             </div>
-
+                                    
                             <div class="auth-field">
                                 <label for="register-gender"> جنسیت </label>
                                 <select id="register-gender" name="gender">
@@ -252,7 +261,7 @@ export function AuthView() {
                                 </select>
                             </div>
                         </div>
-
+                                    
                         <div class="auth-field">
                             <label for="register-password"> رمز عبور </label>
                             <div class="auth-field__password-wrapper">
@@ -271,7 +280,7 @@ export function AuthView() {
                                 </button>
                             </div>
                         </div>
-
+                                    
                         <div class="auth-field">
                             <label for="register-password-confirm"> تکرار رمز عبور </label>
                             <div class="auth-field__password-wrapper">
@@ -290,12 +299,12 @@ export function AuthView() {
                                 </button>
                             </div>
                         </div>
-
+                                    
                         <label class="auth-checkbox">
                             <input type="checkbox" name="terms" id="termsCheckbox" />
                             <span> قوانین و شرایط استفاده را می‌پذیرم. </span>
                         </label>
-
+                                    
                         <button type="submit" class="auth-submit">ساخت حساب</button>
                     </form>
 
@@ -309,9 +318,9 @@ export function AuthView() {
     `;
 }
 
-// ========================================
-// مدیریت نمایش/مخفی کردن رمز عبور
-// ========================================
+// ============================================================
+// Password Toggle Handler
+// ============================================================
 
 function setupPasswordToggles() {
     const toggleButtons = document.querySelectorAll('.auth-field__toggle-password');
@@ -347,9 +356,9 @@ function setupPasswordToggles() {
     });
 }
 
-// ========================================
-// مدیریت سوییچ بین ورود و ثبت‌نام
-// ========================================
+// ============================================================
+// Auth Mode Switch Handler
+// ============================================================
 
 function setupAuthSwitch() {
     const loginTabBtn = document.getElementById('loginTabBtn');
@@ -386,15 +395,15 @@ function setupAuthSwitch() {
     registerTabBtn.addEventListener('click', () => switchMode('register'));
 }
 
-// ========================================
-// مدیریت فرم ورود
-// ========================================
+// ============================================================
+// Login Form Handler
+// ============================================================
 
 function setupLoginForm() {
     const loginForm = document.getElementById('login-form');
     if (!loginForm) return;
     
-    loginForm.addEventListener('submit', function(e) {
+    loginForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         clearAllErrors();
         
@@ -415,32 +424,73 @@ function setupLoginForm() {
         
         if (hasError) return;
         
-        // TODO: اتصال به بک‌اند برای احراز هویت
-        
-        const userData = {
-            identity: identity,
-            isLoggedIn: true,
-            loginTime: new Date().toISOString()
-        };
-        
-        localStorage.setItem('auth:session', JSON.stringify(userData));
-        
-        // اطلاع‌رسانی به هدر برای تغییر دکمه‌ها
-        document.dispatchEvent(new CustomEvent('auth:changed'));
-        
-        window.location.href = '/Frontend/index.html';
+        try {
+            const response = await fetch('http://localhost:3000/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: identity,
+                    password: password
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(result.message || 'خطا در ورود');
+            }
+            
+            const user = result.user;
+            
+            const userProfile = {
+                id: user.id,
+                username: user.username,
+                firstName: user.first_name || '',
+                lastName: user.last_name || '',
+                province: user.province || '',
+                gender: user.gender || '',
+                email: user.email || '',
+                avatar: user.avatar || '',
+                emailVerified: user.email_verified || false,
+                isAdmin: user.isAdmin || false
+            };
+            
+            localStorage.setItem('userProfile', JSON.stringify(userProfile));
+            
+            localStorage.setItem('auth:session', JSON.stringify({
+                userId: user.id,
+                username: user.username,
+                isLoggedIn: true,
+                isAdmin: user.isAdmin || false,
+                loginTime: new Date().toISOString()
+            }));
+            
+            document.dispatchEvent(new CustomEvent('auth:changed'));
+            
+            window.location.href = '/Frontend/index.html';
+            
+        } catch (error) {
+            if (error.message.includes('Invalid username or password')) {
+                showFieldError('login-identity', '❌ نام کاربری یا رمز عبور اشتباه است');
+                showFieldError('login-password', '');
+            } else {
+                alert('خطا: ' + error.message);
+            }
+        }
     });
 }
 
-// ========================================
-// مدیریت فرم ثبت‌نام
-// ========================================
+// ============================================================
+// Register Form Handler
+// ============================================================
 
 function setupRegisterForm() {
     const registerForm = document.getElementById('register-form');
     if (!registerForm) return;
     
-    registerForm.addEventListener('submit', function(e) {
+    registerForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         clearAllErrors();
         
@@ -503,51 +553,64 @@ function setupRegisterForm() {
         
         if (hasError) return;
         
-        // TODO: اتصال به بک‌اند برای ثبت‌نام
-        
-        const userData = {
-            firstName,
-            lastName,
-            username,
-            province,
-            provinceName: PROVINCE_NAMES[province] || province,
-            gender,
-            password: password,
-            email: '',
-            emailVerified: false,
-            createdAt: new Date().toISOString()
-        };
-        
-        localStorage.setItem('auth:user', JSON.stringify(userData));
-        localStorage.setItem('auth:session', JSON.stringify({
-            identity: username,
-            isLoggedIn: true,
-            loginTime: new Date().toISOString()
-        }));
-        
-        const profileData = {
-            firstName,
-            lastName,
-            username,
-            email: '',
-            province: PROVINCE_NAMES[province] || province,
-            city: PROVINCE_NAMES[province] || province,
-            gender: gender || '',
-            avatar: ''
-        };
-        
-        localStorage.setItem('userProfile', JSON.stringify(profileData));
-        
-        // اطلاع‌رسانی به هدر برای تغییر دکمه‌ها
-        document.dispatchEvent(new CustomEvent('auth:changed'));
-        
-        window.location.href = '/Frontend/index.html';
+        try {
+            const userData = {
+                username: username,
+                password_hash: password,
+                first_name: firstName,
+                last_name: lastName,
+                province: province,
+                gender: gender
+            };
+            
+            const response = await fetch('http://localhost:3000/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData)
+            });
+            
+            const result = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(result.message || 'خطا در ثبت‌نام');
+            }
+            
+            const userProfile = {
+                id: result.id,
+                username: result.username,
+                firstName: result.first_name,
+                lastName: result.last_name,
+                province: result.province,
+                gender: result.gender,
+                email: result.email || '',
+                avatar: result.avatar || '',
+                emailVerified: result.email_verified || false
+            };
+            
+            localStorage.setItem('userProfile', JSON.stringify(userProfile));
+            
+            localStorage.setItem('auth:session', JSON.stringify({
+                userId: result.id,
+                username: result.username,
+                isLoggedIn: true,
+                loginTime: new Date().toISOString()
+            }));
+            
+            document.dispatchEvent(new CustomEvent('auth:changed'));
+            
+            window.location.href = '/Frontend/index.html';
+            
+        } catch (error) {
+            alert(error.message || 'خطا در ارتباط با سرور');
+        }
     });
 }
 
-// ========================================
-// مدیریت فراموشی رمز
-// ========================================
+// ============================================================
+// Forgot Password Handler
+// ============================================================
 
 function setupForgotPassword() {
     const forgotBtn = document.getElementById('forgotPasswordBtn');
@@ -558,9 +621,9 @@ function setupForgotPassword() {
     });
 }
 
-// ========================================
-// ساعت زنده
-// ========================================
+// ============================================================
+// Live Clock
+// ============================================================
 
 function setupLiveClock() {
     const hourHand = document.querySelector('.auth-clock__hand--hour');
@@ -585,9 +648,9 @@ function setupLiveClock() {
     setInterval(updateClock, 1000);
 }
 
-// ========================================
-// راه‌اندازی صفحه
-// ========================================
+// ============================================================
+// Page Initialization
+// ============================================================
 
 export function initAuthPage() {
     setupPasswordToggles();
@@ -598,14 +661,14 @@ export function initAuthPage() {
     setupLiveClock();
 }
 
-// ========================================
-// توابع عمومی
-// ========================================
+// ============================================================
+// Public API
+// ============================================================
 
 export function logout() {
     localStorage.removeItem('auth:session');
+    localStorage.removeItem('userProfile');
     
-    // اطلاع‌رسانی به هدر برای تغییر دکمه‌ها
     document.dispatchEvent(new CustomEvent('auth:changed'));
     
     window.location.href = '/Frontend/index.html';

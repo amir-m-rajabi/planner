@@ -1,45 +1,64 @@
 import { timedActivities } from "../../Components/dashboard/timed-activities/timed-activities.js";
 import { sessions } from "../../Components/dashboard/sessions/sessions.js";
 import { untimedActivities, untimedActivityRecords } from "../../Components/dashboard/untimed-activities/untimed-activities.js";
+import { UntimedActivitiesAPI, UntimedRecordsAPI } from "../../js/api.js";
 import { Chart, registerables } from "https://cdn.jsdelivr.net/npm/chart.js/+esm";
 
 Chart.register(...registerables);
 
-// ========================================
-// وضعیت فعلی
-// ========================================
+// ============================================================
+// State Management
+// ============================================================
 
 let currentType = "timed";
 let currentRange = "today";
 let currentYear = 1405;
-let currentMonth = 0; // 0 = کل سال، 1-12 = ماه‌های شمسی
+let currentMonth = 0;
 let donutChartInstance = null;
 let barChartInstance = null;
+let untimedDataLoaded = false;
 
-// ========================================
-// نام ماه‌های شمسی
-// ========================================
+// ============================================================
+// Constants
+// ============================================================
 
 const PERSIAN_MONTHS = [
     "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
     "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"
 ];
 
-// ========================================
-// توابع کمکی
-// ========================================
+// ============================================================
+// Utility Functions
+// ============================================================
 
+/**
+ * Get current user id from local storage
+ */
+function getUserId() {
+    const session = JSON.parse(localStorage.getItem('auth:session')) || {};
+    return session.userId;
+}
+
+/**
+ * Convert time string (HH:MM:SS) to total seconds
+ */
 function timeToSeconds(time) {
     const [h, m, s] = time.split(":").map(Number);
     return h * 3600 + (m || 0) * 60 + (s || 0);
 }
 
+/**
+ * Format seconds to HH:MM
+ */
 function formatHM(totalSeconds) {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
 }
 
+/**
+ * Format duration in human-readable persian text
+ */
 function formatDurationDetailed(totalSeconds) {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -49,41 +68,91 @@ function formatDurationDetailed(totalSeconds) {
     return "۰ دقیقه";
 }
 
+/**
+ * Convert english digits to persian digits
+ */
 function toPersianDigits(value) {
     const digits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
     return String(value).replace(/[0-9]/g, d => digits[d]);
 }
 
+/**
+ * Get number of days for current range filter
+ */
 function getDaysInRange() {
     if (currentRange === "today") return 1;
     if (currentRange === "week") return 7;
     if (currentRange === "month") return 30;
     if (currentRange === "year") {
-        // اگر ماه خاصی انتخاب شده
         if (currentMonth > 0) {
             return currentMonth <= 6 ? 31 : 30;
         }
-        // کل سال
         return 365;
     }
     return 1;
 }
 
-// ========================================
-// Component
-// ========================================
+// ============================================================
+// Data Loading
+// ============================================================
+
+/**
+ * Load untimed activities and their records from api
+ */
+async function loadUntimedData() {
+    try {
+        const userId = getUserId();
+        if (!userId) {
+            untimedDataLoaded = true;
+            return;
+        }
+
+        const activities = await UntimedActivitiesAPI.getAll(userId);
+        untimedActivities.length = 0;
+        untimedActivities.push(...(activities || []));
+
+        untimedActivityRecords.length = 0;
+        for (const activity of untimedActivities) {
+            try {
+                const records = await UntimedRecordsAPI.getByActivity(activity.id);
+                if (records && records.length > 0) {
+                    records.forEach(record => {
+                        if (!record.completed_checks) {
+                            record.completed_checks = [];
+                        }
+                        if (!record.completed_count) {
+                            record.completed_count = 0;
+                        }
+                    });
+                    untimedActivityRecords.push(...records);
+                }
+            } catch (err) {
+                // Silently handle individual activity record errors
+            }
+        }
+
+        untimedDataLoaded = true;
+        
+    } catch (error) {
+        untimedDataLoaded = true;
+    }
+}
+
+// ============================================================
+// Component Render
+// ============================================================
 
 export function ReportsView() {
-    // ریست وضعیت
     currentType = "timed";
     currentRange = "today";
     currentMonth = 0;
     donutChartInstance = null;
     barChartInstance = null;
+    untimedDataLoaded = false;
     
     return `
         <section class="statistics">
-            <!-- Statistics Type -->
+            <!-- Statistics type selector -->
             <div class="statistics-type">
                 <button type="button" class="statistics-type__item statistics-type__item--active" data-type="timed">
                     <span class="statistics-type__icon">◷</span>
@@ -102,7 +171,7 @@ export function ReportsView() {
                 </button>
             </div>
 
-            <!-- Filters -->
+            <!-- Filters section -->
             <section class="statistics-filters">
                 <div class="statistics-filters__quick">
                     <span class="statistics-filters__label">بازه سریع</span>
@@ -116,7 +185,7 @@ export function ReportsView() {
                 <div class="statistics-filters__history">
                     <span class="statistics-filters__label">مشاهده سابقه</span>
                     <div class="statistics-filters__selectors">
-                        <!-- Year Selector -->
+                        <!-- Year selector -->
                         <div class="statistics-selector-wrapper">
                             <button type="button" class="statistics-selector" id="yearSelectorBtn">
                                 <span class="statistics-selector__label">سال</span>
@@ -124,7 +193,6 @@ export function ReportsView() {
                                 <span class="statistics-selector__arrow">⌄</span>
                             </button>
                             
-                            <!-- Year Dropdown -->
                             <div class="statistics-dropdown" id="yearDropdown" hidden>
                                 ${[1405, 1404, 1403, 1402, 1401, 1400].map(year => `
                                     <button type="button" class="statistics-dropdown__item ${year === currentYear ? 'statistics-dropdown__item--active' : ''}" data-year="${year}">
@@ -134,7 +202,7 @@ export function ReportsView() {
                             </div>
                         </div>
 
-                        <!-- Month Selector -->
+                        <!-- Month selector -->
                         <div class="statistics-selector-wrapper">
                             <button type="button" class="statistics-selector" id="monthSelectorBtn">
                                 <span class="statistics-selector__label">ماه</span>
@@ -142,7 +210,6 @@ export function ReportsView() {
                                 <span class="statistics-selector__arrow">⌄</span>
                             </button>
                             
-                            <!-- Month Dropdown -->
                             <div class="statistics-dropdown" id="monthDropdown" hidden>
                                 <button type="button" class="statistics-dropdown__item ${currentMonth === 0 ? 'statistics-dropdown__item--active' : ''}" data-month="0">
                                     — کل سال —
@@ -158,7 +225,7 @@ export function ReportsView() {
                 </div>
             </section>
 
-            <!-- Timed Content -->
+            <!-- Timed activities content -->
             <section class="statistics-content" id="timedContent">
                 <div class="statistics-main-card">
                     <div class="statistics-main-card__header">
@@ -172,7 +239,7 @@ export function ReportsView() {
                         <div class="statistics-timed__chart">
                             <canvas id="timedDonutChart"></canvas>
                             <div class="statistics-donut-center">
-                                <strong id="timedTotalTime">00:00</strong>
+                                <strong id="timedTotalTime">۰۰:۰۰</strong>
                                 <span>زمان مفید</span>
                             </div>
                         </div>
@@ -188,7 +255,7 @@ export function ReportsView() {
                     </div>
                     <div class="statistics-insight">
                         <span>میانگین روزانه</span>
-                        <strong id="avgDailyTimed">00:00</strong>
+                        <strong id="avgDailyTimed">۰۰:۰۰</strong>
                     </div>
                     <div class="statistics-insight">
                         <span>تعداد سشن</span>
@@ -197,7 +264,7 @@ export function ReportsView() {
                 </div>
             </section>
 
-            <!-- Untimed Content -->
+            <!-- Untimed activities content -->
             <section class="statistics-content" id="untimedContent" hidden>
                 <div class="statistics-main-card">
                     <div class="statistics-main-card__header">
@@ -239,12 +306,12 @@ export function ReportsView() {
     `;
 }
 
-// ========================================
-// مدیریت Dropdown ها
-// ========================================
+// ============================================================
+// Dropdown Event Handling
+// ============================================================
 
 document.addEventListener("click", (event) => {
-    // باز/بسته کردن dropdown سال
+    // Toggle year dropdown
     if (event.target.closest("#yearSelectorBtn")) {
         const dropdown = document.getElementById("yearDropdown");
         const monthDropdown = document.getElementById("monthDropdown");
@@ -253,7 +320,7 @@ document.addEventListener("click", (event) => {
         return;
     }
     
-    // باز/بسته کردن dropdown ماه
+    // Toggle month dropdown
     if (event.target.closest("#monthSelectorBtn")) {
         const dropdown = document.getElementById("monthDropdown");
         const yearDropdown = document.getElementById("yearDropdown");
@@ -262,31 +329,26 @@ document.addEventListener("click", (event) => {
         return;
     }
     
-    // انتخاب سال
+    // Handle year selection
     const yearItem = event.target.closest("[data-year]");
     if (yearItem) {
         currentYear = Number(yearItem.dataset.year);
         currentRange = "year";
         
-        // آپدیت نمایش
         const yearDisplay = document.getElementById("yearDisplay");
         if (yearDisplay) yearDisplay.textContent = toPersianDigits(currentYear);
         
-        // آپدیت کلاس active
         document.querySelectorAll("[data-year]").forEach(btn => {
             btn.classList.toggle("statistics-dropdown__item--active", btn === yearItem);
         });
         
-        // بستن dropdown
         const dropdown = document.getElementById("yearDropdown");
         if (dropdown) dropdown.hidden = true;
         
-        // غیرفعال کردن دکمه‌های بازه سریع
         document.querySelectorAll("[data-range]").forEach(btn => {
             btn.classList.remove("statistics-filter-btn--active");
         });
         
-        // رندر
         if (currentType === "timed") {
             renderTimedStatistics();
         } else {
@@ -295,33 +357,28 @@ document.addEventListener("click", (event) => {
         return;
     }
     
-    // انتخاب ماه
+    // Handle month selection
     const monthItem = event.target.closest("[data-month]");
     if (monthItem) {
         currentMonth = Number(monthItem.dataset.month);
         currentRange = "year";
         
-        // آپدیت نمایش
         const monthDisplay = document.getElementById("monthDisplay");
         if (monthDisplay) {
             monthDisplay.textContent = currentMonth === 0 ? 'کل سال' : PERSIAN_MONTHS[currentMonth - 1];
         }
         
-        // آپدیت کلاس active
         document.querySelectorAll("[data-month]").forEach(btn => {
             btn.classList.toggle("statistics-dropdown__item--active", btn === monthItem);
         });
         
-        // بستن dropdown
         const dropdown = document.getElementById("monthDropdown");
         if (dropdown) dropdown.hidden = true;
         
-        // غیرفعال کردن دکمه‌های بازه سریع
         document.querySelectorAll("[data-range]").forEach(btn => {
             btn.classList.remove("statistics-filter-btn--active");
         });
         
-        // رندر
         if (currentType === "timed") {
             renderTimedStatistics();
         } else {
@@ -330,16 +387,16 @@ document.addEventListener("click", (event) => {
         return;
     }
     
-    // بستن dropdown ها وقتی جای دیگه کلیک می‌شود
+    // Close dropdowns on outside click
     if (!event.target.closest(".statistics-selector-wrapper")) {
         document.getElementById("yearDropdown")?.setAttribute("hidden", "");
         document.getElementById("monthDropdown")?.setAttribute("hidden", "");
     }
 });
 
-// ========================================
-// مدیریت تایپ
-// ========================================
+// ============================================================
+// Type Toggle Event Handling
+// ============================================================
 
 document.addEventListener("click", (event) => {
     const typeBtn = event.target.closest("[data-type]");
@@ -366,13 +423,16 @@ document.addEventListener("click", (event) => {
     } else {
         timedContent.hidden = true;
         untimedContent.hidden = false;
-        setTimeout(() => renderUntimedStatistics(), 50);
+        setTimeout(async () => {
+            await loadUntimedData();
+            renderUntimedStatistics();
+        }, 50);
     }
 });
 
-// ========================================
-// مدیریت فیلتر بازه سریع
-// ========================================
+// ============================================================
+// Range Filter Event Handling
+// ============================================================
 
 document.addEventListener("click", (event) => {
     const rangeBtn = event.target.closest("[data-range]");
@@ -394,10 +454,31 @@ document.addEventListener("click", (event) => {
     }
 });
 
-// ========================================
-// محاسبه بازه زمانی بر اساس فیلتر
-// ========================================
+// ============================================================
+// Custom Event Listeners
+// ============================================================
 
+document.addEventListener('timed-activities:changed', () => {
+    if (currentType === "timed") {
+        renderTimedStatistics();
+    }
+});
+
+document.addEventListener('sessions:changed', () => {
+    if (currentType === "timed") {
+        renderTimedStatistics();
+    } else {
+        renderUntimedStatistics();
+    }
+});
+
+// ============================================================
+// Date Range Calculation
+// ============================================================
+
+/**
+ * Calculate start and end date based on current filters
+ */
 function getDateRange() {
     const now = new Date();
     
@@ -441,10 +522,13 @@ function getDateRange() {
     return { start, end };
 }
 
-// ========================================
-// رندر آمار زمان‌دار
-// ========================================
+// ============================================================
+// Timed Statistics Renderer
+// ============================================================
 
+/**
+ * Render timed activities statistics
+ */
 function renderTimedStatistics() {
     const { start, end } = getDateRange();
     const periodSessions = sessions.filter(s => {
@@ -492,6 +576,9 @@ function renderTimedStatistics() {
     renderTimedDonut(breakdown.breakdown);
 }
 
+/**
+ * Compute time breakdown for timed activities
+ */
 function computeTimedBreakdown(periodSessions) {
     const totals = {};
     let grandTotal = 0;
@@ -503,7 +590,7 @@ function computeTimedBreakdown(periodSessions) {
     });
 
     const breakdown = timedActivities
-        .filter(a => !a.archived && totals[a.id])
+        .filter(a => !a.is_archived && totals[a.id])
         .map(a => ({
             title: a.title,
             color: a.color,
@@ -515,6 +602,9 @@ function computeTimedBreakdown(periodSessions) {
     return { breakdown, grandTotal };
 }
 
+/**
+ * Render donut chart for timed activities
+ */
 function renderTimedDonut(breakdown) {
     const canvas = document.getElementById("timedDonutChart");
     if (!canvas) return;
@@ -524,7 +614,6 @@ function renderTimedDonut(breakdown) {
         donutChartInstance = null;
     }
 
-    // اگر داده‌ای نیست، نمودار خنثی نمایش بده
     if (breakdown.length === 0) {
         donutChartInstance = new Chart(canvas, {
             type: "doughnut",
@@ -578,35 +667,41 @@ function renderTimedDonut(breakdown) {
     });
 }
 
-// ========================================
-// رندر آمار بدون زمان
-// ========================================
+// ============================================================
+// Untimed Statistics Renderer
+// ============================================================
 
+/**
+ * Render untimed activities statistics
+ */
 function renderUntimedStatistics() {
+    if (!untimedDataLoaded) {
+        loadUntimedData().then(() => {
+            renderUntimedStatistics();
+        });
+        return;
+    }
+
     const days = getDaysInRange();
-    const activeActivities = untimedActivities.filter(a => !a.archived);
+    const activeActivities = untimedActivities.filter(a => a.is_active === true);
     const { start, end } = getDateRange();
     
     let totalDone = 0;
     let totalTargets = 0;
 
     const activityStats = activeActivities.map(activity => {
-        const targetForPeriod = activity.targetCount * days;
+        const targetForPeriod = activity.target_count * days;
         let doneForPeriod = 0;
         
-        // فقط رکوردهای مربوط به بازه انتخاب شده
         const records = untimedActivityRecords.filter(r => {
-            if (r.activityId !== activity.id) return false;
+            if (Number(r.activity_id) !== Number(activity.id)) return false;
             
-            // تبدیل recordDate (YYYY-MM-DD) به Date
-            const recordDate = new Date(r.recordDate + "T00:00:00");
-            
-            // بررسی اینکه در بازه است
+            const recordDate = new Date(r.record_date + "T00:00:00");
             return recordDate >= start && recordDate <= end;
         });
         
         records.forEach(r => { 
-            doneForPeriod += r.completedCount || 0; 
+            doneForPeriod += r.completed_count || 0; 
         });
         
         const percent = targetForPeriod > 0 ? Math.round((doneForPeriod / targetForPeriod) * 100) : 0;
@@ -653,6 +748,9 @@ function renderUntimedStatistics() {
     renderUntimedBar(activityStats);
 }
 
+/**
+ * Render bar chart for untimed activities
+ */
 function renderUntimedBar(activityStats) {
     const canvas = document.getElementById("untimedBarChart");
     if (!canvas) return;
@@ -662,7 +760,6 @@ function renderUntimedBar(activityStats) {
         barChartInstance = null;
     }
 
-    // اگر داده‌ای نیست، نمودار خنثی نمایش بده
     if (activityStats.length === 0) {
         barChartInstance = new Chart(canvas, {
             type: "doughnut",
@@ -730,10 +827,11 @@ function renderUntimedBar(activityStats) {
     });
 }
 
-// ========================================
-// راه‌اندازی
-// ========================================
+// ============================================================
+// Initialization
+// ============================================================
 
 export function initReportsPage() {
+    loadUntimedData();
     renderTimedStatistics();
 }

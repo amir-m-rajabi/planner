@@ -1,10 +1,10 @@
-// فایل: Components/dashboard/calendar/calendar.js
+// File: Components/dashboard/calendar/calendar.js
 
 import { sessions } from "../sessions/sessions.js";
 
-// ========================================
-// دیتابیس کامل تعطیلات رسمی ایران (همه سال‌ها)
-// ========================================
+// ============================================================
+// Iranian Official Holidays Database (All Years)
+// ============================================================
 
 const HOLIDAYS_DB = {
     1400: { 1: [1, 2, 3, 12, 13], 2: [], 3: [14, 15], 4: [4, 5], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [29] },
@@ -33,9 +33,9 @@ const HOLIDAYS_DB = {
     1410: { 1: [1, 2, 3, 12, 13], 2: [], 3: [14, 15], 4: [4, 5], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [29] }
 };
 
-// ========================================
+// ============================================================
 // Jalali <-> Gregorian Conversion
-// ========================================
+// ============================================================
 
 function div(a, b) { return ~~(a / b); }
 function mod(a, b) { return a - ~~(a / b) * b; }
@@ -143,9 +143,9 @@ function jalaaliMonthLength(jy, jm) {
     return isLeapJalaaliYear(jy) ? 30 : 29;
 }
 
-// ========================================
-// Gregorian <-> Islamic (Hijri)
-// ========================================
+// ============================================================
+// Gregorian <-> Islamic (Hijri) Conversion
+// ============================================================
 
 const ISLAMIC_EPOCH = 1948439.5;
 
@@ -187,9 +187,9 @@ function gregorianToIslamic(gy, gm, gd) {
     return julianDayToIslamic(gregorianToJulianDay(gy, gm, gd));
 }
 
-// ========================================
-// نام‌ها و ابزارهای کمکی
-// ========================================
+// ============================================================
+// Names and Helpers
+// ============================================================
 
 const PERSIAN_MONTHS = [
     "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
@@ -214,53 +214,55 @@ function toPersianDigits(value) {
     return String(value).replace(/[0-9]/g, d => digits[d]);
 }
 
-// ========================================
-// وضعیت فعلی
-// ========================================
+// ============================================================
+// Time Calculation Helpers (same as statistics.js)
+// ============================================================
 
-const now = new Date();
-const todayJalali = toJalaali(now.getFullYear(), now.getMonth() + 1, now.getDate());
+function isSameDay(a, b) {
+    return (
+        a.getFullYear() === b.getFullYear() &&
+        a.getMonth() === b.getMonth() &&
+        a.getDate() === b.getDate()
+    );
+}
 
-let currentJalaaliYear = todayJalali.jy;
-let currentJalaaliMonth = todayJalali.jm;
-// تغییر: selectedDate را از ابتدا برابر امروز قرار می‌دهیم
-let selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-let calendarInitialized = false;
+function timeToSeconds(time) {
+    const [h, m, s] = time.split(":").map(Number);
+    return h * 3600 + (m || 0) * 60 + (s || 0);
+}
 
-// ========================================
-// محاسبه زمان مفید برای یک روز خاص
-// ========================================
+// ============================================================
+// Calculate Day Useful Time from Database
+// ============================================================
 
 function getDayUsefulTime(jy, jm, jd) {
     const g = toGregorian(jy, jm, jd);
-    const dateStr = new Date(g.gy, g.gm - 1, g.gd).toDateString();
+    const targetDate = new Date(g.gy, g.gm - 1, g.gd);
     
     const daySessions = sessions.filter(s => {
-        if (s.date) {
-            const sessionDate = new Date(s.date);
-            return sessionDate.toDateString() === dateStr;
-        }
-        return new Date().toDateString() === dateStr;
+        const sessionDate = s.date ? new Date(s.date) : new Date();
+        return isSameDay(sessionDate, targetDate);
     });
     
     let totalMinutes = 0;
     daySessions.forEach(session => {
-        const [sh, sm] = session.startTime.split(":").map(Number);
-        const [eh, em] = session.endTime.split(":").map(Number);
-        let start = sh * 60 + sm;
-        let end = eh * 60 + em;
-        if (end < start) end += 24 * 60;
-        totalMinutes += (end - start);
+        if (session.startTime && session.endTime) {
+            const startSeconds = timeToSeconds(session.startTime);
+            const endSeconds = timeToSeconds(session.endTime);
+            const durationSeconds = Math.max(0, endSeconds - startSeconds);
+            totalMinutes += durationSeconds / 60;
+        }
     });
     
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
+    const roundedMinutes = Math.round(totalMinutes);
+    const hours = Math.floor(roundedMinutes / 60);
+    const minutes = roundedMinutes % 60;
     return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
 }
 
-// ========================================
-// تشخیص تعطیلی از دیتابیس
-// ========================================
+// ============================================================
+// Holiday Detection from Database
+// ============================================================
 
 function isHoliday(jy, jm, jd) {
     const g = toGregorian(jy, jm, jd);
@@ -276,23 +278,32 @@ function isHoliday(jy, jm, jd) {
     return monthHolidays.includes(jd);
 }
 
-// ========================================
-// روز «مرجع» برای تشخیص ماه فعال در هدر
-// ========================================
+// ============================================================
+// Reference Date for Active Month in Header
+// ============================================================
 
 function getReferenceDate() {
-    // اگر روزی انتخاب شده، از اون استفاده کن
     if (selectedDate) {
         return selectedDate;
     }
-    
-    // در غیر این صورت، امروز رو به عنوان مرجع در نظر بگیر
     return new Date(now.getFullYear(), now.getMonth(), now.getDate());
 }
 
-// ========================================
-// ساخت داده‌ی یک روز
-// ========================================
+// ============================================================
+// State Management
+// ============================================================
+
+const now = new Date();
+const todayJalali = toJalaali(now.getFullYear(), now.getMonth() + 1, now.getDate());
+
+let currentJalaaliYear = todayJalali.jy;
+let currentJalaaliMonth = todayJalali.jm;
+let selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+let calendarInitialized = false;
+
+// ============================================================
+// Build Day Data
+// ============================================================
 
 function buildDayData(jy, jm, jd) {
     const g = toGregorian(jy, jm, jd);
@@ -318,9 +329,9 @@ function buildDayData(jy, jm, jd) {
     };
 }
 
-// ========================================
-// ساخت HTML یک روز
-// ========================================
+// ============================================================
+// Create Day HTML
+// ============================================================
 
 function createDayHTML(dayData, todayGregorian) {
     const { solar, gregorian, moon, holiday, usefulTime, weekdayIndex, isSelected } = dayData;
@@ -334,9 +345,16 @@ function createDayHTML(dayData, todayGregorian) {
     const thisDayValue = gregorian.year * 10000 + gregorian.month * 100 + gregorian.day;
     const todayValue = todayGregorian.gy * 10000 + todayGregorian.gm * 100 + todayGregorian.gd;
 
+    const hasUsefulTime = usefulTime !== '00:00';
+    
+    let usefulTimeClass = 'calendar__day-useful-time';
+    if (hasUsefulTime) {
+        usefulTimeClass += ' calendar__day-useful-time--has-time';
+    }
+
     let usefulTimeHTML;
     if (thisDayValue < todayValue || thisDayValue === todayValue) {
-        usefulTimeHTML = `<div class="calendar__day-useful-time">${usefulTime}</div>`;
+        usefulTimeHTML = `<div class="${usefulTimeClass}">${usefulTime}</div>`;
     } else {
         usefulTimeHTML = `<div aria-hidden="true"></div>`;
     }
@@ -376,9 +394,9 @@ function createDayHTML(dayData, todayGregorian) {
     `;
 }
 
-// ========================================
-// آپدیت هدر
-// ========================================
+// ============================================================
+// Update Calendar Header
+// ============================================================
 
 function updateCalendarHeader(firstDay, lastDay) {
     const header = document.querySelector(".calendar__header");
@@ -443,9 +461,9 @@ function updateCalendarHeader(firstDay, lastDay) {
     }
 }
 
-// ========================================
-// اسکرول خودکار به روز جاری
-// ========================================
+// ============================================================
+// Auto-scroll to Today
+// ============================================================
 
 function scrollToToday() {
     const wrapper = document.querySelector('.calendar__days-wrapper');
@@ -465,9 +483,9 @@ function scrollToToday() {
     }
 }
 
-// ========================================
-// ارسال رویداد انتخاب امروز به ماژول‌های دیگر
-// ========================================
+// ============================================================
+// Dispatch Today Selected Event to Other Modules
+// ============================================================
 
 function dispatchTodaySelected() {
     const todayG = { gy: now.getFullYear(), gm: now.getMonth() + 1, gd: now.getDate() };
@@ -487,9 +505,9 @@ function dispatchTodaySelected() {
     }));
 }
 
-// ========================================
-// تابع رندر اصلی
-// ========================================
+// ============================================================
+// Main Render Function
+// ============================================================
 
 function renderCalendarToDOM() {
     const daysWrapper = document.querySelector(".calendar__days");
@@ -529,9 +547,9 @@ function renderCalendarToDOM() {
     }, 150);
 }
 
-// ========================================
-// مدیریت کلیک روی روز
-// ========================================
+// ============================================================
+// Day Click Handler
+// ============================================================
 
 function handleDayClick() {
     const dateStr = this.dataset.date;
@@ -576,9 +594,9 @@ function handleDayClick() {
     }));
 }
 
-// ========================================
-// ناوبری ماه قبل/بعد
-// ========================================
+// ============================================================
+// Month Navigation
+// ============================================================
 
 function navigateMonth(direction) {
     currentJalaaliMonth += direction;
@@ -594,15 +612,14 @@ function navigateMonth(direction) {
     selectedDate = null;
     renderCalendarToDOM();
     
-    // بعد از ناوبری، رویداد امروز را ارسال کن
     setTimeout(() => {
         dispatchTodaySelected();
     }, 100);
 }
 
-// ========================================
-// رویدادهای ناوبری
-// ========================================
+// ============================================================
+// Navigation Events
+// ============================================================
 
 document.addEventListener("click", (event) => {
     if (event.target.closest(".calendar__navigation--previous")) {
@@ -615,18 +632,16 @@ document.addEventListener("click", (event) => {
     }
 });
 
-// ========================================
-// تابع اصلی Calendar
-// ========================================
+// ============================================================
+// Main Calendar Function
+// ============================================================
 
 export function Calendar() {
-    // selectedDate را برابر امروز قرار بده
     selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
     setTimeout(() => {
         renderCalendarToDOM();
         
-        // بعد از رندر، رویداد امروز را ارسال کن
         setTimeout(() => {
             dispatchTodaySelected();
         }, 100);
@@ -676,35 +691,36 @@ export function Calendar() {
     `;
 }
 
-// ========================================
-// تابع init
-// ========================================
+// ============================================================
+// Init Function
+// ============================================================
 
 export function initCalendar() {
     if (calendarInitialized) return;
     calendarInitialized = true;
     
-    // selectedDate را برابر امروز قرار بده
     selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     
     renderCalendarToDOM();
     
-    // ارسال رویداد امروز بعد از رندر
     setTimeout(() => {
         dispatchTodaySelected();
     }, 100);
 }
 
-// ========================================
-// گوش دادن به تغییرات سشن‌ها
-// ========================================
+// ============================================================
+// Listen to Session Changes
+// ============================================================
 
 document.addEventListener('sessions:changed', () => {
     renderCalendarToDOM();
 });
+document.addEventListener('timed-activities:changed', () => {
+    renderCalendarToDOM();
+});
 
-// ========================================
-// صادر کردن
-// ========================================
+// ============================================================
+// Exports
+// ============================================================
 
 export { selectedDate };

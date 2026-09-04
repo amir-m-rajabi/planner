@@ -1,6 +1,6 @@
-/* ========================================
+/* ============================================================
    Untimed Activities (Dashboard Module)
-======================================== */
+============================================================ */
 
 .untimed-activities {
     width: 100%;
@@ -14,9 +14,9 @@
     overflow: hidden;
 }
 
-/* ========================================
+/* ============================================================
    Header
-======================================== */
+============================================================ */
 
 .untimed-activities__header {
     display: flex;
@@ -33,9 +33,9 @@
     font-weight: 600;
 }
 
-/* ========================================
+/* ============================================================
    Add Button
-======================================== */
+============================================================ */
 
 .untimed-activities__add {
     width: 32px;
@@ -67,9 +67,9 @@
     transform: scale(0.93);
 }
 
-/* ========================================
+/* ============================================================
    Content
-======================================== */
+============================================================ */
 
 .untimed-activities__content {
     min-width: 0;
@@ -78,9 +78,9 @@
     overflow: hidden;
 }
 
-/* ========================================
+/* ============================================================
    Activities List
-======================================== */
+============================================================ */
 
 .untimed-activities__list {
     width: 100%;
@@ -99,9 +99,9 @@
     display: none;
 }
 
-/* ========================================
+/* ============================================================
    Activity Card
-======================================== */
+============================================================ */
 
 .untimed-activity {
     width: 100%;
@@ -126,9 +126,9 @@
     transform: translateY(-1px);
 }
 
-/* ========================================
+/* ============================================================
    Activity Information
-======================================== */
+============================================================ */
 
 .untimed-activity__info {
     min-width: 120px;
@@ -150,9 +150,9 @@
     text-overflow: ellipsis;
 }
 
-/* ========================================
+/* ============================================================
    Progress
-======================================== */
+============================================================ */
 
 .untimed-activity__progress {
     flex-shrink: 0;
@@ -166,9 +166,22 @@
     direction: ltr;
 }
 
-/* ========================================
+/* ============================================================
+   Future Badge
+============================================================ */
+
+.untimed-activity__future-badge {
+    font-size: 9px;
+    color: #9ca1a7;
+    background: #f0f1f2;
+    padding: 1px 8px;
+    border-radius: 10px;
+    margin-right: 6px;
+}
+
+/* ============================================================
    Checks Container
-======================================== */
+============================================================ */
 
 .untimed-activity__checks {
     min-width: 0;
@@ -183,10 +196,6 @@
     scrollbar-width: thin;
     scrollbar-color: var(--color-border-strong) transparent;
 }
-
-/* ========================================
-   Checks Scrollbar
-======================================== */
 
 .untimed-activity__checks::-webkit-scrollbar {
     height: 4px;
@@ -205,9 +214,9 @@
     background-color: var(--color-primary-light);
 }
 
-/* ========================================
-   Check
-======================================== */
+/* ============================================================
+   Check Button
+============================================================ */
 
 .untimed-activity__check {
     width: 24px;
@@ -225,9 +234,16 @@
     transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
 }
 
-/* ========================================
+/* Disabled Check */
+.untimed-activity__check--disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* ============================================================
    Check Hover
-======================================== */
+============================================================ */
 
 .untimed-activity__check:hover {
     transform: translateY(-2px);
@@ -240,9 +256,9 @@
     transform: scale(0.88);
 }
 
-/* ========================================
+/* ============================================================
    Check Mark
-======================================== */
+============================================================ */
 
 .untimed-activity__check::after {
     content: "";
@@ -258,9 +274,9 @@
     transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 120ms ease;
 }
 
-/* ========================================
+/* ============================================================
    Completed Check
-======================================== */
+============================================================ */
 
 .untimed-activity__check--completed {
     border-color: var(--color-primary);
@@ -274,19 +290,16 @@
     opacity: 1;
 }
 
-/* ========================================
-   Completed Check Hover
-======================================== */
-
+/* Completed Check Hover */
 .untimed-activity__check--completed:hover {
     border-color: var(--color-primary-light);
     background: var(--color-primary-light);
     transform: scale(1.06);
 }
 
-/* ========================================
-   Checkbox Animation
-======================================== */
+/* ============================================================
+   Animation
+============================================================ */
 
 @keyframes untimed-check-pop {
     0% {
@@ -300,9 +313,9 @@
     }
 }
 
-/* ========================================
+/* ============================================================
    Empty State
-======================================== */
+============================================================ */
 
 .untimed-activities__empty {
     height: 100%;
@@ -313,9 +326,9 @@
     font-size: 13px;
 }
 
-/* ========================================
+/* ============================================================
    Empty Add Button
-======================================== */
+============================================================ */
 
 .untimed-activities__empty-add {
     display: inline-flex;
@@ -340,9 +353,9 @@
     transform: translateY(-1px);
 }
 
-/* ========================================
-   Responsive
-======================================== */
+/* ============================================================
+   Responsive Design
+============================================================ */
 
 @media (max-width: 700px) {
     .untimed-activities {
@@ -360,4 +373,51 @@
     .untimed-activity__progress {
         display: none;
     }
+}
+
+/* ============================================================
+   Dark Theme Support
+============================================================ */
+
+:root[data-theme="dark"] .untimed-activity {
+    background-color: #1a2629;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+:root[data-theme="dark"] .untimed-activity:hover {
+    background-color: #203035;
+    border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+}
+
+:root[data-theme="dark"] .untimed-activity__title {
+    color: var(--color-text);
+}
+
+:root[data-theme="dark"] .untimed-activity__progress {
+    color: var(--color-text-secondary);
+    background-color: color-mix(in srgb, var(--color-primary) 15%, transparent);
+    border-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
+}
+
+:root[data-theme="dark"] .untimed-activity__check {
+    background-color: #1a2629;
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+:root[data-theme="dark"] .untimed-activity__check:hover {
+    background-color: #203035;
+    border-color: var(--color-primary-light);
+}
+
+:root[data-theme="dark"] .untimed-activity__check--completed {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+}
+
+:root[data-theme="dark"] .untimed-activity__future-badge {
+    color: #8a929b;
+    background: #1a2629;
+}
+
+:root[data-theme="dark"] .untimed-activities__empty {
+    color: var(--color-text-secondary);
 }

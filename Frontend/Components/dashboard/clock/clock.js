@@ -1,11 +1,11 @@
-// فایل: Components/dashboard/clock/clock.js
+// File: Components/dashboard/clock/clock.js
 
 import { sessions } from "../sessions/sessions.js";
 import { getActiveActivity } from "../timed-activities/timed-activities.js";
 
-// ========================================
-// Mapping استان‌های فارسی به انگلیسی برای API
-// ========================================
+// ============================================================
+// Province Mapping (Persian to English)
+// ============================================================
 
 const provinceMapping = {
     'البرز': 'Alborz',
@@ -39,17 +39,13 @@ const provinceMapping = {
     'یزد': 'Yazd'
 };
 
-// ========================================
-// تابع تبدیل استان فارسی به انگلیسی
-// ========================================
-
 function getProvinceEnglish(province) {
     return provinceMapping[province] || province;
 }
 
-// ========================================
-// تابع رندر HTML (برای استفاده در صفحه)
-// ========================================
+// ============================================================
+// Render HTML
+// ============================================================
 
 export function Clock() {
     const now = new Date();
@@ -142,28 +138,23 @@ export function Clock() {
     `;
 }
 
-// ========================================
-// تابع دریافت دما از API
-// ========================================
+// ============================================================
+// Weather API
+// ============================================================
 
 const API_KEY = 'eee92f52e92fcf64a3bcb6b1c9b73d22';
 const API_URL = 'https://api.openweathermap.org/data/2.5/weather';
 
 export async function fetchWeather(city) {
-    if (!city) {
-        console.log('شهری برای دریافت دما مشخص نشده');
-        return null;
-    }
+    if (!city) return null;
 
     try {
         const cityEnglish = getProvinceEnglish(city);
-        console.log(`دریافت دما برای: ${city} -> ${cityEnglish}`);
-
         const url = `${API_URL}?q=${encodeURIComponent(cityEnglish)}&appid=${API_KEY}&units=metric&lang=fa`;
         const response = await fetch(url);
 
         if (!response.ok) {
-            throw new Error(`خطا در دریافت دما: ${response.status}`);
+            throw new Error(`Weather API error: ${response.status}`);
         }
 
         const data = await response.json();
@@ -174,10 +165,8 @@ export async function fetchWeather(city) {
             tempElement.textContent = `${temp}°C`;
         }
 
-        console.log(`دمای ${city}: ${temp}°C`);
         return temp;
     } catch (error) {
-        console.error('خطا در دریافت دما:', error.message);
         const tempElement = document.getElementById('clockTemp');
         if (tempElement) {
             tempElement.textContent = '--°C';
@@ -190,9 +179,9 @@ export function updateWeatherForCity(city) {
     return fetchWeather(city);
 }
 
-// ========================================
-// Clock Logic - Complete
-// ========================================
+// ============================================================
+// Clock Logic
+// ============================================================
 
 let clockInterval = null;
 let sessionsOverride = null;
@@ -236,22 +225,9 @@ function getNowDeg() {
     return ((hours % 24) / 24) * 360 + (minutes / 60) * 15 + (seconds / 3600) * 15;
 }
 
-// ========================================
-// رندر حلقه سشن‌ها - با پشتیبانی از تاریخ‌های مختلف
-// ========================================
-
-function renderSessionRing() {
-    const ring = document.getElementById('sessionRing');
-    if (!ring) return;
-
-    // اگر تاریخ انتخاب شده وجود نداره یا امروز هست، از منطق عادی استفاده کن
-    if (!currentSelectedDate || isToday(currentSelectedDate)) {
-        renderNormalRing(ring);
-    } else {
-        // برای روزهای دیگر، بر اساس تاریخ انتخاب شده رندر کن
-        renderDateRing(ring, currentSelectedDate);
-    }
-}
+// ============================================================
+// Date Helpers
+// ============================================================
 
 function isToday(date) {
     const today = new Date();
@@ -276,9 +252,9 @@ function isDateInFuture(date) {
     return compareDate > today;
 }
 
-// ========================================
-// رندر حلقه عادی (امروز)
-// ========================================
+// ============================================================
+// Session Ring Renderer - Today
+// ============================================================
 
 function renderNormalRing(ring) {
     const todaySessions = getTodaySessions(getActiveSessions());
@@ -315,23 +291,13 @@ function renderNormalRing(ring) {
         lastEndDeg = Math.max(lastEndDeg, endDeg);
     }
 
-    // ========================================
-    // فعالیتِ در حال اجرا (اگه باشه) — به‌عنوان یه بازه‌ی
-    // «زنده» از لحظه‌ی شروعش تا همین الان، با رنگ خودش.
-    // این‌طوری منتظر ثبت‌شدن سشن (پایان فعالیت) نمی‌مونیم؛
-    // همون لحظه‌ی «شروع» رنگ روی حلقه ظاهر می‌شه و هر ثانیه
-    // (چون timed-activities.js رویداد sessions:changed رو هر
-    // ثانیه پخش می‌کنه) بزرگ‌تر می‌شه.
-    // ========================================
+    // Active running activity (live)
     const runningActivity = getActiveActivity();
     if (runningActivity && runningActivity.startTime) {
         const start = runningActivity.startTime;
         const startHour = start.getHours() + (start.getMinutes() / 60) + (start.getSeconds() / 3600);
         let runningStartDeg = (startHour / 24) * 360;
 
-        // اگه به هر دلیلی قبل از آخرین بازه‌ی ثبت‌شده باشه (نباید
-        // پیش بیاد، ولی برای اطمینان)، از همون‌جا ادامه بده تا
-        // تداخل رنگی ایجاد نشه.
         if (runningStartDeg < lastEndDeg) runningStartDeg = lastEndDeg;
 
         if (runningStartDeg > lastEndDeg) {
@@ -353,16 +319,15 @@ function renderNormalRing(ring) {
     ring.style.background = `conic-gradient(from 0deg, ${gradientParts.join(', ')})`;
 }
 
-// ========================================
-// رندر حلقه برای یک تاریخ خاص
-// ========================================
+// ============================================================
+// Session Ring Renderer - Specific Date
+// ============================================================
 
 function renderDateRing(ring, date) {
     const daySessions = getSessionsForDate(date);
     const isPast = isDateInPast(date);
     const isFuture = isDateInFuture(date);
 
-    // اگر روز گذشته است، حلقه کامل پر شده
     if (isPast) {
         if (daySessions.length === 0) {
             ring.style.background = '#e8edec';
@@ -410,30 +375,24 @@ function renderDateRing(ring, date) {
     }
 }
 
-// ========================================
-// حلقه منجمد
-// ========================================
+// ============================================================
+// Session Ring Renderer - Main
+// ============================================================
 
-function renderFrozenRing() {
+function renderSessionRing() {
     const ring = document.getElementById('sessionRing');
     if (!ring) return;
 
-    if (currentSelectedDate && isDateInPast(currentSelectedDate)) {
-        ring.style.background = '#e8edec';
-        return;
+    if (!currentSelectedDate || isToday(currentSelectedDate)) {
+        renderNormalRing(ring);
+    } else {
+        renderDateRing(ring, currentSelectedDate);
     }
-
-    if (currentSelectedDate && isDateInFuture(currentSelectedDate)) {
-        ring.style.background = 'transparent';
-        return;
-    }
-
-    ring.style.background = '#e8edec';
 }
 
-// ========================================
-// بروزرسانی عقربه‌ها و دیجیتال
-// ========================================
+// ============================================================
+// Update Clock Hands & Digital Display
+// ============================================================
 
 function updateClock() {
     const now = new Date();
@@ -441,7 +400,7 @@ function updateClock() {
     const minutes = now.getMinutes();
     const seconds = now.getSeconds();
 
-    // اگر روز انتخاب شده با امروز متفاوت است، عقربه‌ها رو ۰۰:۰۰ نگه دار
+    // If selected date is not today, freeze at 00:00
     if (currentSelectedDate && !isToday(currentSelectedDate)) {
         const hourHand = document.getElementById('hourHand');
         const minuteHand = document.getElementById('minuteHand');
@@ -467,7 +426,7 @@ function updateClock() {
         return;
     }
 
-    // برای امروز، عادی کار کن
+    // Normal update for today
     const hourDeg = ((hours % 24) / 24) * 360 + (minutes / 60) * 15 + (seconds / 3600) * 15;
     const minuteDeg = (minutes / 60) * 360 + (seconds / 60) * 6;
     const secondDeg = (seconds / 60) * 360;
@@ -514,9 +473,9 @@ function updateClock() {
     renderSessionRing();
 }
 
-// ========================================
-// شروع و توقف ساعت
-// ========================================
+// ============================================================
+// Start / Stop Clock
+// ============================================================
 
 export function startClock(sessionsForDay = null) {
     if (clockInterval) {
@@ -528,7 +487,6 @@ export function startClock(sessionsForDay = null) {
     sessionsOverride = sessionsForDay;
     currentSelectedDate = null;
 
-    // بروزرسانی اولیه
     renderSessionRing();
     updateClock();
 
@@ -558,9 +516,9 @@ export function initClock(sessionsForDay = null) {
     startClock(sessionsForDay);
 }
 
-// ========================================
-// حالت «روز دیگر» - متوقف کردن ساعت
-// ========================================
+// ============================================================
+// Freeze Clock for a Specific Day
+// ============================================================
 
 function freezeClockForDay(date) {
     stopClock();
@@ -603,9 +561,9 @@ function freezeClockForDay(date) {
     renderSessionRing();
 }
 
-// ========================================
-// گوش دادن به انتخاب روز از تقویم
-// ========================================
+// ============================================================
+// Listen for Day Selection from Calendar
+// ============================================================
 
 document.addEventListener('day:selected', (event) => {
     const { isToday, gy, gm, gd } = event.detail;
@@ -621,13 +579,11 @@ document.addEventListener('day:selected', (event) => {
     }
 });
 
-// ========================================
-// گوش دادن به تغییرات سشن‌ها برای بروزرسانی حلقه
-// ========================================
+// ============================================================
+// Listen for Session Changes
+// ============================================================
 
 document.addEventListener('sessions:changed', () => {
-    console.log('🔄 ساعت: تغییرات سشن‌ها دریافت شد، حلقه بروزرسانی میشود');
-    // اگر ساعت فعال هست یا منجمد شده، حلقه رو بروزرسانی کن
     if (clockInterval) {
         renderSessionRing();
     } else if (isFrozen) {
@@ -635,9 +591,17 @@ document.addEventListener('sessions:changed', () => {
     }
 });
 
-// ========================================
-// قرار دادن توابع در دسترس global
-// ========================================
+document.addEventListener('timed-activities:changed', () => {
+    if (clockInterval) {
+        renderSessionRing();
+    } else if (isFrozen) {
+        renderSessionRing();
+    }
+});
+
+// ============================================================
+// Global Exports for Window
+// ============================================================
 
 if (typeof window !== 'undefined') {
     window.updateWeatherForCity = updateWeatherForCity;

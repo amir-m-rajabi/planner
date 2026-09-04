@@ -1,19 +1,18 @@
+/* ============================================================
+   Header
+============================================================ */
+
 .header {
     position: relative;
-
     width: 100%;
     height: var(--header-height);
-
     background-color: color-mix(in srgb, var(--color-surface) 92%, transparent);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-
     box-shadow: var(--shadow-sm);
 }
 
-/* خط نازک گرادیانت پایین هدر — همون امضای بصری که روی
-   کارت‌های داشبورد هم هست، اینجا هم تکرار شده تا کل اپ
-   یه‌دست به‌نظر بیاد (به‌جای یه خط خاکستری ساده). */
+/* Brand accent line at bottom of header */
 .header::after {
     content: "";
     position: absolute;
@@ -27,36 +26,32 @@
 
 .header__container {
     position: relative;
-
     width: 100%;
     height: 100%;
-
     padding-inline: var(--page-padding);
-
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
+/* ============================================================
+   Logo
+============================================================ */
+
 .logo {
     width: 55px;
     height: 55px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     flex-shrink: 0;
-
     text-decoration: none;
 }
 
 .logo__image {
     width: 100%;
     height: 100%;
-
     object-fit: contain;
-
     display: block;
     transition: transform 200ms ease-in-out, filter 200ms ease-in-out;
 }
@@ -66,30 +61,27 @@
     filter: drop-shadow(0 4px 10px rgba(33, 110, 137, 0.25));
 }
 
+/* ============================================================
+   Navigation
+============================================================ */
+
 .navigation {
     padding: 6px;
-
     background-color: var(--color-surface-hover);
-
     border: 1px solid var(--color-border);
-
     border-radius: 16px;
-
     box-shadow: var(--shadow-xs);
 }
 
 .navigation__list {
     display: flex;
     align-items: center;
-
     gap: 40px;
-
     list-style: none;
 }
 
 .navigation__item {
     height: 100%;
-
     display: flex;
     align-items: center;
 }
@@ -97,55 +89,38 @@
 .navigation__link {
     min-width: 120px;
     height: 40px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     padding-inline: 20px;
-
     border-radius: 11px;
-
     color: var(--color-text-secondary);
-
     font-size: var(--font-size-md);
     font-weight: 500;
-
     text-decoration: none;
-
-    transition:
-        color 180ms ease,
-        background-color 180ms ease,
-        background-image 180ms ease,
-        box-shadow 180ms ease,
-        transform 180ms ease;
+    transition: color 180ms ease, background-color 180ms ease, background-image 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
 
 .navigation__link:hover {
     color: var(--color-primary);
-
     background-color: color-mix(in srgb, var(--color-primary-light) 12%, transparent);
 }
 
 .navigation__link--active {
     color: #ffffff;
-
     background-image: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-
     font-weight: 600;
-
     box-shadow: 0 3px 10px rgba(33, 110, 137, 0.28);
 }
 
 .navigation__link--active:hover {
     color: #ffffff;
-
     background-image: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
 }
 
-/* ========================================
+/* ============================================================
    Profile & Status Indicator
-======================================== */
+============================================================ */
 
 .profile-wrapper {
     position: relative;
@@ -157,33 +132,22 @@
 .profile {
     width: 55px;
     height: 55px;
-
     display: block;
-
     flex-shrink: 0;
-
     border-radius: var(--radius-full);
-
     overflow: hidden;
-
     border: 2px solid var(--color-border);
-
-    transition:
-        border-color 180ms ease,
-        transform 180ms ease,
-        box-shadow 180ms ease;
+    transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
 
 .profile:hover {
     border-color: var(--color-primary);
-
     transform: scale(1.04);
     box-shadow: 0 4px 12px rgba(33, 110, 137, 0.16);
 }
 
 .profile--active {
     border-color: var(--color-primary);
-
     transform: scale(1.04);
     box-shadow: 0 4px 12px rgba(33, 110, 137, 0.16);
 }
@@ -191,73 +155,51 @@
 .profile__image {
     width: 100%;
     height: 100%;
-
     display: block;
-
     object-fit: cover;
 }
 
-/* چراغ وضعیت آنلاین/آفلاین */
+/* Online/Offline Status Dot */
 .profile-status {
     position: absolute;
     bottom: 2px;
     right: 2px;
     width: 13px;
     height: 13px;
-
     border-radius: 50%;
     border: 2px solid var(--color-surface, #ffffff);
-    background-color: #22c55e; /* سبز آنلاین */
-    
+    background-color: #22c55e;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     pointer-events: none;
-
     transition: background-color 200ms ease, box-shadow 200ms ease;
 }
 
-/* حالت آفلاین */
 .profile-status--offline {
-    background-color: #9ca3af; /* خاکستری آفلاین */
+    background-color: #9ca3af;
 }
 
-/* ========================================
-   Active Timer
-======================================== */
+/* ============================================================
+   Header Timer (Active Activity)
+============================================================ */
 
 .header-timer {
     position: absolute;
-
     top: 50%;
     right: calc(var(--page-padding) + 100px);
-
     transform: translateY(-50%);
-
     height: 46px;
-
     display: flex;
     align-items: center;
-
     gap: 14px;
-
     padding: 5px 7px 5px 14px;
-
     background-color: color-mix(in srgb, var(--color-surface) 96%, transparent);
-
     border: 1px solid var(--color-border);
-
     border-radius: 14px;
-
-    box-shadow:
-        var(--shadow-sm),
-        0 0 0 1px color-mix(in srgb, var(--timer-color, var(--color-primary)) 10%, transparent);
-
+    box-shadow: var(--shadow-sm), 0 0 0 1px color-mix(in srgb, var(--timer-color, var(--color-primary)) 10%, transparent);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-
     z-index: 10;
-
     direction: rtl;
-
     transition: box-shadow 200ms ease;
 }
 
@@ -265,95 +207,58 @@
     display: none;
 }
 
-/* Activity */
-
+/* Activity Info */
 .header-timer__activity {
     display: flex;
     align-items: center;
-
     gap: 7px;
-
     min-width: 100px;
-
     color: var(--color-text);
-
     font-size: 12px;
     font-weight: 600;
-
     white-space: nowrap;
 }
 
 .header-timer__indicator {
     width: 8px;
     height: 8px;
-
     flex-shrink: 0;
-
     border-radius: 50%;
-
     background-color: var(--timer-color, var(--color-primary));
-
-    box-shadow:
-        0 0 0 3px color-mix(
-            in srgb,
-            var(--timer-color, var(--color-primary)) 12%,
-            transparent
-        );
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--timer-color, var(--color-primary)) 12%, transparent);
 }
 
-/* Time */
-
+/* Time Display */
 .header-timer__time {
     min-width: 74px;
-
     direction: ltr;
-
     text-align: center;
-
     color: var(--color-primary);
-
     font-family: monospace;
-
     font-size: 15px;
     font-weight: 700;
-
     letter-spacing: 0.5px;
     font-variant-numeric: tabular-nums;
 }
 
 /* Stop Button */
-
 .header-timer__stop {
     height: 34px;
-
     padding: 0 12px;
-
     border: none;
-
     border-radius: 9px;
-
     color: #ffffff;
-
     background-color: var(--color-primary);
-
     font-family: inherit;
-
     font-size: 11px;
     font-weight: 600;
-
     cursor: pointer;
-
-    transition:
-        background-color 180ms ease,
-        transform 180ms ease,
-        box-shadow 180ms ease;
+    transition: background-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
 
 .header-timer__stop:hover {
     background-color: var(--color-primary-light);
-
     box-shadow: 0 4px 10px rgba(79, 158, 165, 0.22);
-
     transform: translateY(-1px);
 }
 
@@ -361,13 +266,9 @@
     transform: translateY(0);
 }
 
-
-
-
-
-/* ========================================
-   Auth Buttons (وقتی کاربر وارد نشده)
-======================================== */
+/* ============================================================
+   Auth Buttons (When User is Logged Out)
+============================================================ */
 
 .auth-buttons {
     display: flex;
@@ -377,28 +278,16 @@
 
 .auth-button {
     height: 38px;
-    
     display: flex;
     align-items: center;
     justify-content: center;
-    
     padding-inline: 16px;
-    
     border-radius: 10px;
-    
     font-size: 12px;
     font-weight: 600;
-    
     text-decoration: none;
-    
     cursor: pointer;
-    
-    transition:
-        background-color 180ms ease,
-        color 180ms ease,
-        border-color 180ms ease,
-        transform 180ms ease,
-        box-shadow 180ms ease;
+    transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
 
 .auth-button--login {
@@ -430,4 +319,220 @@
 
 .auth-button:active {
     transform: translateY(0);
+}
+
+/* ============================================================
+   Responsive Design
+============================================================ */
+
+@media (max-width: 1100px) {
+    .navigation__list {
+        gap: 20px;
+    }
+
+    .navigation__link {
+        min-width: 90px;
+        padding-inline: 14px;
+        font-size: 13px;
+    }
+
+    .header-timer {
+        right: calc(var(--page-padding) + 80px);
+        height: 42px;
+        padding: 4px 6px 4px 10px;
+        gap: 10px;
+    }
+
+    .header-timer__activity {
+        min-width: 80px;
+        font-size: 11px;
+    }
+
+    .header-timer__time {
+        min-width: 64px;
+        font-size: 13px;
+    }
+
+    .header-timer__stop {
+        height: 30px;
+        padding: 0 10px;
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 850px) {
+    .header__container {
+        padding-inline: 16px;
+    }
+
+    .navigation {
+        display: none;
+    }
+
+    .header-timer {
+        position: static;
+        transform: none;
+        height: 38px;
+        padding: 3px 5px 3px 10px;
+        gap: 8px;
+        margin-right: auto;
+        margin-left: 8px;
+        border-radius: 10px;
+    }
+
+    .header-timer__activity {
+        min-width: 60px;
+        font-size: 10px;
+    }
+
+    .header-timer__activity-name {
+        display: none;
+    }
+
+    .header-timer__time {
+        min-width: 56px;
+        font-size: 12px;
+    }
+
+    .header-timer__stop {
+        height: 28px;
+        padding: 0 8px;
+        font-size: 9px;
+    }
+
+    .profile {
+        width: 44px;
+        height: 44px;
+    }
+
+    .profile-status {
+        width: 10px;
+        height: 10px;
+        bottom: 0;
+        right: 0;
+        border-width: 1.5px;
+    }
+
+    .auth-button {
+        height: 34px;
+        padding-inline: 12px;
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 500px) {
+    .header__container {
+        padding-inline: 10px;
+    }
+
+    .logo {
+        width: 40px;
+        height: 40px;
+    }
+
+    .header-timer {
+        height: 34px;
+        padding: 2px 4px 2px 8px;
+        gap: 6px;
+        border-radius: 8px;
+    }
+
+    .header-timer__activity {
+        min-width: 40px;
+        font-size: 9px;
+    }
+
+    .header-timer__indicator {
+        width: 6px;
+        height: 6px;
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--timer-color, var(--color-primary)) 12%, transparent);
+    }
+
+    .header-timer__time {
+        min-width: 48px;
+        font-size: 11px;
+    }
+
+    .header-timer__stop {
+        height: 24px;
+        padding: 0 6px;
+        font-size: 8px;
+        border-radius: 6px;
+    }
+
+    .profile {
+        width: 36px;
+        height: 36px;
+        border-width: 1.5px;
+    }
+
+    .profile-status {
+        width: 8px;
+        height: 8px;
+        border-width: 1px;
+    }
+
+    .auth-button {
+        height: 30px;
+        padding-inline: 10px;
+        font-size: 10px;
+        border-radius: 8px;
+    }
+}
+
+/* ============================================================
+   Dark Theme Support
+============================================================ */
+
+:root[data-theme="dark"] .header {
+    background-color: color-mix(in srgb, #1a2629 92%, transparent);
+}
+
+:root[data-theme="dark"] .navigation {
+    background-color: #0f181a;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+:root[data-theme="dark"] .navigation__link:hover {
+    background-color: color-mix(in srgb, var(--color-primary-light) 15%, transparent);
+}
+
+:root[data-theme="dark"] .profile {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme="dark"] .profile:hover,
+:root[data-theme="dark"] .profile--active {
+    border-color: var(--color-primary-light);
+}
+
+:root[data-theme="dark"] .profile-status {
+    border-color: #1a2629;
+}
+
+:root[data-theme="dark"] .header-timer {
+    background-color: color-mix(in srgb, #1a2629 96%, transparent);
+    border-color: rgba(255, 255, 255, 0.06);
+    box-shadow: var(--shadow-sm), 0 0 0 1px color-mix(in srgb, var(--timer-color, var(--color-primary)) 15%, transparent);
+}
+
+:root[data-theme="dark"] .auth-button--login {
+    border-color: rgba(255, 255, 255, 0.08);
+    color: var(--color-text-secondary);
+}
+
+:root[data-theme="dark"] .auth-button--login:hover {
+    border-color: var(--color-primary-light);
+    color: var(--color-primary-light);
+    background-color: rgba(79, 158, 165, 0.08);
+}
+
+:root[data-theme="dark"] .auth-button--register {
+    background-color: #5fb3cc;
+    border-color: #5fb3cc;
+}
+
+:root[data-theme="dark"] .auth-button--register:hover {
+    background-color: #6fc2db;
+    border-color: #6fc2db;
 }

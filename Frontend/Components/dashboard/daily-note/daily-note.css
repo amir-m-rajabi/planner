@@ -1,27 +1,31 @@
-/* ========================================
+/* ============================================================
    Daily Notes (Dashboard Module)
-======================================== */
+============================================================ */
+
+/* ============================================================
+   Container
+============================================================ */
 
 .daily-notes {
     width: 100%;
     height: 100%;
     min-width: 0;
     min-height: 0;
+    position: relative;
     display: flex;
     flex-direction: column;
     padding: 20px;
-    position: relative;
     overflow: hidden;
 }
 
-/* ========================================
+/* ============================================================
    Header
-======================================== */
+============================================================ */
 
 .daily-notes__header {
+    flex-shrink: 0;
     display: flex;
     align-items: center;
-    flex-shrink: 0;
     margin-bottom: 14px;
 }
 
@@ -32,9 +36,9 @@
     font-weight: 600;
 }
 
-/* ========================================
-   Content
-======================================== */
+/* ============================================================
+   Content Area
+============================================================ */
 
 .daily-notes__content {
     min-width: 0;
@@ -47,9 +51,9 @@
     overflow: visible;
 }
 
-/* ========================================
-   Notebook Button
-======================================== */
+/* ============================================================
+   Notebook Button (Closed View)
+============================================================ */
 
 .daily-notebook {
     width: min(78%, 250px);
@@ -73,10 +77,7 @@
     transform: translateY(-1px) scale(0.98);
 }
 
-/* ========================================
-   Notebook Book
-======================================== */
-
+/* Book */
 .daily-notebook__book {
     width: 100%;
     height: 100%;
@@ -92,34 +93,28 @@
     box-shadow: var(--shadow-lg), inset 3px 0 0 rgba(255, 255, 255, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.10);
 }
 
-/* ========================================
-   Notebook Spine
-======================================== */
-
+/* Spine */
 .daily-notebook__spine {
     width: 9px;
     height: 100%;
     position: absolute;
-    right: 0;
     top: 0;
+    right: 0;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1));
     border-radius: 0 14px 14px 0;
 }
 
-/* ========================================
-   Notebook Inner Content
-======================================== */
-
+/* Inner Content */
 .daily-notebook__content {
     width: 100%;
     height: 100%;
+    position: relative;
+    z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 9px;
-    position: relative;
-    z-index: 2;
     color: #ffffff;
 }
 
@@ -145,10 +140,7 @@
     opacity: 0.72;
 }
 
-/* ========================================
-   Spiral
-======================================== */
-
+/* Spiral */
 .daily-notebook__spiral {
     position: absolute;
     top: -7px;
@@ -171,9 +163,9 @@
     box-shadow: var(--shadow-xs);
 }
 
-/* ========================================
-   Status
-======================================== */
+/* ============================================================
+   Status Pill
+============================================================ */
 
 .daily-notebook__status {
     position: absolute;
@@ -194,12 +186,10 @@
     font-size: 10px;
     white-space: nowrap;
     box-shadow: var(--shadow-sm);
+    transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease;
 }
 
-/* ========================================
-   Has Note
-======================================== */
-
+/* Has Note State */
 .daily-notebook[data-note-exists="true"] .daily-notebook__book {
     background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
     box-shadow: var(--shadow-md), inset 3px 0 0 rgba(255, 255, 255, 0.14), inset 0 0 0 1px rgba(255, 255, 255, 0.10);
@@ -207,12 +197,14 @@
 
 .daily-notebook[data-note-exists="true"] .daily-notebook__message {
     color: var(--color-primary-light);
+    background: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface));
+    border-color: color-mix(in srgb, var(--color-primary) 30%, var(--color-border));
     font-weight: 600;
 }
 
-/* ========================================
+/* ============================================================
    Daily Note Modal
-======================================== */
+============================================================ */
 
 .daily-note-modal {
     position: fixed;
@@ -235,10 +227,7 @@
     pointer-events: auto;
 }
 
-/* ========================================
-   Modal Overlay
-======================================== */
-
+/* Overlay */
 .daily-note-modal__overlay {
     position: absolute;
     inset: 0;
@@ -246,17 +235,14 @@
     backdrop-filter: blur(5px);
 }
 
-/* ========================================
-   Modal Book
-======================================== */
-
+/* Book */
 .daily-note-modal__book {
     width: min(900px, 100%);
     height: min(620px, calc(100vh - 48px));
-    display: grid;
-    grid-template-columns: 0.78fr 1.45fr;
     position: relative;
     z-index: 2;
+    display: grid;
+    grid-template-columns: 0.78fr 1.45fr;
     overflow: hidden;
     border-radius: 8px 18px 18px 8px;
     box-shadow: var(--shadow-lg), 0 10px 30px rgba(0, 0, 0, 0.2);
@@ -269,9 +255,9 @@
     transform: rotateY(0) scale(1) translateY(0);
 }
 
-/* ========================================
+/* ============================================================
    Modal Cover
-======================================== */
+============================================================ */
 
 .daily-note-modal__cover {
     position: relative;
@@ -313,12 +299,12 @@
 }
 
 .daily-note-modal__cover-content {
+    position: relative;
+    z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 14px;
-    position: relative;
-    z-index: 2;
     color: #ffffff;
     text-align: center;
 }
@@ -338,28 +324,24 @@
     opacity: 0.68;
 }
 
-/* ========================================
+/* ============================================================
    Modal Page
-======================================== */
+============================================================ */
 
 .daily-note-modal__page {
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    min-width: 0;
     padding: 30px 34px;
     background: var(--color-surface);
 }
 
-/* ========================================
-   Modal Header
-======================================== */
-
 .daily-note-modal__header {
+    flex-shrink: 0;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     gap: 20px;
-    flex-shrink: 0;
     margin-bottom: 20px;
 }
 
@@ -399,9 +381,9 @@
     transform: rotate(5deg);
 }
 
-/* ========================================
+/* ============================================================
    Editor
-======================================== */
+============================================================ */
 
 .daily-note-modal__editor {
     flex: 1;
@@ -448,16 +430,16 @@
     color: var(--color-text-muted);
 }
 
-/* ========================================
+/* ============================================================
    Modal Footer
-======================================== */
+============================================================ */
 
 .daily-note-modal__footer {
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 20px;
-    flex-shrink: 0;
     padding-top: 18px;
 }
 
@@ -508,9 +490,76 @@
     box-shadow: 0 7px 16px color-mix(in srgb, var(--color-primary) 35%, transparent);
 }
 
-/* ========================================
-   Responsive
-======================================== */
+/* ============================================================
+   Dark Theme Support
+============================================================ */
+
+:root[data-theme="dark"] .daily-notebook__book {
+    background: linear-gradient(135deg, #5fb3cc, #3d8ea6);
+}
+
+:root[data-theme="dark"] .daily-note-modal__cover {
+    background: linear-gradient(145deg, #5fb3cc, #3d8ea6);
+}
+
+:root[data-theme="dark"] .daily-note-modal__lines {
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 31px,
+        rgba(95, 179, 204, 0.12) 32px
+    );
+}
+
+:root[data-theme="dark"] .daily-notebook[data-note-exists="true"] .daily-notebook__book {
+    background: linear-gradient(135deg, #5fb3cc, #3d8ea6);
+}
+
+:root[data-theme="dark"] .daily-note-modal__page {
+    background: #1a2629;
+}
+
+:root[data-theme="dark"] .daily-note-modal__editor {
+    background: #1a2629;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+:root[data-theme="dark"] .daily-note-modal__close {
+    background: #1a2629;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+:root[data-theme="dark"] .daily-note-modal__close:hover {
+    background: #203035;
+}
+
+:root[data-theme="dark"] .daily-note-modal__save {
+    background: #5fb3cc;
+}
+
+:root[data-theme="dark"] .daily-note-modal__save:hover {
+    background: #6fc2db;
+}
+
+/* ============================================================
+   🔥 Dark Theme - Status Pill Fix
+============================================================ */
+
+:root[data-theme="dark"] .daily-notebook__message {
+    color: #c8d6d9;
+    background: #1a2629;
+    border-color: #2a3a3e;
+}
+
+:root[data-theme="dark"] .daily-notebook[data-note-exists="true"] .daily-notebook__message {
+    color: #7cc4d8;
+    background: rgba(95, 179, 204, 0.12);
+    border-color: rgba(95, 179, 204, 0.30);
+}
+
+/* ============================================================
+   Responsive Design
+============================================================ */
 
 @media (max-width: 760px) {
     .daily-note-modal {
@@ -563,8 +612,8 @@
     }
 
     .daily-note-modal__footer {
-        align-items: stretch;
         flex-direction: column;
+        align-items: stretch;
     }
 
     .daily-note-modal__actions {
