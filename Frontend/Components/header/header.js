@@ -128,7 +128,7 @@ export function Header() {
         <header class="header">
             <div class="header__container">
                 <a href="/" data-route="/" class="logo">
-                    <img src="https://planner-e78.pages.dev/assets/images/logo.png" alt="Planner" class="logo__image" />
+                    <img src="https://planner-e78.pages.dev/assets/images/Logo.png" alt="Planner" class="logo__image" />
                 </a>
 
                 <div
