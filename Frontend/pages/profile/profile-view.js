@@ -269,7 +269,7 @@ async function uploadUserAvatar(file) {
         fillProfileForm(savedProfile);
 
         document.dispatchEvent(new CustomEvent('profile:avatar-updated', {
-            detail: { src: `http://localhost:3000${result.user.avatar}` }
+            detail: { src: `https://planner-api-jw63.onrender.com${result.user.avatar}` }
         }));
 
         window.location.href = '/Frontend/index.html';
@@ -376,7 +376,7 @@ function fillProfileForm(profile) {
     if (avatarImg) {
         if (profile.avatar) {
             if (profile.avatar.startsWith('/uploads/')) {
-                avatarImg.src = `http://localhost:3000${profile.avatar}`;
+                avatarImg.src = `https://planner-api-jw63.onrender.com${profile.avatar}`;
             } else {
                 avatarImg.src = profile.avatar;
             }
@@ -392,7 +392,7 @@ function fillProfileForm(profile) {
     if (headerAvatar) {
         if (profile.avatar) {
             if (profile.avatar.startsWith('/uploads/')) {
-                headerAvatar.src = `http://localhost:3000${profile.avatar}`;
+                headerAvatar.src = `https://planner-api-jw63.onrender.com${profile.avatar}`;
             } else {
                 headerAvatar.src = profile.avatar;
             }

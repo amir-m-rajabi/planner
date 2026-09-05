@@ -425,7 +425,7 @@ function setupLoginForm() {
         if (hasError) return;
         
         try {
-            const response = await fetch('http://localhost:3000/api/auth/login', {
+            const response = await fetch('https://planner-api-jw63.onrender.com/api/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -563,7 +563,7 @@ function setupRegisterForm() {
                 gender: gender
             };
             
-            const response = await fetch('http://localhost:3000/api/users', {
+            const response = await fetch('https://planner-api-jw63.onrender.com/api/users', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

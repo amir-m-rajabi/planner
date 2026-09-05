@@ -37,7 +37,7 @@ function getHeaderAvatar() {
         : '/Frontend/assets/images/profile-default-male.png';
 
     if (userProfile.avatar) {
-        return `http://localhost:3000${userProfile.avatar}`;
+        return `https://planner-api-jw63.onrender.com${userProfile.avatar}`;
     }
 
     return defaultAvatar;
