@@ -272,7 +272,7 @@ async function uploadUserAvatar(file) {
             detail: { src: `https://planner-api-jw63.onrender.com${result.user.avatar}` }
         }));
 
-        window.location.href = '/Frontend/index.html';
+        window.location.href = './index.html';
 
         return result;
 
@@ -302,7 +302,7 @@ async function deleteUserAvatar() {
 
         fillProfileForm(savedProfile);
 
-        window.location.href = '/Frontend/index.html';
+        window.location.href = './index.html';
 
         return result;
 
@@ -382,8 +382,8 @@ function fillProfileForm(profile) {
             }
         } else {
             const defaultAvatar = profile.gender === 'female'
-                ? '/Frontend/assets/images/profile-default-female.png'
-                : '/Frontend/assets/images/profile-default-male.png';
+                ? './/assets/images/profile-default-female.png'
+                : './assets/images/profile-default-male.png';
             avatarImg.src = defaultAvatar;
         }
     }
@@ -398,8 +398,8 @@ function fillProfileForm(profile) {
             }
         } else {
             const defaultAvatar = profile.gender === 'female'
-                ? '/Frontend/assets/images/profile-default-female.png'
-                : '/Frontend/assets/images/profile-default-male.png';
+                ? './assets/images/profile-default-female.png'
+                : './assets/images/profile-default-male.png';
             headerAvatar.src = defaultAvatar;
         }
     }
@@ -600,7 +600,7 @@ function setupImageUpload() {
                             avatarModal.setAttribute('aria-hidden', 'true');
                             document.body.style.overflow = '';
                         }
-                        window.location.href = '/Frontend/index.html';
+                        window.location.href = './index.html';
                     })
                     .catch(error => {
                         alert(error.message || 'خطا در حذف تصویر');
@@ -643,7 +643,7 @@ function setupImageUpload() {
                                 avatarModal.setAttribute('aria-hidden', 'true');
                                 document.body.style.overflow = '';
                             }
-                            window.location.href = '/Frontend/index.html';
+                            window.location.href = './index.html';
                         })
                         .catch(error => {
                             alert(error.message || 'خطا در حذف تصویر');
@@ -742,7 +742,7 @@ function setupImageUpload() {
                         avatarModal.setAttribute('aria-hidden', 'true');
                         document.body.style.overflow = '';
                     }
-                    window.location.href = '/Frontend/index.html';
+                    window.location.href = './index.html';
                 })
                 .catch(error => {
                     alert(error.message || 'خطا در آپلود تصویر');
@@ -763,12 +763,12 @@ export function ProfileView() {
     const cachedProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
 
     const defaultAvatar = cachedProfile.gender === 'female'
-        ? '/Frontend/assets/images/profile-default-female.png'
-        : '/Frontend/assets/images/profile-default-male.png';
+        ? './assets/images/profile-default-female.png'
+        : './assets/images/profile-default-male.png';
 
     let avatar = cachedProfile.avatar || defaultAvatar;
-    const defaultMale = '/Frontend/assets/images/profile-default-male.png';
-    const defaultFemale = '/Frontend/assets/images/profile-default-female.png';
+    const defaultMale = './assets/images/profile-default-male.png';
+    const defaultFemale = './assets/images/profile-default-female.png';
 
     if (!avatar || avatar === defaultMale || avatar === defaultFemale) {
         avatar = defaultAvatar;

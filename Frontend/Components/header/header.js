@@ -5,8 +5,8 @@ const HEADER_STORAGE_KEYS = {
     theme: "profile:theme",
 };
 
-const HEADER_DEFAULT_AVATAR_MALE = "/Frontend/assets/images/profile-default-male.png";
-const HEADER_DEFAULT_AVATAR_FEMALE = "/Frontend/assets/images/profile-default-female.png";
+const HEADER_DEFAULT_AVATAR_MALE = "./assets/images/profile-default-male.png";
+const HEADER_DEFAULT_AVATAR_FEMALE = "./assets/images/profile-default-female.png";
 
 // Apply saved theme immediately
 (function initHeaderTheme() {
@@ -33,8 +33,8 @@ function getHeaderAvatar() {
     const userProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
     const gender = userProfile.gender || 'male';
     const defaultAvatar = gender === 'female'
-        ? '/Frontend/assets/images/profile-default-female.png'
-        : '/Frontend/assets/images/profile-default-male.png';
+        ? './assets/images/profile-default-female.png'
+        : './assets/images/profile-default-male.png';
 
     if (userProfile.avatar) {
         return `https://planner-api-jw63.onrender.com${userProfile.avatar}`;
@@ -128,7 +128,7 @@ export function Header() {
         <header class="header">
             <div class="header__container">
                 <a href="/" data-route="/" class="logo">
-                    <img src="/Frontend/assets/images/logo.png" alt="Planner" class="logo__image" />
+                    <img src="./assets/images/logo.png" alt="Planner" class="logo__image" />
                 </a>
 
                 <div
@@ -259,8 +259,8 @@ export function syncHeaderWithProfile() {
 
     let avatar = userProfile.avatar || defaultAvatar;
 
-    const defaultMale = '/Frontend/assets/images/profile-default-male.png';
-    const defaultFemale = '/Frontend/assets/images/profile-default-female.png';
+    const defaultMale = './assets/images/profile-default-male.png';
+    const defaultFemale = './assets/images/profile-default-female.png';
 
     if (avatar === defaultMale || avatar === defaultFemale) {
         const correctDefault = getDefaultAvatar(gender);
@@ -309,8 +309,8 @@ window.addEventListener('storage', (e) => {
                 const defaultAvatar = getDefaultAvatar(gender);
                 let avatar = newProfile.avatar || defaultAvatar;
 
-                const defaultMale = '/Frontend/assets/images/profile-default-male.png';
-                const defaultFemale = '/Frontend/assets/images/profile-default-female.png';
+                const defaultMale = './assets/images/profile-default-male.png';
+                const defaultFemale = './assets/images/profile-default-female.png';
 
                 if (avatar === defaultMale || avatar === defaultFemale) {
                     const correctDefault = getDefaultAvatar(gender);

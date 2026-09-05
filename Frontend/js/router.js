@@ -40,7 +40,7 @@ export function router() {
 
     switch (path) {
         case "/":
-        case "/Frontend/index.html":
+        case "./index.html":
             pageContent.innerHTML = DashboardView();
             setTimeout(() => {
                 initDashboard();
@@ -93,7 +93,7 @@ export function router() {
                 <section class="page-not-found">
                     <h1>صفحه پیدا نشد</h1>
                     <p>مسیر ${path} پیدا نشد.</p>
-                    <a href="/Frontend/index.html" data-route="/" style="color: var(--color-primary);">بازگشت به صفحه اصلی</a>
+                    <a href="./index.html" data-route="/" style="color: var(--color-primary);">بازگشت به صفحه اصلی</a>
                 </section>
             `;
     }

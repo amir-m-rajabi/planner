@@ -1,4 +1,4 @@
-// File: /Frontend/pages/login_register/auth.js
+// File: ./pages/login_register/auth.js
 
 // ============================================================
 // Province Data
@@ -469,7 +469,7 @@ function setupLoginForm() {
             
             document.dispatchEvent(new CustomEvent('auth:changed'));
             
-            window.location.href = '/Frontend/index.html';
+            window.location.href = './index.html';
             
         } catch (error) {
             if (error.message.includes('Invalid username or password')) {
@@ -600,7 +600,7 @@ function setupRegisterForm() {
             
             document.dispatchEvent(new CustomEvent('auth:changed'));
             
-            window.location.href = '/Frontend/index.html';
+            window.location.href = './index.html';
             
         } catch (error) {
             alert(error.message || 'خطا در ارتباط با سرور');
@@ -671,7 +671,7 @@ export function logout() {
     
     document.dispatchEvent(new CustomEvent('auth:changed'));
     
-    window.location.href = '/Frontend/index.html';
+    window.location.href = './index.html';
 }
 
 export function isLoggedIn() {

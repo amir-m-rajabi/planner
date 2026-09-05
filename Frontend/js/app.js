@@ -15,7 +15,7 @@ const app = document.querySelector("#app");
 
 function isAuthPath(path) {
     return path === '/login' || path === '/register' || path === '/auth' || 
-           path === '/Frontend/login' || path === '/Frontend/register' || path === '/Frontend/auth';
+           path === './login' || path === './register' || path === './auth';
 }
 
 // ============================================================
@@ -29,8 +29,8 @@ function updateHeaderAvatar() {
     const userProfile = JSON.parse(localStorage.getItem('userProfile')) || {};
     const gender = userProfile.gender || 'male';
     const defaultAvatar = gender === 'female'
-        ? '/Frontend/assets/images/profile-default-female.png'
-        : '/Frontend/assets/images/profile-default-male.png';
+        ? './assets/images/profile-default-female.png'
+        : './assets/images/profile-default-male.png';
 
     if (userProfile.avatar) {
         if (userProfile.avatar.startsWith('/uploads/')) {
@@ -139,7 +139,7 @@ function renderApp() {
             restoreHeaderTimer();
 
             let activePath = path;
-            if (path === '' || path === '/' || path === '/Frontend/index.html') {
+            if (path === '' || path === '/' || path === './index.html') {
                 activePath = '/';
             }
             updateActiveNav(activePath);
@@ -161,7 +161,7 @@ document.addEventListener('auth:changed', () => {
     if (isLoggedIn()) {
         const path = window.location.pathname;
         if (isAuthPath(path)) {
-            window.location.href = '/Frontend/index.html';
+            window.location.href = './index.html';
         }
     }
 });
